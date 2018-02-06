@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
+	<class name="ExtractionDetail" table="ERM_SETTING_DTL" dynamic-update="true" >
+		<id name="id" column="PK_SET_DTL_SEQ" type="long">
+			<!-- <generator class="identity"/>  -->     
+			<generator class="sequence-identity">
+                <param name="sequence" >ERM_SETTING_DTL_ID_SEQ</param>           
+            </generator>             
+		</id>
+		
+		<many-to-one name="currency" class="com.esynergy.erm.model.ob.Currency" column="FK_CURRENCY_SEQ"/>
+		
+		<property name="value"        			column="VALUE"       				type="long"/>
+		<property name="extractCurrency"     	column="EXTRACT_CURRENCY"      		type="string"/>
+		<property name="extractBuyingRate"        column="EXTRACT_BUYING_RATE"      type="string"/>
+		<property name="extractSellingRate"     	column="EXTRACT_SELLING_RATE"   type="string"/>
+		<property name="addUser" 			column="RECORD_ADD_USER"				type="string"/>
+		<property name="changeUser" 		column="RECORD_CHANGE_USER"				type="string"/>
+		<property name="addDate" 			column="RECORD_ADD_DATE"				type="timestamp"/>
+		<property name="changeDate" 		column="RECORD_CHANGE_DATE"				type="timestamp"/>
+		
+		 <many-to-one name="extraction" class="Extraction" fetch="select" >
+	    	<column name="FK_SET_HDR_SEQ" index="idx_extractionDetail_1"></column>
+	    </many-to-one>
+	</class>
+      <database-object>
+        <create>
+            CREATE INDEX idx_extractionDetail_1 ON ERM_SETTING_DTL (FK_SET_HDR_SEQ)
+        </create>
+        <drop></drop>
+    </database-object>
+</hibernate-mapping>

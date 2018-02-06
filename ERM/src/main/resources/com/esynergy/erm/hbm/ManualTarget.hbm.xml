@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
+	<class name="ManualTarget" table="ERM_MANUAL_TARGET" >
+		<id name="id" column="PK_MANUAL_TARGET_SEQ" type="long">
+		</id>
+		
+		<many-to-one name="pairCurrency" class="com.esynergy.erm.model.ob.Currency" column="FK_PAIR_CURRENCY"/>
+		<many-to-one name="baseCurrency" class="com.esynergy.erm.model.ob.Currency" column="FK_BASE_CURRENCY"/>
+		<property name="status"         column="RECORD_STATUS"         type="string"/>
+		
+	</class>
+	
+	
+</hibernate-mapping>

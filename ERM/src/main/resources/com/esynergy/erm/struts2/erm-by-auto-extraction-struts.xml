@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd"> -->
+<!-- <!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.5.dtd"> -->
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+ 	<package name="AutoExtractionWeb" extends="struts-default" >
+ 		<global-results>
+			<result name="exception">pages/PageHalper/exception.jsp</result>
+			<result name="runtime_exception">pages/PageHalper/error.jsp</result>
+			<result name="jdbcException">pages/PageHalper/jdbc_exception.jsp</result>
+		</global-results>
+		
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception" result="exception"></exception-mapping>
+			<exception-mapping exception="java.lang.NullPointerException" result="exception"></exception-mapping>
+			<exception-mapping exception="java.lang.RuntimeException" result="runtime_exception"></exception-mapping>
+			<exception-mapping exception="org.hibernate.exception.GenericJDBCException" result="jdbcException" ></exception-mapping>
+		</global-exception-mappings>
+		<action name="prepareCreateExtraction" class="extractionAction" method="prepareCreate">
+	    	<result name="success">pages/Extraction/prepare_add_extraction.jsp</result>
+	    	<result type="redirectAction" name="error">
+				<param name="actionName">permissionMissing</param>
+			</result>
+	    </action>
+	    <action name="redirectExtraction" class="extractionAction" method="prepareRedirect">
+	    	<result name="success">pages/Extraction/prepare_add_extraction.jsp</result>
+	    </action>
+	    <action name="composeExtraction" class="extractionAction" method="compose">
+			<result type="redirectAction" name="success">
+			  <param name="actionName">prepareMangeExtraction</param>
+			  <param name="updated">true</param>
+			</result>
+			<result type="redirectAction" name="input">
+				<param name="actionName">redirectExtraction</param>
+			</result>
+		</action>
+		<action name="removeExtraction" class="extractionAction" method="remove">
+			<result type="redirectAction" name="success">
+			  <param name="actionName">prepareMangeExtraction</param>
+			  <param name="updated">true</param>
+			</result>
+			<result type="redirectAction" name="input">
+				<param name="actionName">prepareMangeExtraction</param>
+			</result>
+			<result type="redirectAction" name="error">
+				<param name="actionName">permissionMissing</param>
+			</result>
+		</action>
+		<action name="previewExtraction" class="extractionAction" method="preview">
+			<result type="redirectAction" name="success">
+				<param name="actionName">redirectExtraction</param>
+			</result>
+			<result type="redirectAction" name="input">
+				<param name="actionName">redirectExtraction</param>
+			</result>
+		</action>
+		<action name="removeComposeExtractionDetailForm" class="extractionAction" method="removeDetailForm">
+	    	<result name="success">pages/Extraction/prepare_add_extraction.jsp</result>
+	    </action>
+	    <action name="changeExtractionType" class="extractionAction" method="changeExtractionType">
+	    	<result name="success">pages/Extraction/prepare_add_extraction.jsp</result>
+	    </action>
+		<action name="searchExtraction" class="extractionAction" method="search">
+			<result name="success">pages/Extraction/prepare_mange_extraction.jsp</result>
+		</action>
+		<action name="prepareMangeExtraction" class="extractionAction" method="prepareMange">
+	    	<result name="success">pages/Extraction/prepare_mange_extraction.jsp</result>
+	    </action>
+	    <action name="prepareViewExtraction" class="extractionAction" method="prepareView">
+	    	<result name="success">pages/Extraction/prepare_view_extraction.jsp</result>
+	    	<result type="redirectAction" name="error">
+				<param name="actionName">permissionMissing</param>
+			</result>
+	    </action>
+	    <action name="prepareEditExtraction" class="extractionAction" method="prepareEdit">
+			<result name="success">pages/Extraction/prepare_add_extraction.jsp</result>
+			<result type="redirectAction" name="input">
+				<param name="actionName">prepareMangeExtraction</param>
+			</result>
+			<result type="redirectAction" name="error">
+				<param name="actionName">permissionMissing</param>
+			</result>
+		</action>
+ 	</package>
+	
+</struts>

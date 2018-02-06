@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+                            http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+
+        version="2.0">
+	<description>Conditional Role User Tag</description>
+    <tlib-version>2.1</tlib-version>
+    <short-name>modong</short-name>
+    <uri>/WEB-INF/ModongTag</uri>
+    <!-- <tag>
+        <name>sys-roles</name>
+        <tag-class>com.modong.spring.common.tag.RoleTag</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+            <name>roles</name>
+            <required>true</required>
+        </attribute>
+    </tag> -->
+   <tag>
+        <name>sys-permission</name>
+        <tag-class>com.esynergy.spring.common.tag.PermissionTag</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+            <name>function</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>user</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            
+        </attribute>
+    </tag>
+    <tag>
+	    <name>printDate</name>
+	    <tag-class>com.esynergy.spring.common.tag.PrintDateTag</tag-class>
+	    <body-content>empty</body-content>
+	</tag> 
+	<tag>
+		<name>formatNumber</name>
+		<tag-class>com.esynergy.spring.common.tag.NumberFormatterTag</tag-class>
+		<body-content>scriptless</body-content>
+		<attribute>
+			<name>number</name>
+		</attribute>
+	</tag>
+</taglib>

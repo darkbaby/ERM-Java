@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns="http://java.sun.com/xml/ns/javaee" 
+		xmlns:web="http://java.sun.com/xml/ns/javaee" 
+		xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+		version="3.0">
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>/WEB-INF/spring/appContext.xml</param-value>
+  </context-param>
+  <listener>
+ <!--  	 <listener-class>org.apache.struts2.tiles.StrutsTilesListener</listener-class> -->
+     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class> 
+   
+  </listener>
+  <filter>
+    <filter-name>DispatcherFilter</filter-name>
+         <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class> 
+  	<!-- <filter-class>org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter</filter-class> -->
+  </filter>
+
+  <filter-mapping>
+    <filter-name>DispatcherFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher> 
+  	<dispatcher>FORWARD</dispatcher>
+  	 
+  </filter-mapping>
+  
+  
+   <listener>
+  	<listener-class>com.esynergy.erm.common.listener.GlobalMessagesListener</listener-class>
+  </listener>
+  
+  <!-- <error-page>
+	<exception-type>org.hibernate.exception.GenericJDBCException</exception-type>
+	<location>/pages/PageHalper/hibernate_exception.jsp</location>
+  </error-page> -->
+  <!-- 
+  	<welcome-file-list>
+		<welcome-file>prepareLogon</welcome-file>
+	</welcome-file-list> -->
+	 
+</web-app>

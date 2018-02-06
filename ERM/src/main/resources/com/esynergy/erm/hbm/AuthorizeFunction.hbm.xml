@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
+	<class name="AuthorizeFunction" table="ERM_AUTH_FUNCTION"  >
+		<id name="id" column="PK_FUNCTION_SEQ" type="long">
+			<generator class="native"/>                       
+		</id>
+		 		
+		<property name="functionName" 	    column="FUNCTION_NAME"	type="string"/>
+		<property name="status"          	column="RECORD_STATUS"  type="string"/>
+		<property name="createdUser" 		column="RECORD_ADD_USER"  type="string"/>
+		<property name="lastUpdateUser" 	column="RECORD_CHANGE_USER"	type="string"/>
+		<property name="createdDate"     	column="RECORD_ADD_DATE"      type="timestamp"/>
+		<property name="lastUpdateDate"     column="RECORD_CHANGE_DATE"   type="timestamp"/>
+		 
+	   <!-- <set name="permissionList" table="ERM_AUTH_PERMISSION" cascade="none"   inverse="true" fetch="select" >
+			<key>
+				<column name="FK_FUNCTION_SEQ" not-null="true"/>
+			</key>
+			<one-to-many entity-name="com.esynergy.erm.model.ob.AuthorizePermission"  />
+		</set> -->
+		 
+	</class>
+</hibernate-mapping>

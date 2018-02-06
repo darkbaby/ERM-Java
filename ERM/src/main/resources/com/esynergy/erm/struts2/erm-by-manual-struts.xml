@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd"> -->
+<!-- <!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd"> -->
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+ 	<package name="ERManualWeb" extends="struts-default" >
+ 		<global-results>
+			<result name="exception">pages/PageHalper/exception.jsp</result>
+			<result name="runtime_exception">pages/PageHalper/error.jsp</result>
+			<result name="jdbcException">pages/PageHalper/jdbc_exception.jsp</result>
+		</global-results>
+		
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception" result="exception"></exception-mapping>
+			<exception-mapping exception="java.lang.NullPointerException" result="exception"></exception-mapping>
+			<exception-mapping exception="java.lang.RuntimeException" result="runtime_exception"></exception-mapping>
+			<exception-mapping exception="org.hibernate.exception.GenericJDBCException" result="jdbcException" ></exception-mapping>
+		</global-exception-mappings>
+		<action name="prepareCreateExchangeRateManualAction" class="exchangeRagteByManualAction" method="prepareCreateForm">
+			<result name="success">pages/ERManual/prepare_create_exchangeRate.jsp</result>
+			<result type="chain" name="error">
+				<param name="actionName">permissionMissing</param>
+			</result>
+			
+		</action>
+		<action name="createExchangeRateManual" class="exchangeRagteByManualAction" method="save">
+			<result type="redirectAction" name="success">
+			  <param name="actionName">prepareMangeExchangeRateManual</param>
+			 </result>
+			<result name="input">pages/ERManual/prepare_create_exchangeRate.jsp</result>
+		</action>
+		<action name="downloadFileERByManual" class="exchangeRagteByManualAction" method="downloadFile">
+				<result name="success" type="stream">
+				  <param name="contentType">application/octet-stream</param>
+				  <param name="inputName">fileDownloadStream</param>
+				  <param name="contentDisposition">attachment;filename="${fileDownloadName}"</param>
+				  <param name="bufferSize">2194304</param>
+				</result>
+		
+		</action>
+		<action name="removeExchangeRateManualForm" class="exchangeRagteByManualAction" method="removeForm">
+			<result name="success">pages/ERManual/prepare_create_exchangeRate.jsp</result>
+		</action>
+		
+		<action name="prepareMangeExchangeRateManual" class="exchangeRagteByManualAction" method="prepareMangement">
+			<result name="success">pages/ERManual/prepare_mange_exchangeRate.jsp</result>
+		</action>
+	    <action name="prepareEditExchangeRateByManualAction" class="exchangeRagteByManualAction" method="prepareEdit">
+	    	<result name="success">pages/ERManual/prepare_edit_exchangeRate.jsp</result>
+	    	<result type="chain" name="error">
+				<param name="actionName">permissionMissing</param>
+			</result>
+	    </action>
+	     <action name="prepareViewExchangeRateByManualAction" class="exchangeRagteByManualAction" method="prepareView">
+	    	<result name="success">pages/ERManual/prepare_view_exchangeRate.jsp</result>
+	    </action>     
+	     <action name="searchExchangeRateByManual" class="exchangeRagteByManualAction" method="search">
+	    	<result name="success">pages/ERManual/prepare_mange_exchangeRate.jsp</result>
+	    </action>
+	    <action name="removeFileUploadERByManual" class="exchangeRagteByManualAction" method="removeFileUpload">
+	    	<result name="success">pages/ERManual/prepare_create_exchangeRate.jsp</result>
+	    </action>  
+	     <action name="removeExchangeRateByManual" class="exchangeRagteByManualAction" method="remove">
+		    <result type="redirectAction" name="success">
+				  <param name="actionName">prepareMangeExchangeRateManual</param>
+			</result>
+	    </action>
+	</package>
+	
+</struts>

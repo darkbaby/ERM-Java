@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd"> -->
+<!-- <!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd"> -->
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+ 	<package name="GenerateRateWeb" extends="struts-default" >
+ 		<global-results>
+			<result name="exception">pages/PageHalper/exception.jsp</result>
+			<result name="runtime_exception">pages/PageHalper/error.jsp</result>
+			<result name="jdbcException">pages/PageHalper/jdbc_exception.jsp</result>
+		</global-results>
+		
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception" result="exception"></exception-mapping>
+			<exception-mapping exception="java.lang.NullPointerException" result="exception"></exception-mapping>
+			<exception-mapping exception="java.lang.RuntimeException" result="runtime_exception"></exception-mapping>
+			<exception-mapping exception="org.hibernate.exception.GenericJDBCException" result="jdbcException" ></exception-mapping>
+		</global-exception-mappings>
+ 		<action name="prepareManageGenerateRate" class="com.esynergy.erm.web.action.GenerateRateAction" method="prepareManage">
+	    	<result name="success">pages/GenerateRate/prepare_manage_generate_rate.jsp</result>
+	    </action>
+	    <action name="prepareViewGenerateRate" class="generateRateAction" method="prepareView">
+	    	<result name="success">pages/GenerateRate/prepare_view_generate_rate.jsp</result>
+	    	<result type="redirectAction" name="input">
+				<param name="actionName">prepareManageGenerateRate</param>
+			</result>
+			<result type="redirectAction" name="error">
+				<param name="actionName">permissionMissing</param>
+			</result>
+	    </action>
+		<action name="prepareCreateGenerateRate" class="generateRateAction" method="prepareCreate">
+	    	<result name="success">pages/GenerateRate/prepare_compose_generate_rate.jsp</result>
+	    	<result type="redirectAction" name="error">
+				<param name="actionName">permissionMissing</param>
+			</result>
+	    </action>
+	    <action name="prepareEditGenerateRate" class="generateRateAction" method="prepareEdit">
+			<result name="success">pages/GenerateRate/prepare_compose_generate_rate.jsp</result>
+			<result type="redirectAction" name="input">
+				<param name="actionName">prepareManageGenerateRate</param>
+			</result>
+			<result type="redirectAction" name="error">
+				<param name="actionName">permissionMissing</param>
+			</result>
+		</action>
+	    <action name="composeGenerateRate" class="generateRateAction" method="save">
+			<result type="redirectAction" name="success">
+			  <param name="actionName">prepareManageGenerateRate</param>
+			  <param name="updated">true</param>
+			</result>
+			<result type="redirectAction" name="input">
+				<param name="actionName">redirectGenerateRate</param>
+			</result>
+		</action>
+		<action name="removeGenerateRateDetailForm" class="generateRateAction" method="removeDetailForm">
+	    	<result name="success">pages/GenerateRate/prepare_compose_generate_rate.jsp</result>
+	    </action>
+	    <action name="removeGenerateRate" class="generateRateAction" method="remove">
+	    	<result type="redirectAction" name="success">
+			  <param name="actionName">prepareManageGenerateRate</param>
+			  <param name="updated">true</param>
+			</result>
+			<result type="redirectAction" name="input">
+				<param name="actionName">prepareManageGenerateRate</param>
+			</result>
+			<result type="redirectAction" name="error">
+				<param name="actionName">permissionMissing</param>
+			</result>
+	    </action>
+		<action name="redirectGenerateRate" class="generateRateAction" method="prepareRedirect">
+	    	<result name="success">pages/GenerateRate/prepare_compose_generate_rate.jsp</result>
+	    </action>
+	    <action name="searchGenerateRate" class="generateRateAction" method="search">
+	    	<result name="success">pages/GenerateRate/prepare_compose_generate_rate.jsp</result>
+	    </action>
+	    <action name="downloadGenerateRate" class="generateRateAction" method="download">
+	    	<result type="stream" name="success">	
+	    		<param name="contentType">application/octet-stream</param>
+	            <param name="inputName">inputStream</param>
+	            <param name="contentDisposition">attachment;fileName="${fileName}"</param>
+	            <param name="bufferSize">1024</param>
+	    	</result>
+	    	<result type="redirectAction" name="input">
+				<param name="actionName">prepareViewGenerateRate</param>
+			</result>
+	    </action>
+ 	</package>
+</struts>

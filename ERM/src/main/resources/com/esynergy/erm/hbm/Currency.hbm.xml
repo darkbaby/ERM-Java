@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
+	<class name="Currency" table="ERM_CURRENCY_MAST" >
+		<id name="id" column="PK_CURRENCY_ID" type="long">
+			<generator class="native"/>                       
+		</id>
+		<property name="code"               column="CURRENCY_CODE"        type="string"/>
+		<property name="description"        column="CURRENCY_NAME"        type="string"/>
+	</class>
+	<query name="HQL.listAllCurrency">
+		<![CDATA[ from Currency r order by r.code]]>
+	</query>
+		<query name="HQL.listCurrencyWithOutId">
+		<![CDATA[ from Currency r where id <> :parmId order by r.code]]>
+	</query>
+</hibernate-mapping>

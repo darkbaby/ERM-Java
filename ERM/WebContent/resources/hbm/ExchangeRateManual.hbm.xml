@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
+	<class name="ExchangeRateManual" table="ERM_MANUAL_HDR" >
+		<id name="id" column="id" type="long">
+			<!-- <generator class="identity"/>  -->     
+			<generator class="sequence-identity">
+                <param name="sequence" >ERM_MANUAL_HDR_ID_SEQ</param>           
+            </generator>             
+		</id>
+		<property name="rateDate"           column="RATE_MANUAL_DATE"        type="date"/>
+		<property name="createdUser"        column="RECORD_ADD_USER"         type="string"/>
+		<property name="lastUpdateUser"     column="RECORD_CHANGE_USER"      type="string"/>
+		<property name="createdDate"        column="RECORD_ADD_DATE"         type="date"/>
+		<property name="lastUpdateDate"     column="RECORD_CHANGE_DATE"      type="date"/>
+		
+		<set name="exchangeRateDetailList" table="ERM_MANUAL_DTL" cascade="save-update"
+			inverse="true" >
+			<key>
+				<column name="FK_RATE_MANUAL_ID"/>
+			</key>
+			<one-to-many entity-name="com.esynergy.erm.model.ob.ExchangeRateManualDetail"  />
+		</set>
+	</class>
+	<query name="HQL.listAllExchangeRateManual">
+		<![CDATA[ from ExchangeRateManual e order by e.lastUpdateDate desc]]>
+	</query>
+	<query name="HQL.listExchangeRateManualByLastUpdateUser">
+		<![CDATA[ from ExchangeRateManual e 
+		         where e.lastUpdateUser = :lastUpdateUserArg
+                 order by e.lastUpdateDate desc]]>
+	</query>
+      
+</hibernate-mapping>

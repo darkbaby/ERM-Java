@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd"> -->
+<!-- <!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd"> -->
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+    <constant name="struts.ui.theme" value="simple" />
+	<constant name="struts.devMode" value="false"  />
+
+	<!-- <constant name="struts.custom.i18n.resources" value="global" /> -->
+	 <package name="default" namespace="/" extends="struts-default">
+	 	
+		
+		<action name="" class="userLogonAction"  method="prepareLogon">
+            <result name="success">pages/UserLogon/logon_form.jsp</result>
+		</action>
+		
+	</package>
+ 	 
+	<include file="com/esynergy/erm/struts2/erm-api-struts.xml"></include>
+	<include file="com/esynergy/erm/struts2/dashboard-struts.xml"></include>
+	<include file="com/esynergy/erm/struts2/erm-by-auto-extraction-struts.xml"></include>
+	<include file="com/esynergy/erm/struts2/erm-by-auto-struts.xml"></include>
+	<include file="com/esynergy/erm/struts2/erm-by-manual-struts.xml"></include>
+	<include file="com/esynergy/erm/struts2/erm-by-generate-rate-struts.xml"></include>
+	<include file="com/esynergy/erm/struts2/erm-user-logon-struts.xml"></include>
+	<include file="com/esynergy/erm/struts2/erm-user-manage-struts.xml"></include>
+	<include file="com/esynergy/erm/struts2/erm-page-helper-struts.xml"></include>
+
+</struts>

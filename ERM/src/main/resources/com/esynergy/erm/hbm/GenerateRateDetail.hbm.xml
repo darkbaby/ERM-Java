@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
+	<class name="GenerateRateDetail" table="ERM_GEN_RATE_DTL" dynamic-update="true" >
+		<id name="id" column="GEN_RATE_DTL_SEQ" type="long">
+			<!-- <generator class="identity"/>  -->     
+			<generator class="sequence-identity">
+                <param name="sequence" >ERM_GEN_RATE_DTL_ID_SEQ</param>           
+            </generator>             
+		</id>
+		
+		<property name="type" 	column="TYPE"	type="string"/>
+		<many-to-one name="baseCurrency" class="com.esynergy.erm.model.ob.Currency" column="FK_BASE_CURRENCY"/>
+		<many-to-one name="pairCurrency" class="com.esynergy.erm.model.ob.Currency" column="FK_PAIR_CURRENCY"/>
+		<property name="pairCurrencyType" 	column="PAIR_CURRENCY_TYPE"	type="long"/>
+		<property name="rateType" 	column="RATE_TYPE"	type="string"/>
+		<property name="addUser" 			column="RECORD_ADD_USER"				type="string"/>
+		<property name="changeUser" 		column="RECORD_CHANGE_USER"				type="string"/>
+		<property name="addDate" 			column="RECORD_ADD_DATE"				type="timestamp"/>
+		<property name="changeDate" 		column="RECORD_CHANGE_DATE"				type="timestamp"/>
+
+		<many-to-one name="generateRate" class="GenerateRate" fetch="select" >
+	    	<column name="FK_GEN_HDR_SEQ"></column>
+	    </many-to-one>
+	    
+	    <set name="generateRateBanks" table="ERM_GEN_RATE_BANK" cascade="save-update,delete"   inverse="true" fetch="select" >
+			<key>
+				<column name="FK_GEN_DTL_SEQ" not-null="true"/>
+			</key>
+			<one-to-many entity-name="com.esynergy.erm.model.ob.GenerateRateBank"  />
+		</set>
+	</class>
+      
+</hibernate-mapping>

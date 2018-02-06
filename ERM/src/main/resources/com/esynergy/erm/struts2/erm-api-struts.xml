@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd"> -->
+<!-- <!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd"> -->
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+ 	<package name="ERM_API" extends="json-default" >
+ 		<!-- <interceptors>
+			<interceptor-stack name="defaultStack">
+				<interceptor-ref name="json">
+					<param name="enableSMD">true</param>
+				</interceptor-ref>
+			</interceptor-stack>
+		</interceptors> -->
+		<default-interceptor-ref name="defaultStack" />
+ 		<global-results>
+			<result name="exception">pages/PageHalper/exception.jsp</result>
+			<result name="runtime_exception">pages/PageHalper/error.jsp</result>
+			<result name="jdbcException">pages/PageHalper/jdbc_exception.jsp</result>
+		</global-results>
+		
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception" result="exception"></exception-mapping>
+			<exception-mapping exception="java.lang.NullPointerException" result="exception"></exception-mapping>
+			<exception-mapping exception="java.lang.RuntimeException" result="runtime_exception"></exception-mapping>
+			<exception-mapping exception="org.hibernate.exception.GenericJDBCException" result="jdbcException" ></exception-mapping>
+		</global-exception-mappings>
+		<action name="exchangeRateAPIAction" class="exchangeRateAPIActionCtrl" method="prepareViewExchangeRate">
+			<result  type="json" >
+			          <param name="root">users</param>
+			          <param name="excludeNullProperties">true</param>
+			          <param name="noCache">true</param>	
+			</result>
+		</action>
+		<action name="exchangeRateTypeAPI" class="rateTypeConstanceAPIActionCtrl" method="execute">
+			<result type="json">
+					<param name="root">rateTypeConstances</param>
+					<param name="excludeNullProperties">true</param>
+			        <param name="noCache">true</param>	   
+			</result>
+		</action>
+		
+		<action name="createExchangeRateAPI" class="exchangeRateManualAPIActionCtrl" method="createExchangeRateManual">
+			<result type="json">
+					<param name="root">ExchangeRateManual</param>
+					<param name="excludeNullProperties">true</param>
+			        <param name="noCache">true</param>	   
+			</result>
+		</action>
+		<action name="currencyAPIAction" class="currencyAPIActionCtrl" method="listAll" >
+			<result type="json">
+					<param name="root">Currency</param>
+					<param name="excludeNullProperties">true</param>
+			        <param name="noCache">true</param>	   
+			</result>
+		</action>
+		<action name="currencyWhitOutByIdAPIAction" class="currencyAPIActionCtrl" method="listWhitOutById" >
+			<result type="json">
+					<param name="root">Currency</param>
+					<param name="excludeNullProperties">true</param>
+			        <param name="noCache">true</param>	   
+			</result>
+		</action>
+		<action name="chartByERAutoAPIAction" class="chartAPIActionCtrl" method="getErmByAuto" >
+			<result type="json">
+					<param name="root">charts</param>
+					<param name="excludeNullProperties">true</param>
+			        <param name="noCache">true</param>	   
+			</result>
+		</action>
+		<action name="chartByERManualAPIAction" class="chartAPIActionCtrl" method="getErmByManual" >
+			<result type="json">
+					<param name="root">charts</param>
+					<param name="excludeNullProperties">true</param>
+			        <param name="noCache">true</param>	   
+			</result>
+		</action>
+		<action name="saveGenerateRateAPIAction" class="generateRateAPIActionCtrl" method="save" >
+			<result type="json" name="success">
+					<param name="root">result</param>
+					<param name="excludeNullProperties">true</param>
+			        <param name="noCache">true</param>	   
+			</result>
+		</action>
+		<action name="countryByIdAPIAction" class="countryAPIActionCtrl" method="getById">
+			<result type="json" name="success">
+					<param name="root">country</param>
+					<param name="excludeNullProperties">true</param>
+			        <param name="noCache">true</param>	   
+			</result>
+		</action>
+		<action name="userByEmailApiAction" class="userAPIActionCtrl" method="getByEmail">
+			<interceptor-ref name="json">
+	            <param name="enableSMD">true</param>
+	        </interceptor-ref>
+			<result type="json" name="success">
+					<param name="data">data</param>
+					<param name="root">result</param>
+					<param name="excludeNullProperties">true</param>
+			        <param name="noCache">true</param>	   
+			</result>
+		</action>
+	</package>
+	
+</struts>

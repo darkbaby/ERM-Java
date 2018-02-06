@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
+	<class name="GenerateRateBank" table="ERM_GEN_RATE_BANK" >
+		<id name="id" column="GEN_RATE_BANK_SEQ" type="long"> 
+			<generator class="sequence-identity">
+                <param name="sequence" >ERM_GEN_RATE_BANK_ID_SEQ</param>           
+            </generator>
+		</id>
+		
+		<many-to-one name="bank" class="com.esynergy.erm.model.ob.Bank"  fetch="select"
+            column="FK_BANK" not-null="false" />
+        <many-to-one name="generateRateDetail" class="com.esynergy.erm.model.ob.GenerateRateDetail"  fetch="select"
+            column="FK_GEN_DTL_SEQ" not-null="false" />
+		
+	</class>
+	
+</hibernate-mapping>

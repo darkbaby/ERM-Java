@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd"> -->
+<!-- <!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd"> -->
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+ 	<package name="UserManageWeb" extends="struts-default" >
+ 		<global-results>
+			<result name="exception">pages/PageHalper/exception.jsp</result>
+			<result name="runtime_exception">pages/PageHalper/error.jsp</result>
+			<result name="jdbcException">pages/PageHalper/jdbc_exception.jsp</result>
+		</global-results>
+		
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception" result="exception"></exception-mapping>
+			<exception-mapping exception="java.lang.NullPointerException" result="exception"></exception-mapping>
+			<exception-mapping exception="java.lang.RuntimeException" result="runtime_exception"></exception-mapping>
+			<exception-mapping exception="org.hibernate.exception.GenericJDBCException" result="jdbcException" ></exception-mapping>
+		</global-exception-mappings>
+ 	
+ 		<action name="prepareManageUser" class="userManageAction" method="prepareMangement">
+	    	<result name="success">pages/UserManage/prepare_mange_user.jsp</result>
+	    </action>
+		<action name="prepareCreateUser" class="userManageAction" method="prepareCreate">
+	    	<result name="success">pages/UserManage/prepare_create_user.jsp</result>
+	    </action>
+	    <action name="prepareEditUser" class="userManageAction" method="prepareEdit">
+	    	<result name="success">pages/UserManage/prepare_edit_user.jsp</result>
+	    </action>
+	    <action name="saveUser" class="userManageAction" method="save">
+	    	<result name="success" type="chain">prepareManageUser</result>
+	    	<result name="input">pages/UserManage/prepare_create_user.jsp</result>
+	    </action>
+	    <action name="removeUser" class="userManageAction" method="remove">
+	    	<result name="success" type="chain">prepareManageUser</result>
+	    </action>
+	    <action name="searchUser" class="userManageAction" method="search">
+	    	<result name="success">pages/UserManage/prepare_mange_user.jsp</result>
+	    </action>
+	    <action name="prepareResetPwdUser" class="userManageAction" method="prepareResetPwd">
+	    	<result name="success">pages/UserManage/prepare_reset_pwd.jsp</result>
+	    </action>
+	    <action name="createNewPwdUser" class="userManageAction" method="createNewPwd">
+	    	<result name="success">pages/UserManage/prepare_reset_pwd.jsp</result>
+	    </action>
+	    <action name="savePwdUser" class="userManageAction" method="updatePwd">
+	         <result name="success">pages/UserManage/prepare_mange_user.jsp</result>
+	    </action>
+ 	</package>
+</struts>

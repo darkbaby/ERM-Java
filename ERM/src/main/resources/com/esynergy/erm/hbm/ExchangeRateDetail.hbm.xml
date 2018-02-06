@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
+	<class name="ExchangeRateDetail" table="ERM_EXCHANGE_RATE_DTL" dynamic-update="true" >
+		<id name="id" column="PK_RATE_DTL_SEQ" type="long">  
+			<generator class="sequence-identity">
+                <param name="sequence" >ERM_EXCHANGE_RATE_DTL_SEQ</param>           
+            </generator>             
+		</id>
+
+		
+ 		<property    name="value"           column="value"            type="double"/>
+		<property    name="buyingRate"      column="BUYING_RATE"      type="double"/>
+		<property    name="sellingRate"     column="SELLING_RATE"     type="double"/>
+		<property    name="recordStatus" 			column="RECORD_STATUS" type="string"/>
+		<many-to-one name="firstCurrency"     class="com.esynergy.erm.model.ob.Currency"  column="FK_BASE_CURRENCY"/>
+		<many-to-one name="pairCurrency"     class="com.esynergy.erm.model.ob.Currency"  column="FK_PAIR_CURRENCY"/>
+		 
+		<many-to-one name="exchangeRate" class="com.esynergy.erm.model.ob.ExchangeRate"   fetch="join" outer-join="true" >
+	    	<column name="FK_RATE_HDR_SEQ"></column>
+	    </many-to-one>
+  
+	</class>     
+</hibernate-mapping>

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
+	<class name="User" table="ERM_AUTH_USER" >
+		<id name="id" column="PK_USER_SEQ" type="long">
+			<generator class="sequence-identity">
+                <param name="sequence" >ERM_USER_SEQ</param>           
+            </generator>                     
+		</id>
+		<property name="logOnId"       column="USER_NAME"       type="string"/>
+		<property name="pwd" 	   	   column="PWD"             type="string"/>
+		<property name="firstName" 	   column="FIRST_NAME"      type="string"/>
+		<property name="lastName" 	   column="LAST_NAME"       type="string"/>
+		<property name="emailAddress"  column="EMAIL_ADDRESS"   type="string"/>
+		<property name="recordStatus"       column="RECORD_STATUS"  	type="string"/>
+		<property name="createdUser" 		column="RECORD_ADD_USER"  	type="string"/>
+		<property name="lastUpdateUser" 	column="RECORD_CHANGE_USER"	type="string"/>
+		<property name="createdDate"     	column="RECORD_ADD_DATE"    type="timestamp"/>
+		<property name="lastUpdateDate"     column="RECORD_CHANGE_DATE" type="timestamp"/>
+		<many-to-one name="country"    		column="LOCATION"	    class="Country"  />
+		<many-to-one name="authorizeGroup"  column="FK_GROUP_SEQ"	class="AuthorizeGroup"  />
+	</class>
+	 
+</hibernate-mapping>

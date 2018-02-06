@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
+	<class name="ExtractionTime" table="ERM_SETTING_TIME" dynamic-update="true" >
+		<id name="id" column="PK_SET_TIME_SEQ" type="long">
+			<!-- <generator class="identity"/>  -->     
+			<generator class="sequence-identity">
+                <param name="sequence" >ERM_SETTING_TIME_ID_SEQ</param>           
+            </generator>             
+		</id>
+		
+		<property name="extractionTime"   column="EXTRACT_TIME"       type="long"/>
+
+		 <many-to-one name="extraction" class="Extraction" fetch="select" >
+	    	<column name="FK_SET_HDR_SEQ" index="idx_extractionTime_1"></column>
+	    </many-to-one>
+	</class>
+	<database-object>
+        <create>
+            CREATE INDEX idx_extractionTime_1 ON ERM_SETTING_TIME (FK_SET_HDR_SEQ)
+        </create>
+        <drop></drop>
+    </database-object> 
+</hibernate-mapping>

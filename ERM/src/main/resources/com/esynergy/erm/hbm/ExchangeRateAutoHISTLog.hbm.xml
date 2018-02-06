@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
+	<class name="ExchangeRateAutoHISTLog" table="ERM_HIST_LOG" dynamic-update="true">
+	
+		<id name="id" column="PK_LOG_ID" type="long">
+			<!-- <generator class="identity"/>  -->
+			<generator class="sequence-identity">
+                <param name="sequence" >ERM_HIST_LOG_SEQ</param>
+            </generator>
+		</id>
+		
+ 		<property name="logModule"        	column="LOG_MODULE"              type="string"/>
+		<property name="logStatus"     	    column="LOG_STATUS"              type="string"/>
+		<property name="logDescription"     column="LOG_DESCRIPTION"      	 type="string"/>
+		<property name="createdUser"        column="RECORD_ADD_USER"         type="string"/>
+		<property name="lastUpdateUser"     column="RECORD_CHANGE_USER"      type="string"/>
+		<property name="createdDate"        column="RECORD_ADD_DATE"         type="timestamp"/>
+		<property name="lastUpdateDate"     column="RECORD_CHANGE_DATE"      type="timestamp"/>
+		
+		<many-to-one name="exchangeRateAuto" class="ExchangeRateAuto" fetch="select" unique="true">
+	    	<column name="FK_RATE_HDR_SEQ" index="idx_histlog_2"></column>
+	    </many-to-one>
+	    
+	    <many-to-one name="extraction" class="Extraction" fetch="select" not-null="true" >
+	    	<column name="FK_SET_HDR_ID" index="idx_histlog_1"></column>
+	    </many-to-one>
+	    
+	</class>
+	<database-object>
+        <create>
+            CREATE INDEX idx_histlog_1 ON ERM_HIST_LOG (FK_SET_HDR_ID);
+            CREATE INDEX idx_histlog_2 ON ERM_HIST_LOG (FK_RATE_HDR_SEQ);
+        </create>
+        <drop></drop>
+    </database-object>
+</hibernate-mapping>

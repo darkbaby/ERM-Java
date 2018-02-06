@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
+	<class name="ExchangeRate" table="ERM_EXCHANGE_RATE_HDR" dynamic-update="true" >
+	
+		<id name="id" column="PK_RATE_HDR_SEQ" type="long">  
+			<generator class="sequence-identity">
+                <param name="sequence" >ERM_EXCHANGE_RATE_HDR_SEQ</param>           
+            </generator>             
+		</id>
+        <discriminator column="TYPE" type="string"/>
+		<property name="rateDate"           column="RATE_DATE"          type="timestamp"/>
+	    <property name="pariCurrencyType"   column="PAIR_CURRENCY_TYPE" type="long"/>
+	    <property name="createdUser"        column="RECORD_ADD_USER"    type="string"/>
+	    <property name="lastUpdateUser"     column="RECORD_CHANGE_USER" type="string"/>
+		<property name="createdDate"        column="RECORD_ADD_DATE"         type="timestamp"/>
+		<property name="lastUpdateDate"     column="RECORD_CHANGE_DATE"      type="timestamp"/>
+	    
+	    <set name="exchangeRateDetails" table="ERM_EXCHANGE_RATE_DTL" cascade="save-update,delete"  inverse="true" fetch="select" >
+			<key>
+				<column name="FK_RATE_HDR_SEQ"/>
+			</key>
+			<one-to-many entity-name="com.esynergy.erm.model.ob.ExchangeRateDetail"   />
+		</set>
+		
+		<subclass name="ExchangeRateManual" extends="ExchangeRate" discriminator-value="MANUAL">
+			<set name="fileUploadERManualList" table="ERM_ATTACH_FILE" cascade="save-update,delete"  inverse="true" fetch="select" >
+				<key>
+					<column name="FK_FILE_OWNER"/>
+				</key>
+				<one-to-many entity-name="com.esynergy.erm.model.ob.FileUploadERManual"  />
+			</set>
+ 		</subclass>
+ 		
+ 		<subclass name="ExchangeRateAuto" extends="ExchangeRate" discriminator-value="AUTO">
+	      	<set name = "bankOfRate" table="ERM_EXCHANGE_RATE_BANK"   inverse="true" fetch="select">
+	      		<key>
+	      			<column name="FK_RATE_HDR_SEQ"/>
+	      		</key>
+	      		<one-to-many entity-name="com.esynergy.erm.model.ob.BankOfRate"/>
+	      	</set>
+	    	<set name="fileUploadERAutoList" table="ERM_ATTACH_FILE" cascade="save-update,delete"  inverse="true" fetch="select" >
+				<key>
+					<column name="FK_FILE_OWNER"/>
+				</key>
+				<one-to-many entity-name="com.esynergy.erm.model.ob.FileUploadERAuto"  />
+			</set>
+ 		</subclass>
+ 		
+	</class>     
+</hibernate-mapping>

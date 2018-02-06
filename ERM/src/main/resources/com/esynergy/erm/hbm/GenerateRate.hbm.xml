@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
+	<class name="GenerateRate" table="ERM_GEN_RATE_HDR" dynamic-update="true" >
+		<id name="id" column="GEN_RATE_HDR_SEQ" type="long">
+			<!-- <generator class="identity"/>  -->     
+			<generator class="sequence-identity">
+                <param name="sequence" >ERM_GEN_RATE_HDR_ID_SEQ</param>           
+            </generator>             
+		</id>
+		
+		<property name="fileName" 	column="FILE_NAME"	type="string"/>
+		<property name="status" 	column="RECORD_STATUS"	type="string"/>
+		<property name="addUser" 			column="RECORD_ADD_USER"				type="string"/>
+		<property name="changeUser" 		column="RECORD_CHANGE_USER"				type="string"/>
+		<property name="addDate" 			column="RECORD_ADD_DATE"				type="timestamp"/>
+		<property name="changeDate" 		column="RECORD_CHANGE_DATE"				type="timestamp"/>
+
+		<set name="generateRateDetails" table="ERM_GEN_RATE_DTL" cascade="save-update,delete"   inverse="true" fetch="select" >
+			<key>
+				<column name="FK_GEN_HDR_SEQ" not-null="true"/>
+			</key>
+			<one-to-many entity-name="com.esynergy.erm.model.ob.GenerateRateDetail"  />
+		</set>
+		<set name="generateRateTimes" table="ERM_GEN_RATE_TIME" cascade="save-update,delete"   inverse="true" fetch="select" >
+			<key>
+				<column name="FK_GEN_HDR_SEQ" not-null="true"/>
+			</key>
+			<one-to-many entity-name="com.esynergy.erm.model.ob.GenerateRateTime"  />
+		</set>
+		<set name="generateRateFiles" table="ERM_GEN_RATE_FILE" cascade="delete"   inverse="true" fetch="select" >
+			<key>
+				<column name="FK_GEN_HDR_SEQ" not-null="true"/>
+			</key>
+			<one-to-many entity-name="com.esynergy.erm.model.ob.GenerateRateFile"  />
+		</set>
+	</class>
+      
+</hibernate-mapping>

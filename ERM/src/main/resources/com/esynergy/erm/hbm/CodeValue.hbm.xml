@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
+	<class name="CodeValue" table="ERM_CODE_VALUE" >
+		<id name="id" column="PK_CODE_VALUE_SEQ" type="long"></id>
+		<property name="codeSet"         column="FK_CODE_SET_SEQ"         type="string"/>
+		<property name="value"         column="CODE_VALUE"         type="string"/>
+		<property name="descriptionShort"         column="DESCRIPTION_SHORT"         type="string"/>
+		<property name="descriptionLong"         column="DESCRIPTION_LONG"         type="string"/>
+		<property name="sortOrder"         column="SORT_ORDER"         type="long"/>
+		<property name="recordStatus"         column="RECORD_STATUS"         type="string"/>
+	</class>
+	
+</hibernate-mapping>

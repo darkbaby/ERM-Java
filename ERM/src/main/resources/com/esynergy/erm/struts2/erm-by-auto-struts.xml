@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd"> -->
+<!-- <!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd"> -->
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+ 	<package name="ERMAutoWeb" extends="struts-default">
+ 		<global-results>
+			<result name="exception">pages/PageHalper/exception.jsp</result>
+			<result name="runtime_exception">pages/PageHalper/error.jsp</result>
+			<result name="jdbcException">pages/PageHalper/jdbc_exception.jsp</result>
+		</global-results>
+		
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception" result="exception"></exception-mapping>
+			<exception-mapping exception="java.lang.NullPointerException" result="exception"></exception-mapping>
+			<exception-mapping exception="java.lang.RuntimeException" result="runtime_exception"></exception-mapping>
+			<exception-mapping exception="org.hibernate.exception.GenericJDBCException" result="jdbcException" ></exception-mapping>
+		</global-exception-mappings>
+ 		<action name="prepareMangeExchangeRateAuto" class="historyLogScrapedAction" method="prepareMange">
+ 			<result name="success">pages/ERAuto/prepare_mange_exchangeRate.jsp</result>
+ 		</action>
+ 		<action name="searchExchangeRateAuto" class="historyLogScrapedAction" method="search">
+ 			<result name="success">pages/ERAuto/prepare_mange_exchangeRate.jsp</result>
+ 		</action>
+ 		<action name="prepareViewExchangeRateAuto" class="historyLogScrapedAction" method="view">
+ 			<result name="success">pages/ERAuto/prepare_adjust_view_exchangeRate.jsp</result>
+ 			<result type="redirectAction" name="error">
+				<param name="actionName">permissionMissing</param>
+			</result>
+ 		</action>
+ 		<action name="prepareViewExchangeRateAutoByAuto" class="exchangeRagteByAutoAction" method="viewByAutoMange">
+ 			<result name="success">pages/ERAuto/prepare_histlog_view_exchangeRate.jsp</result>
+ 			<result type="redirectAction" name="error">
+				<param name="actionName">permissionMissing</param>
+			</result>
+ 		</action>
+ 		<action name="downloadFileERByAuto" class="exchangeRagteByAutoAction" method="downloadFile">
+				<result name="success" type="stream">
+				  <param name="contentType">application/octet-stream</param>
+				  <param name="inputName">fileDownloadStream</param>
+				  <param name="contentDisposition">attachment;filename="${fileDownloadName}"</param>
+				  <param name="bufferSize">2194304</param>
+				</result>
+				<result type="redirectAction" name="input">
+					<param name="actionName">prepareViewExchangeRateAuto</param>
+				</result>
+		</action>
+		<action name="prepareEditExchangeRateAuto" class="exchangeRagteByAutoAction" method="prepareEdit">
+ 			<result name="success">pages/ERAuto/prepare_edit_exchangeRate.jsp</result>
+ 			<result type="redirectAction" name="error">
+				<param name="actionName">permissionMissing</param>
+			</result>
+ 		</action>
+ 		<action name="saveExchangeRateAuto" class="exchangeRagteByAutoAction" method="save">
+			<result type="chain" name="success">
+			  <param name="actionName">prepareAutoRateAdjust</param>
+			 </result>
+			<result name="input">pages/ERAuto/prepare_edit_exchangeRate.jsp</result>
+		</action>
+		<action name="prepareAutoRateAdjust" class="exchangeRagteByAutoAction" method="prepareAdjust">
+			<result name="success">pages/ERAuto/prepare_adjust_exchangeRate.jsp</result>
+		</action>
+		<action name="searchExchangeRateAutoAdjust" class="exchangeRagteByAutoAction" method="search">
+ 			<result name="success">pages/ERAuto/prepare_adjust_exchangeRate.jsp</result>
+ 		</action>
+ 		 
+ 	</package>
+	
+</struts>

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
+	<class name="FileUpload" table="ERM_ATTACH_FILE"  dynamic-update="true">
+		<id name="id" column="PK_ATTACH_FILE" type="long">
+			<generator class="sequence-identity">
+                <param name="sequence" >ERM_ATTACH_FILE_ID_SEQ</param>           
+            </generator> 
+		</id>
+		<discriminator column="TYPE_NAME" type="string"/>
+		<property    name="url"    column="FILE_PATH"       type="string"/>
+		<property    name="name"   column="FILE_NAME"       type="string"/>
+         	
+		<subclass name="FileUploadERManual" extends="FileUpload" discriminator-value="MANUAL">
+      		<many-to-one name="exchangeRateManual" class="ExchangeRateManual" fetch="select" >
+	    		<column name="FK_FILE_OWNER"></column>
+	    	</many-to-one>
+ 		</subclass>    
+ 		<subclass name="FileUploadERAuto" extends="FileUpload" discriminator-value="AUTO">
+      		<many-to-one name="exchangeRateAuto" class="ExchangeRateAuto" fetch="select" >
+	    		<column name="FK_FILE_OWNER"></column>
+	    	</many-to-one>
+ 		</subclass>  
+ 		 
+	</class>
+ 
+</hibernate-mapping>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- <!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd"> -->
+
+
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+                                         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+		<!-- Database connection settings -->
+        <property name="hibernate.connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
+	    <property name="hibernate.connection.url">jdbc:oracle:thin:@192.168.10.192:1521:ERM</property>
+<!--   		<property name="hibernate.connection.url">jdbc:oracle:thin:@localhost:1521:ERM</property> -->
+<!-- 		<property name="hibernate.connection.url">jdbc:oracle:thin:@localhost:1521:orcl</property> -->
+		<property name="hibernate.connection.username">ERM</property> 
+		<property name="hibernate.connection.password">Passw0rd</property>
+        <property name="hibernate.jdbc.use_get_generated_keys">true</property>
+		<property name="dialect">org.hibernate.dialect.Oracle10gDialect</property>
+        <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->
+ 		<!-- <property name="show_sql">true</property> -->
+ 
+		<property name="hibernate.connection.pool_size">10</property>
+		 
+		<mapping resource="com/esynergy/erm/hbm/Currency.hbm.xml" />
+		<mapping resource="com/esynergy/erm/hbm/FileUploadERM.hbm.xml"/>
+ 		<mapping resource="com/esynergy/erm/hbm/Country.hbm.xml"/>
+		<mapping resource="com/esynergy/erm/hbm/ExtractionDetail.hbm.xml"/>
+		<mapping resource="com/esynergy/erm/hbm/ExtractionTime.hbm.xml"/>
+		<mapping resource="com/esynergy/erm/hbm/Extraction.hbm.xml"/>
+		<mapping resource="com/esynergy/erm/hbm/Bank.hbm.xml"/>
+		<mapping resource="com/esynergy/erm/hbm/BankOfRate.hbm.xml"/>
+		<mapping resource="com/esynergy/erm/hbm/ExchangeRateAutoHISTLog.hbm.xml" />
+		<mapping resource="com/esynergy/erm/hbm/ExchangeRate.hbm.xml" />
+		<mapping resource="com/esynergy/erm/hbm/ExchangeRateDetail.hbm.xml" />
+		<mapping resource="com/esynergy/erm/hbm/CodeValue.hbm.xml" />
+		<mapping resource="com/esynergy/erm/hbm/ManualTarget.hbm.xml" />
+		<mapping resource="com/esynergy/erm/hbm/GenerateRate.hbm.xml" />
+	 	<mapping resource="com/esynergy/erm/hbm/GenerateRateDetail.hbm.xml" />
+	 	<mapping resource="com/esynergy/erm/hbm/GenerateRateTime.hbm.xml" />
+	 	<mapping resource="com/esynergy/erm/hbm/GenerateRateBank.hbm.xml" />
+	 	<mapping resource="com/esynergy/erm/hbm/GenerateRateFile.hbm.xml" />
+	 	 <mapping resource="com/esynergy/erm/hbm/AuthorizeFunction.hbm.xml" /> 
+	 	 <mapping resource="com/esynergy/erm/hbm/AuthorizeGroup.hbm.xml" />
+	 	 <mapping resource="com/esynergy/erm/hbm/AuthorizePermission.hbm.xml" />
+	 	<mapping resource="com/esynergy/erm/hbm/User.hbm.xml" />
+	 	
+	</session-factory>
+</hibernate-configuration>

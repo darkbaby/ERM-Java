@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
+	<class name="Extraction" table="ERM_SETTING_HDR" dynamic-update="true" >
+		<id name="id" column="PK_SET_HDR_SEQ" type="long">
+			<!-- <generator class="identity"/>  -->     
+			<generator class="sequence-identity">
+                <param name="sequence" >ERM_SETTING_HDR_ID_SEQ</param>           
+            </generator>             
+		</id>
+		
+		<many-to-one name="bank" class="com.esynergy.erm.model.ob.Bank"
+            column="FK_SET_BANK_SEQ" unique="true" not-null="true" index="idx_extraction_1"
+            cascade="save-update" />
+		
+		<property name="extractionType" 	column="EXTRACTION_TYPE"	type="long"/>
+		<property name="bankURL"        	column="BANK_URL"       type="string"/>
+		<property name="formatDate"     	column="FORMAT_DATE"      type="string"/>
+		<property name="cssDate" 			column="CSS_DATE"			type="string"/>
+		<property name="pairCurrencyType" 	column="PAIR_CURRENCY_TYPE"	type="long"/>
+		<property name="extractionDate"     column="EXTRACT_DATE"      type="string"/>
+		<property name="pageType"        	column="PAGE_TYPE"       type="long"/>
+		<property name="status" 			column="RECORD_STATUS"				type="string"/>
+		<property name="addUser" 			column="RECORD_ADD_USER"				type="string"/>
+		<property name="changeUser" 		column="RECORD_CHANGE_USER"				type="string"/>
+		<property name="addDate" 			column="RECORD_ADD_DATE"				type="timestamp"/>
+		<property name="changeDate" 		column="RECORD_CHANGE_DATE"				type="timestamp"/>
+		<property name="deleteFlag" 		column="DELETE_FLAG"				type="long"/>
+		<many-to-one name="baseCurrency" class="com.esynergy.erm.model.ob.Currency" column="FK_BASE_CURRENCY_SEQ"/>
+
+		<set name="extractionTimeList" table="ERM_SETTING_TIME" cascade="save-update,delete"   inverse="true" fetch="select" >
+			<key>
+				<column name="FK_SET_HDR_SEQ" not-null="true"/>
+			</key>
+			<one-to-many entity-name="com.esynergy.erm.model.ob.ExtractionTime"  />
+		</set>
+		<set name="extractionDetailList" table="ERM_SETTING_DTL" cascade="save-update,delete"   inverse="true" fetch="select" >
+			<key>
+				<column name="FK_SET_HDR_SEQ" not-null="true"/>
+			</key>
+			<one-to-many entity-name="com.esynergy.erm.model.ob.ExtractionDetail"  />
+		</set>
+		<set name="histLogs" table="ERM_HIST_LOG" cascade="save-update"   inverse="true" fetch="select" >
+			<key>
+				<column name="FK_SET_HDR_ID" not-null="true"/>
+			</key>
+			<one-to-many entity-name="com.esynergy.erm.model.ob.ExchangeRateAutoHISTLog"  />
+		</set>
+		<set name = "bankOfRate" table="ERM_EXCHANGE_RATE_BANK" cascade="none"  inverse="true" fetch="select">
+	      		<key>
+	      			<column name="FK_SET_BANK_SEQ"/>
+	      		</key>
+	      		<one-to-many entity-name="com.esynergy.erm.model.ob.BankOfRate"/>
+	     </set>
+	</class>
+	
+	<query name="HQL.listAllExtraction">
+		<![CDATA[ from Extraction e WHERE e.deleteFlag = 0 ]]>
+	</query>
+	<query name="HQL.listAllExtractionActive">
+		<![CDATA[ from Extraction e WHERE e.deleteFlag = 0 AND e.status = 'A' ]]>
+	</query>
+     <database-object>
+        <create>
+            CREATE INDEX idx_extraction_1 ON ERM_SETTING_HDR (FK_SET_BANK_SEQ)
+        </create>
+        <drop></drop>
+    </database-object> 
+</hibernate-mapping>

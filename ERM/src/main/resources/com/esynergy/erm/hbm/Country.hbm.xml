@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
+	<class name="Country" table="ERM_COUNTRIES_MAST" >
+		<id name="id" column="PK_COUNTRY_ID" type="long">
+			<generator class="native"/>                       
+		</id>
+		<property name="countryName"         column="COUNTRY_NAME"         type="string"/>
+<!-- 		<property name="currencyCode"        column="CURRENCY_CODE"        type="string"/> -->
+		<many-to-one name="currency" class="com.esynergy.erm.model.ob.Currency" column="FK_CURRENCY_ID"/>
+	</class>
+	<query name="HQL.listAllCountry">
+		<![CDATA[ from Country r order by r.countryName]]>
+	</query>
+</hibernate-mapping>
