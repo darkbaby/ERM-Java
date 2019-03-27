@@ -7,7 +7,6 @@ public class ExchangeRateManualSearchForm {
 	private String  rateDateStart;
 	private String  rateDateEnd;
 	private String  updateBy;
-	private List<String> userUpdateList;
 	public String getRateDateStart() {
 		return rateDateStart;
 	}
@@ -26,11 +25,4 @@ public class ExchangeRateManualSearchForm {
 	public void setUpdateBy(String updateBy) {
 		this.updateBy = updateBy;
 	}
-	public List<String> getUserUpdateList() {
-		return userUpdateList;
-	}
-	public void setUserUpdateList(List<String> userUpdateList) {
-		this.userUpdateList = userUpdateList;
-	}
- 
 }

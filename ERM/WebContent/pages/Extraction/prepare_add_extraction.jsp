@@ -32,11 +32,11 @@
 		  <section class="wrapper">
             <ul class="breadcrumb">
               <li><s:text name="menu.sub.auto.process"/></li>
-              <li><s:a href="%{prepareMangeExtractionUrl}"><s:text name="header.mangement.extraction"/></s:a></li>
+              <li><s:a href="%{prepareManageExtractionUrl}"><s:text name="header.mangement.extraction"/></s:a></li>
               <li><s:text name="header.extraction"/> </li>
             </ul>
             <!--BREADCRUM END-->  
-			<h3 class="subject"><s:text name="actionMsg['actionTitle']"/></span></h3>
+			<h3 class="subject"><s:property value="menuName"/></h3>
 			
 			<div style="width:100%;">
 		      	<s:include value="form_extraction.jsp"/>

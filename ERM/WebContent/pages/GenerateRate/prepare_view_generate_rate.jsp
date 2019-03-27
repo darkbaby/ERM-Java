@@ -29,7 +29,7 @@
             </ul>
             </div>
             <!--BREADCRUM END-->  
-			<h3 class="subject"><span class="subject-text"><s:text name="actionMsg['actionTitle']"/></span></h3>
+			<h3 class="subject"><span class="subject-text"><s:property value="menuName"/></span></h3>
 			   
 			<div>
 		      	<s:include value="view_detail_generate_rate.jsp"/>

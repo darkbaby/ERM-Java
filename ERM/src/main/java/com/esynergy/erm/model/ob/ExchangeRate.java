@@ -13,6 +13,7 @@ public abstract class ExchangeRate implements Cloneable {
 	protected String   lastUpdateUser;
 	protected Date   createdDate;
 	protected Date   lastUpdateDate;
+	protected Date   refDate;
 	protected Set<ExchangeRateDetail> exchangeRateDetails = new HashSet<ExchangeRateDetail>();
  	
 	public long getId() {
@@ -83,6 +84,11 @@ public abstract class ExchangeRate implements Cloneable {
 	public void setLastUpdateUser(String lastUpdateUser) {
 		this.lastUpdateUser = lastUpdateUser;
 	}
- 
+	public Date getRefDate() {
+		return refDate;
+	}
+	public void setRefDate(Date refDate) {
+		this.refDate = refDate;
+	}
  
 }

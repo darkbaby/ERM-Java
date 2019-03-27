@@ -13,6 +13,7 @@ public class ResultCurrencyPairListMapper implements RowMapper<CurrencyPairs> {
 		CurrencyPairs pairs = new CurrencyPairs();
 		pairs.setBaseCode(rs.getString("base_code"));
 		pairs.setPairCode(rs.getString("pair_code"));
-		return pairs;
+		return pairs; 
 	}
+	
 }

@@ -3,6 +3,7 @@ package com.esynergy.erm.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.DetachedCriteria;
 import org.springframework.stereotype.Repository;
 
 import com.esynergy.common.dao.AbstractHiberbateDAO;
@@ -27,8 +28,12 @@ public class GenerateRateDAOImpl extends AbstractHiberbateDAO<Integer, GenerateR
 	}
 	
 	public List<GenerateRate> listAll() {
-		Criteria criteria = super.createEntityCriteria();
-		return criteria.list();
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
+//		Criteria criteria = super.createEntityCriteria();
+//		return criteria.list();
+		return super.executeDetachedCriteria(criteria);
+
 	}
 
 	@Override

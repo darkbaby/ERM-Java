@@ -5,6 +5,8 @@ public class ExchangeRateAutoSearchForm {
 	 
 	private String  dateStart;
 	private String  dateEnd;
+	private String  baseCurrencyID;
+	private String  pairCurrencyID;
 	private String  bankName;
 	private String  logStatust;
 	public String getDateStart() {
@@ -30,6 +32,18 @@ public class ExchangeRateAutoSearchForm {
 	}
 	public void setLogStatust(String logStatust) {
 		this.logStatust = logStatust;
+	}
+	public String getBaseCurrencyID() {
+		return baseCurrencyID;
+	}
+	public void setBaseCurrencyID(String baseCurrencyID) {
+		this.baseCurrencyID = baseCurrencyID;
+	}
+	public String getPairCurrencyID() {
+		return pairCurrencyID;
+	}
+	public void setPairCurrencyID(String pairCurrencyID) {
+		this.pairCurrencyID = pairCurrencyID;
 	}
 	 
 

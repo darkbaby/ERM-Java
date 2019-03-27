@@ -25,24 +25,29 @@
                         <table style="width:100%">
 							<tr>
 								<td style="width:10%">
-								<s:hidden name="exchangeRateAuto.id"/>
+								<s:hidden name="exchangeRateAutoForm.id"/>
+								
 								 <label class="col-sm-5 control-label"><strong><s:text name="label.extract.date.time2"/> : </strong></label>
-									<s:date name="exchangeRateAuto.createdDate" format='%{getText("ui.struts.datetime.format")}'/>
+									<s:date name="exchangeRateAutoForm.createdDate" format='%{getText("ui.struts.datetime.format")}'/>
 								</td>
-								<td style="width:5%">
-								 <label class="col-sm-5 control-label"><strong><s:text name="label.rate.date"/> : </strong></label>
-									<s:date name="exchangeRateAuto.rateDate" format='%{getText("ui.struts.date.format")}'/>
+								<td style="width:10%">
+								 <label class="col-sm-3 control-label"><strong><s:text name="label.rate.date"/> : </strong></label>
+									<s:date name="exchangeRateAutoForm.rateDate" format='%{getText("ui.struts.date.format")}'/>
+								</td>
+								<td style="width:10%">
+								 <label class="col-sm-4 control-label"><strong><s:text name="label.ref.date"/> : </strong></label>
+									<s:date name="exchangeRateAutoForm.refDate" format='%{getText("ui.struts.date.format")}'/>
 								</td>
 							</tr>
 							<tr>
 								<td style="width:10%"> 
 									<label class="col-sm-5 control-label"><strong><s:text name="label.bank.name"/> : </strong></label>
-									<s:property value="%{exchangeRateAuto.bankOfRate.iterator.next.bank.bankName}" />
+									<s:property value="%{exchangeRateAutoForm.bankName}" />
 									 
 								</td>
 								<td style="width:6%"> 
-									<label class="col-sm-6 control-label"><strong><s:text name="label.bank.country"/> : </strong></label>
-									<s:property value="%{exchangeRateAuto.bankOfRate.iterator.next.bank.country.countryName}" />
+									<label class="col-sm-4 control-label"><strong><s:text name="label.bank.country"/> : </strong></label>
+									<s:property value="%{exchangeRateAutoForm.countryOfBank}" />
 								</td>
 								<td style="width:10%"> </td>
 							</tr>
@@ -95,23 +100,23 @@
 							</thead>
 						
 							 <tbody>
-								<s:iterator value="exchangeRateAuto.fileUploadERAutoList" status="st">
+								<s:iterator value="exchangeRateAutoForm.fileUploadList" status="st">
 								<tr>
 										<td style="text-align:center;"><s:property value="#st.index+1"/>    </td>
 									<s:if test="id > 0">
-										<td> 
-										                  
+										<td>  
 							               <s:property value="name"/>
 										</td>
 										<td style="text-align:center;">
 												<s:url var="donwloadFileUrl" action="downloadFileERByAuto">
-									               	  	 <s:param name="parm" value="id"/>
+									               	  	 <s:param name="parmID" value="exchangeRateAutoForm.id"/>
+									               	  	 <s:param name="parmURL" value="url"/>
 									            </s:url>
-												<s:a href="%{donwloadFileUrl}" >       	 
+												<s:a href="%{donwloadFileUrl}" target="_blank" >       	 
 								               	 		<span class="glyphicon glyphicon-download-alt" 
 								               	 			 title="<s:text name='label.download'/>" 
 								               	 			 style="padding: 2px 10px 3px 10px;">
-								               	 		</span>	             	 
+								               	 		</span>
 								               	</s:a>					                
 										</td>
 									</s:if>

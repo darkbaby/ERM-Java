@@ -17,21 +17,30 @@ public class PermissionTag extends TagSupport{
 	private String function;
 	private String user;
 	
+	
+	
     @Override
     public int doStartTag() throws JspException {
     	ServletRequest req =   pageContext.getRequest();
     	HttpSession    session = pageContext.getSession();
     	IUser user = (IUser)session.getAttribute(IPageContains.SESSION_USER);
-    	if(UIUtil.isEmptyOrNull(this.user)){
-    		if(ValidatorUtil.checkPermission(user, this.function)){
-        		return EVAL_BODY_INCLUDE;
-        	}
-    	}else{
-    		if(ValidatorUtil.checkPermission(user, this.function,this.user)){
-        		return EVAL_BODY_INCLUDE;
-        	}
+    	
+    	if(ValidatorUtil.checkPermissionAdmin(user)) {
+    		return EVAL_BODY_INCLUDE;
     	}
-        return SKIP_BODY;
+    	else {
+    		if(UIUtil.isEmptyOrNull(this.user)){
+        		if(ValidatorUtil.checkPermission(user, this.function)){
+            		return EVAL_BODY_INCLUDE;
+            	}
+        	}else{
+        		if(ValidatorUtil.checkPermission(user, this.function,this.user)){
+            		return EVAL_BODY_INCLUDE;
+            	}
+        	}
+            return SKIP_BODY;
+    	}
+    	
     }
 
 	public String getFunction() {

@@ -16,7 +16,7 @@ public class CountryDAOImpl extends AbstractHiberbateDAO<Integer, Country> imple
 	@SuppressWarnings("unchecked")
 	public List<Country> listAllCountry() {
 		logger.debug("----------listAllCountry--------");
-		return super.hibernateNameQuery("HQL.listAllCountry").list();
+		return super.hibernateNameQuery("HQL.listAllCountry");
 	}
 
 	public Country getCountryById(long id) {

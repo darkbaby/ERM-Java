@@ -18,5 +18,5 @@ public interface ExchangeRateDetailDAO {
 	public void saveExchangeRateAutoDetailList(ExchangeRate o);
 	public List<ExchangeRateDetail> listByRateDate(Date date);
 	public List<ExchangeRateDetail> search(long pairCurrencyId,
-			long baseCurrencyId, long countryOfBankId, String type);
+			long baseCurrencyId, long countryOfBankId, String type, Date date);
 }

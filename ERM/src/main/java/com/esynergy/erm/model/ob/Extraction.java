@@ -12,7 +12,6 @@ public class Extraction {
 
 	private long id;
 	private Bank bank = new Bank();
-	private Set<BankOfRate> bankOfRate = new HashSet<BankOfRate>();
 	private long extractionType;
 	private String bankURL;
 	private String formatDate;
@@ -28,9 +27,7 @@ public class Extraction {
 	private long deleteFlag;
 	private Currency baseCurrency;
 	private Set<ExtractionTime> extractionTimeList = new HashSet<ExtractionTime>();
-	private Set<ExtractionDetail> extractionDetailList = new HashSet<ExtractionDetail>();
-	private Set<ExchangeRateAutoHISTLog> histLogs = new HashSet<ExchangeRateAutoHISTLog>();
-	
+	private Set<ExtractionDetail> extractionDetailList = new HashSet<ExtractionDetail>();	
 	
 	public long getDeleteFlag() {
 		return deleteFlag;
@@ -40,13 +37,6 @@ public class Extraction {
 		this.deleteFlag = deleteFlag;
 	}
 
-	public void setBankOfRate(Set<BankOfRate> bankOfRate) {
-		this.bankOfRate = bankOfRate;
-	}
-
-	public Set<BankOfRate> getBankOfRate() {
-		return bankOfRate;
-	}
 	public long getId() {
 		return id;
 	}
@@ -143,22 +133,12 @@ public class Extraction {
 	public void setExtractionDetailList(Set<ExtractionDetail> extractionDetailList) {
 		this.extractionDetailList = extractionDetailList;
 	}
-	public Set<ExchangeRateAutoHISTLog> getHistLogs() {
-		return histLogs;
-	}
-	public void setHistLogs(Set<ExchangeRateAutoHISTLog> histLogs) {
-		this.histLogs = histLogs;
-	}
-	public void addExtractionDetailList(ExtractionDetail extractionDetail) {
-		this.extractionDetailList.add(extractionDetail);
-	}
-	public void addExtractionTimeList(ExtractionTime extractionTime) {
-		this.extractionTimeList.add(extractionTime);
-	}
-	public void addHistLogs(ExchangeRateAutoHISTLog histLog){
-		this.addHistLogs(histLog);
-	}
-
+//	public void addExtractionDetailList(ExtractionDetail extractionDetail) {
+//		this.extractionDetailList.add(extractionDetail);
+//	}
+//	public void addExtractionTimeList(ExtractionTime extractionTime) {
+//		this.extractionTimeList.add(extractionTime);
+//	}
 	public Currency getBaseCurrency() {
 		return baseCurrency;
 	}

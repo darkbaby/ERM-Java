@@ -10,10 +10,16 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SharedSessionBuilder;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.hql.internal.ast.SqlASTFactory;
 import org.hibernate.type.StandardBasicTypes;
+import org.hibernate.type.Type;
 import org.springframework.stereotype.Repository;
 
 import com.esynergy.common.dao.AbstractHiberbateDAO;
@@ -45,7 +51,7 @@ public class ExchangeRateDetailDAOImpl extends AbstractHiberbateDAO<Integer, Exc
 	@SuppressWarnings("unchecked")
 	public List<ExchangeRateDetail> listAllExchangeRateDetail() {
 		logger.debug("----------listAllExchangeRateDetail--------");
-		return super.hibernateNameQuery("HQL.listAllExchangeRateDetail").list();
+		return super.hibernateNameQuery("HQL.listAllExchangeRateDetail");
 	}
 
 	public void deleteExchangeRateDetail(ExchangeRateDetail o) {
@@ -53,11 +59,13 @@ public class ExchangeRateDetailDAOImpl extends AbstractHiberbateDAO<Integer, Exc
 		super.delete(o);
 	}
 	public long getCountByDate(Date date){
-		Criteria criteria = super.createEntityCriteria();
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
+//		Criteria criteria = super.createEntityCriteria();
 		criteria.createAlias("a.ExchangeRateManual", "b");
 		criteria.add(Restrictions.eq("b.createdDate", date));
 		criteria.setProjection(Projections.rowCount());
-		String l =  criteria.uniqueResult().toString();
+		String l = super.executeSingleDetachedCriteria(criteria).toString();
 		if(l!=null){
 			return Long.parseLong(l);
 		}
@@ -65,18 +73,24 @@ public class ExchangeRateDetailDAOImpl extends AbstractHiberbateDAO<Integer, Exc
 	}
 
 	public void saveExchangeRateAutoDetailList(ExchangeRate o) {
+		Session session = HibernateUtil.getSession();
+		session.clear();
+		Transaction tran = session.beginTransaction();
 		try{
-			  HibernateUtil.beginTransaction();
 			  for(ExchangeRateDetail e:o.getExchangeRateDetails()){
 				  Map<String,Object> parm=new HashMap<String,Object>();
 					parm.put("buyingRateParm", e.getBuyingRate());
 					parm.put("sellingRateParm", e.getSellingRate());
+					parm.put("lastUpdateUserParm", e.getLastUpdateUser());
+					parm.put("lastUpdateDateParm", e.getLastUpdateDate());
 					parm.put("idParm", e.getId());
 					String sql=" update  ExchangeRateDetail  "
-							+ "  set buyingRate = :buyingRateParm ,"
-								 + " sellingRate = :sellingRateParm "
+							+ "  set buyingRate = :buyingRateParm , "
+								 + " sellingRate = :sellingRateParm , "
+								 + " lastUpdateDate = :lastUpdateDateParm , "
+								 + " lastUpdateUser = :lastUpdateUserParm "
 							+ "  where id= :idParm ";
-				  Query query=  HibernateUtil.getSession().createQuery(sql);
+				  Query query=  session.createQuery(sql);
 				  populateParamNamdQ(query,parm);
 				  query.executeUpdate();
 			  }
@@ -84,25 +98,29 @@ public class ExchangeRateDetailDAOImpl extends AbstractHiberbateDAO<Integer, Exc
 			  Map<String,Object> parm=new HashMap<String,Object>();
 				parm.put("lastUpdateUserParm", o.getLastUpdateUser());
 				parm.put("lastUpdateDateParm", o.getLastUpdateDate());
+				parm.put("refDateParm", o.getRefDate());
 				parm.put("idParm", o.getId());
 			  String sql = "update ExchangeRate "
 					  + "set lastUpdateUser = :lastUpdateUserParm , "
-					  + "lastUpdateDate = :lastUpdateDateParm "
+					  + "lastUpdateDate = :lastUpdateDateParm , "
+					  + "refDate = :refDateParm "
 					  + "where id = :idParm";
-			  Query query=  HibernateUtil.getSession().createQuery(sql);
+			  Query query=  session.createQuery(sql);
 			  populateParamNamdQ(query,parm);
 			  query.executeUpdate();
 			  
-			  HibernateUtil.commitTransaction();
+			  HibernateUtil.commitTransaction(tran);
 		}catch(Exception e){
-				 HibernateUtil.rollbackTransaction();
-				 e.printStackTrace();
+			HibernateUtil.rollbackTransaction(tran);
+			e.printStackTrace();
 		}
 	}
 	@SuppressWarnings("unchecked")
 	public List<ExchangeRateDetail> search(long pairCurrencyId,
-			long baseCurrencyId, long countryOfBankId, String type){
-		Criteria criteria = super.createEntityCriteria();
+			long baseCurrencyId, long countryOfBankId, String type, Date date){
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
+//		Criteria criteria = super.createEntityCriteria();
 		
 		if(pairCurrencyId!=0){
 			String sql = " this_.FK_PAIR_CURRENCY = ? ";
@@ -128,29 +146,39 @@ public class ExchangeRateDetailDAOImpl extends AbstractHiberbateDAO<Integer, Exc
 													+ " where hdr_.TYPE=? )";
 			criteria.add(Restrictions.sqlRestriction(sql, type, StandardBasicTypes.STRING));
 		}
-		reteDateCondition(criteria,new Date());
-		return criteria.list();
+//		reteDateCondition(criteria,new Date());
+		reteDateCondition(criteria,date);
+//		return criteria.list();
+		return super.executeDetachedCriteria(criteria);
 	}
 	
-	private void reteDateCondition(Criteria criteria,Date date){
+	private void reteDateCondition(DetachedCriteria criteria,Date date){
 		String sql = "  this_.PK_RATE_DTL_SEQ in ( select max(dtl_.pk_rate_dtl_seq) "
 												+ " from ERM_EXCHANGE_RATE_HDR hdr_   "
 												+ " inner join erm_exchange_rate_dtl dtl_"
 												+ " on dtl_.fk_rate_hdr_seq = hdr_.pk_rate_hdr_seq "
 												+ " left outer join  erm_exchange_rate_bank bnk_ref_ "
 												+ " on hdr_.pk_rate_hdr_seq = bnk_ref_.fk_rate_hdr_seq "
-												+ " where to_char(hdr_.RATE_DATE,'"+IPageContains.FORMAT_DATE+"') = ? "
+												+ " where to_char(hdr_.RATE_DATE,'"+IPageContains.FORMAT_DATE+"') = ? and hdr_.record_add_user <> ? "
 												+ " group by bnk_ref_.fk_set_bank_seq,dtl_.fk_base_currency,dtl_.fk_pair_currency ) ";
-		criteria.add(Restrictions.sqlRestriction(sql,IPageContains.DATE_FORMAT.format(date),StandardBasicTypes.STRING));
+		criteria.add(Restrictions.sqlRestriction(sql,
+				new Object[] {IPageContains.DATE_FORMAT.format(date), "system(paste)"},
+				new Type[] {StandardBasicTypes.STRING, StandardBasicTypes.STRING}));
+		criteria.createAlias("a.firstCurrency", "fc");
+		criteria.createAlias("a.pairCurrency", "pc");
+		criteria.addOrder(Order.asc("fc.code")).addOrder(Order.asc("pc.code"));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ExchangeRateDetail> listByRateDate(Date date) {
-		 Criteria criteria =  super.createEntityCriteria();
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
+//		 Criteria criteria =  super.createEntityCriteria();
 		 reteDateCondition(criteria,date);
 		 
-		return criteria.list();
+//		return criteria.list();
+		 return super.executeDetachedCriteria(criteria);
 	}
 
 }

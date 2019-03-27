@@ -1,6 +1,7 @@
 package com.esynergy.erm.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +53,10 @@ public class UserServiceImpl implements UserService {
 			o.setCreatedUser(o.getLastUpdateUser());
 			String pwdCode = getSHA3(o.getPwd(),String.valueOf(o.getLogOnId()));
 			o.setPwd(pwdCode);
+			
+			
+			
+			
 			userDAO.saveUser(o);
 		}else{
 			IUser userCurrent = userDAO.getById(o.getId());
@@ -64,6 +69,18 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<IUser> list() {
 		return userDAO.listAll();
+	}
+	
+	@Override
+	public Map<Long,IUser> listMap() {
+		Map<Long, IUser> returnMap = new HashMap<Long, IUser>();
+		List<IUser> userList = userDAO.listAll();
+		if(userList != null) {
+			for(IUser item : userList) {
+				returnMap.put(item.getId(), item);
+			}
+		}
+		return returnMap;
 	}
 
 	@Override

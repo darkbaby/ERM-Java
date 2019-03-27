@@ -22,4 +22,6 @@ public interface ExchangeRateManualService {
     public List<IExchangeRate> listExchangeRateManualByRateDateAndLastUpdateUser(Date strDate,Date endDate,String lastUpdateUser);
     public List<IExchangeRate> listExchangeRateManualByRateDate(Date date);
     public List<IExchangeRate> search(String dateStratStr, String dateEndStr,String userUpdate);
+    public List<IExchangeRate> search(String dateStratStr, String dateEndStr, long baseCurrencyID, long pairCurrencyID);
+
 }

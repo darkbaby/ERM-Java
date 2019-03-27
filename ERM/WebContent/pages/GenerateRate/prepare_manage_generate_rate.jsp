@@ -28,14 +28,14 @@
             </ul>
             </div>
             <!--BREADCRUM END-->  
-			<h3 class="subject"><span class="subject-text"><s:text name="actionMsg['actionTitle']"/></span></h3>
+			<h3 class="subject"><span class="subject-text"><s:property value="menuName"/></span></h3>
 			   
 			<div>
-				<s:if test="errors['isSuccess']">
+				<s:if test="errors['haveResult']">
 	                  	       <div class="alert alert-success alert-dismissable fade in" id="success-alert" >
 								    <a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 								    <h5><span class="glyphicon glyphicon-ok"></span>
-								      <s:property value="actionMsg['saveSuccess']"/> </h5>
+								      <s:property value="actionMsg['resultMessage']"/> </h5>
 								      
 							   </div> 
                  </s:if>

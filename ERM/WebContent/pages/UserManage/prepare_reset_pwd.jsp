@@ -26,11 +26,11 @@
              
             <ul class="breadcrumb">
               <li><s:a href="%{prepareManageUserUrl}"><s:text name="menu.user.manage"/></s:a></li>
-              <li><s:text name="actionMsg['actionTitle']"/></li>
+              <li><s:property value="menuName"/></li>
             </ul>
             </div>
             <!--BREADCRUM END-->  
-			<h3 class="subject"><span class="subject-text"><s:text name="actionMsg['actionTitle']"/></span></h3>
+			<h3 class="subject"><span class="subject-text"><s:property value="menuName"/></span></h3>
 			   
 			<div >
 		      	<s:include value="form_reset_pwd.jsp"/>

@@ -120,10 +120,10 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 
 	@Override
 	public List<ExchangeRateVeiwView> search(long pairCurrencyId, long baseCurrencyId,
-			long countryOfBankId, String type) {
+			long countryOfBankId, String type, Date date) {
 			List<ExchangeRateVeiwView> exchangeRateVeiwViewList = new ArrayList<ExchangeRateVeiwView>();
 			Map<String,Integer> hdrIdChkCurrencyMap = new HashMap<String,Integer>();
-			List<ExchangeRateDetail>  exchangeRateDetails= exchangeRateDetailDAO.search(pairCurrencyId, baseCurrencyId, countryOfBankId, type);
+			List<ExchangeRateDetail>  exchangeRateDetails= exchangeRateDetailDAO.search(pairCurrencyId, baseCurrencyId, countryOfBankId, type, date);
 			pupulateExchangeRateVeiwViewList(exchangeRateVeiwViewList,exchangeRateDetails,hdrIdChkCurrencyMap);
 		return exchangeRateVeiwViewList;
 		 

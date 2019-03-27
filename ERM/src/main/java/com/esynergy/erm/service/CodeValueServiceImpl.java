@@ -60,4 +60,19 @@ public class CodeValueServiceImpl implements CodeValueService {
 
 	}
 	
+	@Override
+	public List<CodeValue> listAllValue() {
+		return codeValueDao.listAllValue();
+
+	}
+	
+	@Override
+	public CodeValue getPythonPath() {
+		return codeValueDao.getPythonPath();
+	}
+	
+	@Override
+	public CodeValue getManualPath() {
+		return codeValueDao.getManualPath();
+	}
 }

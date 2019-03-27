@@ -26,12 +26,12 @@
             <div class="row">
               
              <ul class="breadcrumb">
-              <li><s:a href="%{prepareMangeExchangeRateManualUrl}"><s:text name="menu.sub.manual.process"/></s:a> </li>
+              <li><s:a href="%{prepareManageExchangeRateManualUrl}"><s:text name="menu.sub.manual.process"/></s:a> </li>
               <li><s:text name="header.view.exchange.rate"/></li>
             </ul>
             </div>
             <!--BREADCRUM END-->  
-			<h3 class="subject"><span class="subject-text"><s:text name="actionMsg['actionTitle']"/></span></h3>
+			<h3 class="subject"><span class="subject-text"><s:property value="menuName"/></span></h3>
 			    
 			<div >
 		      	<s:include value="view_detail_exchangeRate.jsp"/>
@@ -40,7 +40,7 @@
 		    	<table style="width:100%" align="center">
 									<tr>
 										<td align="center">
- 									             	<s:url var="cancelURL"   action="searchExchangeRateByManual"/>
+ 									             	<s:url var="cancelURL"   action="prepareManageExchangeRateManual"/>
 													<s:a href="%{cancelURL}">
 														<button style="width:150px" id="cancelBtn" type="button" class="btn btn-default btn-sm" title="<s:text name='btn.cancel'/>">
 															<span class="glyphicon glyphicon-chevron-left"></span>
@@ -48,7 +48,7 @@
 														</button>
 													</s:a>
 												<modong:sys-permission function="EditExchangeRateManual" user="${exchangeRateManual.createdUser}"> 
-													<s:url var="editURL"   action="prepareEditExchangeRateByManualAction"><s:param name="parm" value="%{exchangeRateManual.id}" />  </s:url>        
+													<s:url var="editURL"   action="prepareEditExchangeRateByManualAction"><s:param name="parmID" value="%{exchangeRateManualForm.id}" />  </s:url>        
 										            <s:a href="%{editURL}">
 										                  <button style="width:150px"  class="btn btn-primary btn-sm" 
 										                      	    	title="<s:text  name="msg.edit"/>">

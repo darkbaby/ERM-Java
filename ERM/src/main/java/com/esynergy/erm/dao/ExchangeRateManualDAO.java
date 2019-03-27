@@ -7,7 +7,7 @@ import com.esynergy.erm.model.ob.ExchangeRateManual;
 public interface ExchangeRateManualDAO {
 	public ExchangeRateManual insertExchangeRateManual(ExchangeRateManual o);
 	public ExchangeRateManual updateExchangeRateManual(ExchangeRateManual o);
-	public void saveExchangeRateManual(ExchangeRateManual o);
+//	public void saveExchangeRateManual(ExchangeRateManual o);
 	public ExchangeRateManual getExchangeRateManualById(long id);
 	public List<IExchangeRate> listAllExchangeRateManual();
 	public List<IExchangeRate> listExchangeRateManualByLastUpdateUser(String arg);
@@ -17,4 +17,5 @@ public interface ExchangeRateManualDAO {
     public List<IExchangeRate> listExchangeRateManualByRateDateAndLastUpdateUser(Date strDate,Date endDate,String lastUpdateUser);
     public List<IExchangeRate> search(long pairCurrencyId,long baseCurrencyId);
     public List<IExchangeRate> search(Date strDate, Date endDate,String userUpdate);
+    public List<IExchangeRate> search(Date strDate, Date endDate, long baseCurrencyId,long pairCurrencyId);
 }

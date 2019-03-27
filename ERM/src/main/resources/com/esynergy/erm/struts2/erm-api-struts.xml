@@ -9,7 +9,7 @@
 	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
 	"http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
- 	<package name="ERM_API" extends="json-default" >
+ 	<package name="ERM_API" extends="json-default,default" >
  		<!-- <interceptors>
 			<interceptor-stack name="defaultStack">
 				<interceptor-ref name="json">
@@ -17,19 +17,19 @@
 				</interceptor-ref>
 			</interceptor-stack>
 		</interceptors> -->
-		<default-interceptor-ref name="defaultStack" />
- 		<global-results>
-			<result name="exception">pages/PageHalper/exception.jsp</result>
-			<result name="runtime_exception">pages/PageHalper/error.jsp</result>
-			<result name="jdbcException">pages/PageHalper/jdbc_exception.jsp</result>
-		</global-results>
+<!-- 		<default-interceptor-ref name="defaultStack" /> -->
+<!--  		<global-results> -->
+<!-- 			<result name="exception">pages/PageHalper/exception.jsp</result> -->
+<!-- 			<result name="runtime_exception">pages/PageHalper/error.jsp</result> -->
+<!-- 			<result name="jdbcException">pages/PageHalper/jdbc_exception.jsp</result> -->
+<!-- 		</global-results> -->
 		
-		<global-exception-mappings>
-			<exception-mapping exception="java.lang.Exception" result="exception"></exception-mapping>
-			<exception-mapping exception="java.lang.NullPointerException" result="exception"></exception-mapping>
-			<exception-mapping exception="java.lang.RuntimeException" result="runtime_exception"></exception-mapping>
-			<exception-mapping exception="org.hibernate.exception.GenericJDBCException" result="jdbcException" ></exception-mapping>
-		</global-exception-mappings>
+<!-- 		<global-exception-mappings> -->
+<!-- 			<exception-mapping exception="java.lang.Exception" result="exception"></exception-mapping> -->
+<!-- 			<exception-mapping exception="java.lang.NullPointerException" result="exception"></exception-mapping> -->
+<!-- 			<exception-mapping exception="java.lang.RuntimeException" result="runtime_exception"></exception-mapping> -->
+<!-- 			<exception-mapping exception="org.hibernate.exception.GenericJDBCException" result="jdbcException" ></exception-mapping> -->
+<!-- 		</global-exception-mappings> -->
 		<action name="exchangeRateAPIAction" class="exchangeRateAPIActionCtrl" method="prepareViewExchangeRate">
 			<result  type="json" >
 			          <param name="root">users</param>

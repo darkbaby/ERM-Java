@@ -15,23 +15,22 @@ public class ExchangeRateAutoHISTLog {
 	private Date   createdDate;
 	private Date   lastUpdateDate;
 	
-	private ExchangeRateAuto exchangeRateAuto;
+//	private ExchangeRateAuto exchangeRateAuto;
+	private Long idExchangeRateAuto;
 	
 	private Extraction extraction;
-	private Set<BankOfRate> bankOfRate = new HashSet<BankOfRate>();
 	
-//	public Set<BankOfRate> getBankOfRate() {
-//		return bankOfRate;
+//	public ExchangeRateAuto getExchangeRateAuto() {
+//		return exchangeRateAuto;
 //	}
-//	public void setBankOfRate(Set<BankOfRate> bankOfRate) {
-//		this.bankOfRate = bankOfRate;
+//	public void setExchangeRateAuto(ExchangeRateAuto exchangeRateAuto) {
+//		this.exchangeRateAuto = exchangeRateAuto;
 //	}
-	
-	public ExchangeRateAuto getExchangeRateAuto() {
-		return exchangeRateAuto;
+	public Long getIdExchangeRateAuto() {
+		return idExchangeRateAuto;
 	}
-	public void setExchangeRateAuto(ExchangeRateAuto exchangeRateAuto) {
-		this.exchangeRateAuto = exchangeRateAuto;
+	public void setIdExchangeRateAuto(Long idExchangeRateAuto) {
+		this.idExchangeRateAuto = idExchangeRateAuto;
 	}
 	public long getId() {
 		return id;

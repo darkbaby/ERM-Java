@@ -19,7 +19,7 @@
           	<div class="row mt">
           		<div class="col-lg-12">
           			<div class="form-panel">
-                  	  <h4 class="mb"><i class="fa fa-cog"></i><span class="subject-text"><s:text name="header.list.exchange.rate"/></span><span class="subject-text"><s:date name="dateOfRate" format='%{getText("ui.struts.date.format")}'/></span></h4>
+                  	  <h4 class="mb"><i class="fa fa-cog"></i><span class="subject-text"><s:text name="header.list.exchange.rate"/></span><span class="subject-text"><s:property value="dateOfRate"/></span></h4>
    			           <s:if test="%{exchangeSuccessList.size() > 0 }">
    			           		<s:include value="list_exchangeRate_success.jsp"/>
    			           </s:if>
@@ -35,7 +35,7 @@
           		
           		<div class="col-lg-8">
           			<div class="form-panel">
-                  	  <h4 class="mb"><i class="fa fa-cog"></i><span class="subject-text"><s:text name="header.list.exchange.rate"/></span><span class="subject-text"><s:date name="dateOfRate" format='%{getText("ui.struts.date.format")}'/></span></h4>
+                  	  <h4 class="mb"><i class="fa fa-cog"></i><span class="subject-text"><s:text name="header.list.exchange.rate"/></span><span class="subject-text"><s:property value="dateOfRate"/></span></h4>
    			       		<s:if test="%{exchangeRateFailList.size() > 0 }">
    			           		<s:include value="list_exchangeRate_fail.jsp"/>
 						</s:if>
@@ -47,7 +47,7 @@
           		
           		<div class="col-lg-4">
           			<div class="form-panel">
-                  	  <h4 class="mb"><i class="fa fa-cog"></i><span class="subject-text"><s:text name="header.list.exchange.rate"/></span><span class="subject-text"><s:date name="dateOfRate" format='%{getText("ui.struts.date.format")}'/></span></h4>
+                  	  <h4 class="mb"><i class="fa fa-cog"></i><span class="subject-text"><s:text name="header.list.exchange.rate"/></span><span class="subject-text"><s:property value="dateOfRate"/></span></h4>
    			           <s:if test="%{remainList.size() > 0 }">		
    			           		<s:include value="list_exchangeRate_remain.jsp"/>
    			           </s:if>
@@ -60,8 +60,10 @@
           	<div align="right">
 				       		<div class="btn-group">
 				       			<s:url var="previousDateURL" action="exchangRatePreviousDate">
+				       				<s:param name="dateOfRate" value="dateOfRate"/>
 				       			</s:url>
 				       			<s:url var="nextDateURL" action="exchangRateNextDate">
+				       				<s:param name="dateOfRate" value="dateOfRate"/>
 				       			</s:url>
 				       			<s:a href="%{previousDateURL}">
 				       				<button type="button" class="btn btn-default" id="previousDateBtn"><s:text name="btn.previous.date"/></button>

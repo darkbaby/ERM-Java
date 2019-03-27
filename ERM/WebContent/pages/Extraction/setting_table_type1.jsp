@@ -50,7 +50,7 @@
 				listValue="code"
 				value="%{currency}"
 				headerKey="-1"
-				headerValue="- Please Select -"
+				headerValue="---Please Select---"
 			/>
 			<div class="has-error"><s:property value="errors['s1errorCurrency'+#sts.index]" /></div>
 			<div><s:property value="errors['s1Currency'+#sts.index]" /></div>
@@ -60,10 +60,12 @@
 			    class="form-control"
 				name="extractionForm.extractionDetailFormList[%{#sts.index}].value"
 			    id="extractionForm.extractionDetailFormList[%{#sts.index}].value"
-				list="#{'1': '1.0', '100':'100.0'}"
+				list="valueList"
+				listKey="value"
+				listValue="descriptionShort"
 				value="%{value}"
 				headerKey="-1"
-				headerValue="- Please Select -"
+				headerValue="---Please Select---"
 			/>
 			<div class="has-error"><s:property value="errors['s1errorValue'+#sts.index]" /></div>
 			<div><s:property value="errors['s1Value'+#sts.index]" /></div>

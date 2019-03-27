@@ -20,11 +20,11 @@
           		<div class="col-lg-12">
           			<div class="form-panel">
                   	  <h4 class="mb"><i class="fa fa-cog"></i><span class="subject-text"><s:text name="header.user.info"/></span></h4>
-   			 		  <s:if test="errors['isSuccess']">
+   			 		  <s:if test="errors['haveResult']">
 	                  	       <div class="alert alert-success alert-dismissable fade in" id="success-alert" >
 								    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 								    <h5><span class="glyphicon glyphicon-ok"></span>
-								      <s:property value="actionMsg['saveSuccess']"/> </h5>
+								      <s:property value="actionMsg['resultMessage']"/> </h5>
 								      
 							   </div> 
                  	   </s:if>
@@ -64,8 +64,8 @@
 		   			 		  	<tr>
 		   			 		  		<td class="label-view"><s:text name="user.curent.pwd"/></td>
 		   			 		  		<td colspan="6">
-		   			 		  			<s:password name="userChangePwdForm.currenctPwd" id="currenctPwd"/>
-		   			 		  			<div class="has-error"><s:property value="errors['currenPwdError']"/></div>
+		   			 		  			<s:password name="userChangePwdForm.currentPwd" id="currentPwd"/>
+		   			 		  			<div class="has-error"><s:property value="errors['currentPwdError']"/></div>
 		   			 		  		</td>
 		   			 		  		 
 		   			 		  	</tr>
@@ -95,12 +95,14 @@
           					<table style="width:100%" align="center">
 								<tr>
 									<td align="center">
-											 
-												<button type="button" id="cancelBtn" style="width:150px" class="btn btn-default btn-sm" title="<s:text name='btn.cancel'/>">
-														<span class="glyphicon glyphicon-chevron-left"></span>
-														<span><s:text name='btn.cancel'/></span>
-												</button>
-											 
+											 	
+										 	<s:url var="cancleURL" action="%{cancelAction}"/>
+										 	<s:a href="%{cancleURL}">
+											<button type="button" id="cancelBtn" style="width:150px" class="btn btn-default btn-sm" title="<s:text name='btn.cancel'/>">
+													<span class="glyphicon glyphicon-chevron-left"></span>
+													<span><s:text name='btn.cancel'/></span>
+											</button>
+										 	</s:a>
 										 
 											<button style="width:150px" type="button" class="btn btn-primary btn-sm" id="saveBtn"  >
 												<span class="glyphicon glyphicon-floppy-disk"></span>
@@ -119,9 +121,9 @@
 	$('#saveBtn').click(function(){
 		$('#userChangePwdForm').attr('action','changePwd').submit();
 	});
-	$('#cancelBtn').click(function(){
-		window.history.back();
-	});
+// 	$('#cancelBtn').click(function(){
+// 		window.history.back();
+// 	});
 	 
  </script>
     

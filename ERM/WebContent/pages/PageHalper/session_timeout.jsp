@@ -24,7 +24,7 @@
       <!-- **********************************************************************************************************************************************************
       MAIN CONTENT
       *********************************************************************************************************************************************************** -->
-	 <header class="header black-bg">
+	 <div class="header black-bg">
 	      	    <s:url var="prepareDasboardUrl" action="prepareDasboard.action"></s:url>
 	      		<s:a href="%{prepareDasboardUrl}"
 	      			 cssClass="logo">
@@ -38,7 +38,7 @@
                     <li><img class="img-circle" alt="Cinque Terre" src="<s:url value='/resources/assets/img/rcl_logo.jpg' />"> </li>
             	</ul>
             </div>        
-	</header>
+	</div>
 	 
 	  	<div class="container" style="padding-top: 50px">
 	  	 

@@ -15,11 +15,40 @@ public class ManualTargetServiceImpl implements ManualTargetService {
 	private ManualTargetDAO manualTargetDAO;
 	
 	@Override
-	public List<ManualTarget> listAll() {
+	public List<ManualTarget> listAllNotExpire() {
 		
-		return manualTargetDAO.listAll();
+		return manualTargetDAO.listAllNotExpire();
 	}
 	
+	@Override
+	public List<ManualTarget> listAllActiveNotExpire() {
+		
+		return manualTargetDAO.listAllActiveNotExpire();
+	}
+
+	@Override
+	public ManualTarget getByID(long id) {
+		return manualTargetDAO.getByID(id);
+	}
+
+	@Override
+	public List<ManualTarget> getByOwnerID(long id) {
+		return manualTargetDAO.getByOwnerID(id);
+	}
+
+	@Override
+	public List<ManualTarget> searchByParam(long baseCurrencyID, long pairCurrencyID) {
+
+		return manualTargetDAO.searchByParam(baseCurrencyID, pairCurrencyID);
+	}
 	
-	
+	public void save(ManualTarget o) {
+		manualTargetDAO.saveManualTarget(o);
+	}
+
+	@Override
+	public void update(ManualTarget o) {
+		manualTargetDAO.updateManualTarget(o);
+		
+	}
 }

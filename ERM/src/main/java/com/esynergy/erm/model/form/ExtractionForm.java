@@ -15,17 +15,18 @@ public class ExtractionForm {
 	private String bankShortName;
 	private long bankCountry;
 	private long baseCurrency;
-	private String url;
-	private String extractionDate;
-	private List<ExtractionTimeForm> extractionTimeFormList;
-	private String formatDate;
-	private String cssDate;
-	private long pageType;
-	private long pairCurrencyType;
 	private long extractionType;
 	private String status;
+	private String url;
+	private String formatDate;
+	private String cssDate;
+	private long pairCurrencyType;
+	private String extractionDate;
+	private long pageType;
+	private List<ExtractionTimeForm> extractionTimeFormList;
 	private List<ExtractionDetailForm> extractionDetailFormList;
-	private List<Long> selectedCurrencyAPI;
+	private List<ExtractionDetailForm> extractionDetailFormList2;
+	private List<Long> extractionDetailFormRemoveList;
 	
 	private String bankCountryName;
 	private String extractionTypeName;
@@ -37,7 +38,8 @@ public class ExtractionForm {
 	public ExtractionForm(){
 		this.extractionTimeFormList = new ArrayList<ExtractionTimeForm>();
 		this.extractionDetailFormList = new ArrayList<ExtractionDetailForm>();
-		this.selectedCurrencyAPI = new ArrayList<Long>();
+		this.extractionDetailFormList2 = new ArrayList<ExtractionDetailForm>();
+		this.extractionDetailFormRemoveList = new ArrayList<Long>();
 	}
 	
 	public String getBankShortName() {
@@ -142,23 +144,9 @@ public class ExtractionForm {
 	public void setBankCountryName(String bankCountryName) {
 		this.bankCountryName = bankCountryName;
 	}
-	public void addExtractionDetailFormList(ExtractionDetailForm extractionDetailForm) {
-		this.extractionDetailFormList.add(extractionDetailForm);
-	}
 	public void addExtractionTimeFormList(ExtractionTimeForm extractionTimeForm) {
 		this.extractionTimeFormList.add(extractionTimeForm);
 	}
-	public void addSelectedCurrencyAPI(Long value) {
-		this.selectedCurrencyAPI.add(value);
-	}
-	public List<Long> getSelectedCurrencyAPI() {
-		return selectedCurrencyAPI;
-	}
-
-	public void setSelectedCurrencyAPI(List<Long> selectedCurrencyAPI) {
-		this.selectedCurrencyAPI = selectedCurrencyAPI;
-	}
-
 	public String getExtractionTypeName() {
 		return extractionTypeName;
 	}
@@ -205,6 +193,22 @@ public class ExtractionForm {
 
 	public void setBaseCurrency(long baseCurrency) {
 		this.baseCurrency = baseCurrency;
+	}
+
+	public List<ExtractionDetailForm> getExtractionDetailFormList2() {
+		return extractionDetailFormList2;
+	}
+
+	public void setExtractionDetailFormList2(List<ExtractionDetailForm> extractionDetailFormList2) {
+		this.extractionDetailFormList2 = extractionDetailFormList2;
+	}
+
+	public List<Long> getExtractionDetailFormRemoveList() {
+		return extractionDetailFormRemoveList;
+	}
+
+	public void setExtractionDetailFormRemoveList(List<Long> extractionDetailFormRemoveList) {
+		this.extractionDetailFormRemoveList = extractionDetailFormRemoveList;
 	}
 	
 }

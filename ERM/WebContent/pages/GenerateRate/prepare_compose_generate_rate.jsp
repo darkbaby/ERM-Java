@@ -29,33 +29,16 @@
             </ul>
             </div>
             <!--BREADCRUM END-->  
-			<h3 class="subject"><span class="subject-text"><s:text name="actionMsg['actionTitle']"/></span></h3>
+			<h3 class="subject"><span class="subject-text"><s:property value="menuName"/></span></h3>
 			   
 			<div>
-		      	<s:include value="form_search_generate_rate.jsp"/>
+<%-- 		      	<s:include value="form_search_generate_rate.jsp"/> --%>
 		      	<s:include value="form_record_generate_rate.jsp"/>
 		    </div>
 		 </section>
       </section>	
       <s:include value="../common_footer.jsp"/>    
 		  
-</section>
-<script type="text/javascript">
-	function filterColumn ( i ) {
-		console.log('filterColumn value == '+$('#col_'+i+'_filter').val());
-	    $('#recordTable').DataTable().column(i).search(
-	        $('#col_'+i+'_filter').val()
-	    ).draw();
-	}
-   $('#searchBtn').click(function(){
-	   $('#recordTable').DataTable();
-	   
-		   filterColumn(1);
-		   filterColumn(3);
-		   filterColumn(4);
-		   filterColumn(5);  
-	   
-   });
-</script>		
+</section>	
 </body>
 </html>

@@ -14,15 +14,15 @@ import com.esynergy.erm.model.ob.Currency;
 public class CurrencyServiceImpl implements CurrencyService {
 	
 	@Autowired
-	private CurrencyDAO currencyService;
+	private CurrencyDAO currencyDao;
 
 	public List<Currency> listAll() {
-		return currencyService.listAllCurrency();
+		return currencyDao.listAllCurrency();
 	}
 	
 	public Map<Long, Currency> listAllMap(){
 		Map<Long, Currency> returnMap = new HashMap<Long, Currency>();
-		List<Currency> curList = currencyService.listAllCurrency();
+		List<Currency> curList = currencyDao.listAllCurrency();
 		if(curList != null) {
 			for(Currency item : curList) {
 				returnMap.put(item.getId(), item);
@@ -32,6 +32,6 @@ public class CurrencyServiceImpl implements CurrencyService {
 	}
 
 	public Currency getById(long id) {
-		return currencyService.getCurrencyById(id);
+		return currencyDao.getCurrencyById(id);
 	}	
 }

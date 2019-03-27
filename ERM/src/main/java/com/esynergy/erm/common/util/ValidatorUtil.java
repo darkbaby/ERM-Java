@@ -75,13 +75,28 @@ public class ValidatorUtil implements ICommonContains {
 		if(!mat.matches())return true; 
 		return false;
 	}
+	
+	public static boolean checkPermissionAdmin(IUser user) {
+		if(user != null) {
+    		AuthorizeGroup group = user.getAuthorizeGroup();
+    		if(group!=null && group.getPermissionList()!=null && group.getPermissionList().size()>0){
+    			for(AuthorizePermission per : group.getPermissionList()){
+    				if( per.getAuthorizeFunction().getFunctionName().equals("Admin")){
+    					return true;
+    				}
+    			}
+    		}
+		}
+		return false;
+	}
+	
 	public static boolean checkPermission(IUser user,String function){
 		if(user!=null){
     		AuthorizeGroup group = user.getAuthorizeGroup();
     		if(group!=null && group.getPermissionList()!=null && group.getPermissionList().size()>0){
     			for(AuthorizePermission per : group.getPermissionList()){
-    				if( per.getAuthorizeFunction().getFunctionName().equals("Admin") ||
-    						function.equals(per.getAuthorizeFunction().getFunctionName())){
+    				if(per.getAuthorizeFunction().getFunctionName().equals("Admin")
+    						|| function.equals(per.getAuthorizeFunction().getFunctionName())){
     					return true;
     				}
     			}
@@ -91,6 +106,9 @@ public class ValidatorUtil implements ICommonContains {
 	}
 	public static boolean checkPermission(IUser user,String function,String createUserName){
 		if(!createUserName.equals(user.getLogOnId())){
+			if(checkPermissionAdmin(user)) {
+				return true;
+			}
 			return false;
 		}else{
 			return checkPermission( user, function);

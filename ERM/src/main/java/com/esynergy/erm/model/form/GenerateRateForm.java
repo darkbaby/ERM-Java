@@ -7,9 +7,13 @@ public class GenerateRateForm {
 
 	private long id;
 	private String profileName;
+	private List<Long> detailFormRemoveList = new ArrayList<Long>();
 	private List<GenerateRateTimeForm> timeFormList = new ArrayList<GenerateRateTimeForm>();
 	private List<GenerateRateDetailForm> detailFormList = new ArrayList<GenerateRateDetailForm>();
 	private List<GenerateRateFileForm> fileFormList = new ArrayList<GenerateRateFileForm>();
+	
+	private GenerateRateSearchForm generateRateSearchForm = new GenerateRateSearchForm();
+	
 	public long getId() {
 		return id;
 	}
@@ -49,4 +53,18 @@ public class GenerateRateForm {
 	public void addFileFormList(GenerateRateFileForm fileForm) {
 		this.fileFormList.add(fileForm);
 	}
+	public GenerateRateSearchForm getGenerateRateSearchForm() {
+		return generateRateSearchForm;
+	}
+	public void setGenerateRateSearchForm(GenerateRateSearchForm generateRateSearchForm) {
+		this.generateRateSearchForm = generateRateSearchForm;
+	}
+	public List<Long> getDetailFormRemoveList() {
+		return detailFormRemoveList;
+	}
+	public void setDetailFormRemoveList(List<Long> detailFormRemoveList) {
+		this.detailFormRemoveList = detailFormRemoveList;
+	}
+	
+	
 }

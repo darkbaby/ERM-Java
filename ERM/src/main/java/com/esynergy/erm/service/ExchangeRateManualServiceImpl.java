@@ -80,14 +80,43 @@ public class ExchangeRateManualServiceImpl implements ExchangeRateManualService 
 		
 	}
 	public List<IExchangeRate> listExchangeRateManualByRateDate(Date date) {
-		return exchangeRateManualDAO.listExchangeRateManualByRateDate(date);
+		List<IExchangeRate> reVal = exchangeRateManualDAO.listExchangeRateManualByRateDate(date);
+		for(IExchangeRate item : reVal) {
+			item.setOwnerType("MANUAL");
+		}
+		
+		return reVal;
 	}
 	public List<IExchangeRate> search(String dateStratStr, String dateEndStr,String userUpdate){
 		  
 		try {
 			Date dateStrat = UIUtil.isEmptyOrNull(dateStratStr)?null:ICommonContains.DATE_FORMAT_ORACLE.parse(dateStratStr+" 00:00:00");
 			Date dateEnd = UIUtil.isEmptyOrNull(dateEndStr)?null:ICommonContains.DATE_FORMAT_ORACLE.parse(dateEndStr+" 23:59:59");
-			return  exchangeRateManualDAO.search(dateStrat, dateEnd, userUpdate);
+			
+			List<IExchangeRate> reVal = exchangeRateManualDAO.search(dateStrat, dateEnd, userUpdate);
+			for(IExchangeRate item : reVal) {
+				item.setOwnerType("MANUAL");
+			}
+			
+			return  reVal;
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public List<IExchangeRate> search(String dateStratStr, String dateEndStr,long baseCurrencyID, long pairCurrencyID){
+		  
+		try {
+			Date dateStrat = UIUtil.isEmptyOrNull(dateStratStr)?null:ICommonContains.DATE_FORMAT_ORACLE.parse(dateStratStr+" 00:00:00");
+			Date dateEnd = UIUtil.isEmptyOrNull(dateEndStr)?null:ICommonContains.DATE_FORMAT_ORACLE.parse(dateEndStr+" 23:59:59");
+			
+			List<IExchangeRate> reVal = exchangeRateManualDAO.search(dateStrat, dateEnd, baseCurrencyID, pairCurrencyID);
+			for(IExchangeRate item : reVal) {
+				item.setOwnerType("MANUAL");
+			}
+			
+			return  reVal;
 		} catch (ParseException e) {
 			e.printStackTrace();
 			return null;

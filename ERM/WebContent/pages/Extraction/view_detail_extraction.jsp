@@ -138,7 +138,7 @@
 								<s:text name="label.setting.date.to.extract"/>
 							</th>
 							<th>
-								<s:text name="label.setting.type.of.header.on.webpage"/>
+<%-- 								<s:text name="label.setting.type.of.header.on.webpage"/> --%>
 							</th>
 						</tr>
 						<tr>
@@ -149,7 +149,7 @@
 								<s:property value="extractionForm.extractionDate"/>					
 							</td>
 							<td>
-								<s:property value="extractionForm.pageTypeName"/>					
+<%-- 								<s:property value="extractionForm.pageTypeName"/>					 --%>
 							</td>
 						</tr>
 						<tr>
@@ -179,9 +179,10 @@
  										id="extractionForm.extractionTimeFormList[%{#sts.index}].extractionTime"
  										fieldValue="%{extractionTime}"
  										value="%{chk}"
+ 										disabled="true"
  									/>
- 									<s:text
- 										name="extractionTimeLabel" />
+ 									<s:property
+ 										value="extractionTimeLabel" />
  										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  									</td>
  									
@@ -213,7 +214,14 @@
                   		</tr>
                   		</table>
 <%--                   		<h5><strong><s:text  name="label.pair.currency"/> is :</strong> <s:property value="extractionForm.countryCode"/></h5> --%>
-                  		<s:include value="view_setting_table_type1.jsp"/>
+                  		
+                  		<s:if test="extractionForm.extractionType==1">
+                  			<s:include value="view_setting_table_type1.jsp"/>
+                  		</s:if>
+                  		<s:else>
+                  			<s:include value="view_setting_table_type2.jsp"/>
+                  		</s:else>
+                  		
 					</div><!-- /form-panel -->
           		</div><!-- /col-lg-12 -->
           	</div><!-- /row --> 
@@ -221,14 +229,14 @@
         	<table style="width:100%" align="center">
 				<tr>
 					<td align="center">
-							<s:url var="cancleURL" action="prepareMangeExtraction"/>
+							<s:url var="cancleURL" action="prepareManageExtraction"/>
 				            <s:a href="%{cancleURL}">
 								<button type="button" style="width:150px" class="btn btn-default btn-sm" title="<s:text name='btn.cancel'/>">
 										<span class="glyphicon glyphicon-chevron-left"></span>
 										<span><s:text name='btn.back'/></span>
 								</button>
 							</s:a>
-							<modong:sys-permission function="EditScraping">
+							<modong:sys-permission function="PrepareEditExtraction">
 							<s:url var="editURL"   action="prepareEditExtraction"><s:param name="parm" value="%{extractionForm.id}" />  </s:url>        
 				            <s:a href="%{editURL}">
 				                  <button style="width:150px"  class="btn btn-primary btn-sm" 

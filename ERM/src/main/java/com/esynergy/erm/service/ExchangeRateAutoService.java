@@ -10,8 +10,8 @@ public interface ExchangeRateAutoService {
 	public ExchangeRateAuto getById(long id);
 	public void save(ExchangeRateAuto o);
 	public List<IExchangeRate> listByDate(Date date);
-	public List<ExchangeRateAuto> search(Date dateStart, Date dateEnd,
-			String bankName, int status) ;
+	public List<IExchangeRate> search(String dateStartStr, String dateEndStr,
+			String bankName, long baseCurrencyId, long pairCurrencyId ) ;
 	public ExchangeRateAuto getByExtractionId(long id);
  
 }

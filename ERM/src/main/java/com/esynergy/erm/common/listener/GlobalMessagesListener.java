@@ -11,7 +11,6 @@ public class GlobalMessagesListener implements ServletContextListener {
 
 	  public void contextInitialized(ServletContextEvent arg0) {
 	    LocalizedTextUtil.addDefaultResourceBundle(DEFAULT_RESOURCE);
-	     
 	  }
 
 	  public void contextDestroyed(ServletContextEvent arg0) {

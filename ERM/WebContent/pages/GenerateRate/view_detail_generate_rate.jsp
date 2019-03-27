@@ -158,11 +158,11 @@
 				</tr>
 			</table>		
 			
-			<table id="textFileTable" class="table table-striped table-advance table-hover" style="width:100%">
+			<table id="textFileTable" class="table table-striped table-advance table-hover" style="width:100%;display:none;">
 				<thead>
 					<tr>
 						<th>
-							<s:text name="#" />
+							#
 						</th>
 						<th>
 							<s:text name="label.date" />
@@ -190,8 +190,9 @@
 						<td>
 							<s:url var="donwloadFileUrl" action="downloadGenerateRate">
 								<s:param name="parmDownload" value="id"/>
+								<s:param name="parmUrl" value="url"/>
 							</s:url>
-							<s:a href="%{donwloadFileUrl}" >       	 
+							<s:a href="%{donwloadFileUrl}" target="_blank" >       	 
        	    				<button class="btn btn-success btn-xs">
        	    					<i class="fa fa-download"></i>
        	    				</button>
@@ -222,7 +223,7 @@
 						
 					</td>
 					<td align="right">
-						<modong:sys-permission function="EditGenerateRate">
+						<modong:sys-permission function="PrepareEditGenerateRate">
 						<s:url var="editURL" action="prepareEditGenerateRate">
 							<s:param name="parm" value="%{generateRateForm.id}" />
 						</s:url>
@@ -256,6 +257,8 @@
 	 			orderable: false, targets: [0,2,3], visible: true
 	 		}]
 	 	});
+		
+		$('#textFileTable').css("display","");
 		
 		reDrawNumberGenerateRateTable();
 		

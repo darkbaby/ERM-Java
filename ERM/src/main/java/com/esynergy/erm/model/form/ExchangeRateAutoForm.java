@@ -18,11 +18,17 @@ import com.esynergy.erm.model.ob.FileUploadERAuto;
 public class ExchangeRateAutoForm {
 	private long   id;
 	private Date   rateDate;
+	private Date   refDate;
 	private Date   createdDate;
+	private String rateDateStr;
+	private String createDateStr;
+	private String refDateStr;
 	private String bankName;
 	private String countryOfBank;
 	private List<ExchangeRateAutoDetailForm> exchangeRateAutoDetails = new  ArrayList<ExchangeRateAutoDetailForm>();
-	private Set<FileUploadERAuto> fileUploadERAutoList = new HashSet<FileUploadERAuto>();
+	private List<FileUploadForm> fileUploadList = new ArrayList<FileUploadForm>();
+//	private String menuName;
+	
 	public long getId() {
 		return id;
 	}
@@ -34,6 +40,19 @@ public class ExchangeRateAutoForm {
 	}
 	public void setRateDate(Date rateDate) {
 		this.rateDate = rateDate;
+	}
+	
+	public Date getRefDate() {
+		return refDate;
+	}
+	public void setRefDate(Date refDate) {
+		this.refDate = refDate;
+	}
+	public String getRefDateStr() {
+		return refDateStr;
+	}
+	public void setRefDateStr(String refDateStr) {
+		this.refDateStr = refDateStr;
 	}
 	public Date getCreatedDate() {
 		return createdDate;
@@ -63,10 +82,26 @@ public class ExchangeRateAutoForm {
 	public void addExchangeRateAutoDetails(ExchangeRateAutoDetailForm exchangeRateAutoDetails){
 		this.exchangeRateAutoDetails.add(exchangeRateAutoDetails);
 	}
-	public Set<FileUploadERAuto> getFileUploadERAutoList() {
-		return fileUploadERAutoList;
+	public List<FileUploadForm> getFileUploadList() {
+		return fileUploadList;
 	}
-	public void setFileUploadERAutoList(Set<FileUploadERAuto> fileUploadERAutoList) {
-		this.fileUploadERAutoList = fileUploadERAutoList;
+	public void setFileUploadList(List<FileUploadForm> fileUploadERAutoList) {
+		this.fileUploadList = fileUploadERAutoList;
 	}
+	public void addFileUploadList(FileUploadForm fileUploadERAuto){
+		this.fileUploadList.add(fileUploadERAuto);
+	}
+	public String getRateDateStr() {
+		return rateDateStr;
+	}
+	public void setRateDateStr(String rateDateStr) {
+		this.rateDateStr = rateDateStr;
+	}
+	public String getCreateDateStr() {
+		return createDateStr;
+	}
+	public void setCreateDateStr(String createDateStr) {
+		this.createDateStr = createDateStr;
+	}
+
 }

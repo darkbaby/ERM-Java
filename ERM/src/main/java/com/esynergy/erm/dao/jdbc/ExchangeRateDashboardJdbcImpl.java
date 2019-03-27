@@ -40,7 +40,7 @@ public class ExchangeRateDashboardJdbcImpl implements ExchangeRateDashboardJdbc 
 																 	       +   " from ERM_EXCHANGE_RATE_HDR hdr "
 																 	       +   " where to_char(hdr.RATE_DATE,'"+IPageContains.FORMAT_DATE+"')  = ? "
 																 	       +   " and hdr.TYPE='"+IPageContains.ER_ORIGIN_MANUAL+"' ) ) t1 "
-																 	       + " where t1.FK_BASE_CURRENCY || ' ' || t1.FK_PAIR_CURRENCY in (select FK_BASE_CURRENCY || ' ' || FK_PAIR_CURRENCY from ERM_MANUAL_TARGET) ";
+																 	       + " where t1.FK_BASE_CURRENCY || ' ' || t1.FK_PAIR_CURRENCY in (select FK_BASE_CURRENCY || ' ' || FK_PAIR_CURRENCY from ERM_MANUAL_TARGET temp1 where temp1.record_status = 'A') ";
 	
     private static String SQL_RATE_DATE_CONDITION =  "   where to_char(hdr.RATE_DATE,'"+IPageContains.FORMAT_DATE+"')  = ? ";
     private static String SQL_GROUP_BY_BANK        = " group by bnk_ref.fk_set_bank_seq";
@@ -50,8 +50,9 @@ public class ExchangeRateDashboardJdbcImpl implements ExchangeRateDashboardJdbc 
 											+ 		" on base_.pk_currency_id = t.fk_base_currency"
 											+ " left join erm_currency_mast pair_ "
 											+ 		" on pair_.pk_currency_id = t.fk_pair_currency"
-											+" WHERE t.effective_date <= to_date(?,'"+IPageContains.FORMAT_DATE+"') "
-											+ "and ( t.expired_date is null or t.expired_date > to_date(?,'"+IPageContains.FORMAT_DATE+"') )"
+											+" WHERE TRUNC(t.effective_date) <= to_date(?,'"+IPageContains.FORMAT_DATE+"') "
+											+ " and t.record_status = 'A' "
+											+ "and ( t.expired_date is null or TRUNC(t.expired_date) > to_date(?,'"+IPageContains.FORMAT_DATE+"') )"
 											+ "and t.fk_base_currency || ' ' || t.fk_pair_currency NOT IN ( SELECT d.FK_BASE_CURRENCY|| ' ' ||d.FK_PAIR_CURRENCY "
 											                                                   +" FROM ERM_EXCHANGE_RATE_DTL d "
 											                                                   +" where d.FK_RATE_HDR_SEQ in (select h.PK_RATE_HDR_SEQ  "
@@ -86,6 +87,7 @@ public class ExchangeRateDashboardJdbcImpl implements ExchangeRateDashboardJdbc 
 		String sql = SQL_EXC_RATE_SUCCESS_BY_RATE_DATE
 				   + SQL_RATE_DATE_CONDITION
 				   + " and hdr.TYPE = '"+IPageContains.ER_ORIGIN_AUTO+"' "
+				   + " and hdr.RECORD_ADD_USER <> 'system(paste)' "
 				   + SQL_GROUP_BY_BANK;
 		List<Long> l = jdbcTemplateObject.query(sql,parm, new ResultNumberMapper());
 		if(!l.isEmpty()){
@@ -99,6 +101,7 @@ public class ExchangeRateDashboardJdbcImpl implements ExchangeRateDashboardJdbc 
 	public long getCountRemainingExchangeRateAutoByAddDate() {
 		String sql = " select count(h.PK_SET_HDR_SEQ) num from ERM_SETTING_HDR h " 
 			 	   + " where h.RECORD_STATUS  ='"+IPageContains.RECORD_STS_ACTIVE+"'"
+			 	   + "   and TRUNC(h.RECORD_ADD_DATE) <> TRUNC(SYSDATE) "
 				   + "   and h.PK_SET_HDR_SEQ not in (select l.FK_SET_HDR_ID from ERM_HIST_LOG l) ";
 		List<Long> l = jdbcTemplateObject.query(sql, new ResultNumberMapper());
 		if(!l.isEmpty()){

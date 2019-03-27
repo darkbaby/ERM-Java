@@ -4,8 +4,9 @@ import com.esynergy.erm.common.util.ICommonContains;
 import com.esynergy.erm.common.util.UIUtil;
 
 public interface IPageContains extends ICommonContains {
+	
 	//public final String API_URL = "http://192.168.10.78:8080/erm";
-	public final String API_URL =  "/erm";
+	public final String API_URL =  "erm2";
 	public final String MAIN_MENU_ATTR = "main_menu";
 	public final String SUB_MENU_ATTR = "sub_menu";
 	public final String SUB_MENU1_ATTR = "sub_menu1";
@@ -17,6 +18,8 @@ public interface IPageContains extends ICommonContains {
 	public final String MENU_USER_MANAGEMENT = "user_mange";
 	
 	public final String MENU_EXCHANGE_RATE_MANUAL = "exchange_rate_by_manual";
+	public final String MENU_EXCHANGE_RATE_MANUAL_RATE_MANAGE = "exchange_rate_by_manual_rate_manage";
+	public final String MENU_EXCHANGE_RATE_MANUAL_LIST_MAINTAIN = "exchange_rate_by_manual_list_maintain";
 	public final String MENU_EXCHANGE_RATE_AUTO = "exchange_rate_by_auto"; 
 	public final String MENU_EXCHANGE_RATE_AUTO_EXTRACTION_MANAGE = "exchange_rate_by_auto_manage";
 	public final String MENU_EXCHANGE_RATE_AUTO_HISTLOG_SCRAPED = "exchange_rate_by_auto_histlog_scraped";
@@ -33,6 +36,9 @@ public interface IPageContains extends ICommonContains {
 	public final String SESSION_CURRENCY_TYPE_LIST = "session_currency_type_list";
 	public final String SESSION_STATUS_LIST = "session_status_list";
 	public final String SESSION_FORMAT_DATE_LIST = "session_format_date_list";
+	public final String SESSION_VALUE_LIST = "session_value_list";
+	public final String SESSION_PYTHON_DIRECTORY = "session_python_directory";
+	public final String SESSION_MANUAL_DIRECTORY = "session_manual_directory";
 	public final String SESSION_CURRENCY_LIST_API = "session_currency_list_api";
 	public final String SESSION_CURRENCY_LIST_API_SELECTED = "session_currency_list_api_selected";
 	public final String SESSION_GENERATE_RATE_TIME_LIST = "session_generate_rate_time_list";

@@ -2,11 +2,9 @@ package com.esynergy.erm.model.ob;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-
-@Entity
 public class ExtractionDetail {
 
+	private Extraction extraction;
 	private long id;
 	private Currency currency;
 	private long value;
@@ -17,7 +15,6 @@ public class ExtractionDetail {
 	private String changeUser;
 	private Date addDate;
 	private Date changeDate;
-	private Extraction extraction;
 	
 	public long getId() {
 		return id;

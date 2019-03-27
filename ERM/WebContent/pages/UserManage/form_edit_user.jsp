@@ -17,6 +17,7 @@
  <body>	 
 	<!-- ADD EXCHANGE RATE -->
 	<s:form name="userLogonForm" method="POST"  id="userLogonForm" theme="simple" class="form-inline" role="form">
+          	<s:hidden name="menuName"/>
           	<div class="row mt">
           		<div class="col-lg-12">
           			<div class="form-panel">
@@ -33,6 +34,7 @@
                   	  	<div class="col-sm-3">
                   	  		<div class="form-group">
                   	  			<div><strong><s:text name="user.logon.id"></s:text></strong></div> 
+                  	  			<s:hidden name="userLogonForm.id"/>
                   	  			<s:textfield name="userLogonForm.userLogonId" 
                   	  						id="userLogonId" 
                   	  						cssClass="form-control" 
@@ -125,6 +127,7 @@
                   	  						maxLength="100"/>
                   	  			<div class="has-error"><s:property value="errors['emailRequireError']"/></div>
                   	  			<div class="has-error"><s:property value="errors['emailPatternError']"/></div>
+                  	  			<div class="has-error"><s:property value="errors['emailExistError']"/></div>
                   	  		</div>
                   	  	</div>
                   	  </div>
@@ -136,7 +139,7 @@
                   	  					  id="countryId"
                   	  					  name="userLogonForm.countryId" 
                   	  					  headerKey=""
-                  	  					  headerValue="Plese Select"
+                  	  					  headerValue="---Plese Select---"
                   	  					  list="countryList"
                   	  					  listKey="id"
                   	  					  listValue="countryName"
@@ -154,13 +157,85 @@
                   	  					  id="groupId"
                   	  					  name="userLogonForm.groupId" 
                   	  					  headerKey=""
-                  	  					  headerValue="Plese Select"
+                  	  					  headerValue="---Plese Select---"
                   	  					  list="authorizeGroupList"
                   	  					  listKey="id"
                   	  					  listValue="groupName"
                   	  					  value="userLogonForm.groupId"/>
                   	  			<div class="has-error"><s:property value="errors['groupRequireError']"/></div>
                   	  					  
+                  	  		</div>
+                  	  	</div>
+                  	  </div>
+                  	  
+                  	  <s:if test="%{userLogonForm.groupId != 3}">
+                  	  	<div class="row mt" id="locationPersonOnlyTable" style="display:none;">
+                  	  </s:if>
+                  	  <s:else>
+                  	  	<div class="row mt" id="locationPersonOnlyTable">
+                  	  </s:else>
+                  	  	<div class="col-sm-6">
+                  	  		<div class="form-group">
+                  	  			<div><strong><s:text name="label.currency"></s:text></strong></div> 
+                  	  			<table id="formTable" class="table table-striped table-advance table-hover" style="width:100%">
+									<thead>
+										<tr>
+											<th>
+												<s:text name="label.select" />
+											</th>
+											<th>
+												<s:text name="label.base.currency" />
+											</th>
+											<th>
+												<s:text name="label.pair.currency" />
+											</th>
+											<th>
+												<s:text name="label.owner" />
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										<s:iterator value="userLogonForm.manualTargetCheckFormList" status="sts">
+											<tr>
+												<td>
+													<s:hidden name="userLogonForm.manualTargetCheckFormList[%{#sts.index}].id" />
+													<s:if test="%{haveAnotherOwner}">
+													<s:checkbox
+							  							name="userLogonForm.manualTargetCheckFormList[%{#sts.index}].chk"
+				 										id="userLogonForm.manualTargetCheckFormList[%{#sts.index}].chk"
+				 										fieldValue="%{id}"
+				 										value="%{chk}"
+				 										disabled="true"
+							  						/>
+													</s:if>
+													<s:else>
+													<s:checkbox
+							  							name="userLogonForm.manualTargetCheckFormList[%{#sts.index}].chk"
+				 										id="userLogonForm.manualTargetCheckFormList[%{#sts.index}].chk"
+				 										fieldValue="%{id}"
+				 										value="%{chk}"
+							  						/>
+													</s:else>
+							  					</td>
+												<td>
+													<s:property
+														value="baseCurrencyStr" 
+													/>
+												</td>
+												<td>
+													<s:property
+														value="pairCurrencyStr"
+													/>
+												</td>
+												<td>
+													<s:property
+														value="owner"
+													/>
+												</td>
+											</tr>
+										</s:iterator>
+									</tbody>
+								</table>  
                   	  		</div>
                   	  	</div>
                   	  </div>
@@ -174,11 +249,13 @@
           					<table style="width:100%" align="center">
 								<tr>
 									<td align="center">
-											 
-												<button type="button" id="cancelBtn" style="width:150px" class="btn btn-default btn-sm" title="<s:text name='btn.cancel'/>">
-														<span class="glyphicon glyphicon-chevron-left"></span>
-														<span><s:text name='btn.cancel'/></span>
-												</button>
+										<s:url var="cancleURL" action="prepareManageUser"/>
+										<s:a href="%{cancleURL}">	 
+										<button type="button" id="cancelBtn" style="width:150px" class="btn btn-default btn-sm" title="<s:text name='btn.cancel'/>">
+												<span class="glyphicon glyphicon-chevron-left"></span>
+												<span><s:text name='btn.cancel'/></span>
+										</button>
+										</s:a>
 											 
 										<s:if test="userLogonForm.id != 0">
 											<button style="width:150px" type="button" class="btn btn-danger btn-sm" id="removeBtn" title="<s:text name='btn.remove'/>">
@@ -207,9 +284,9 @@
 	$('#saveBtn').click(function(){
 		$('#userLogonForm').attr('action','saveUser').submit();
 	});
-	$('#cancelBtn').click(function(){
-		window.history.back();
-	});
+// 	$('#cancelBtn').click(function(){
+// 		window.history.back();
+// 	});
 	$("#removeBtn").click(function(){
 		 
 		    bootbox.confirm({
@@ -231,6 +308,17 @@
 		    });
 		
 	});
+	
+	$("#groupId").change(function(){
+		groupName = $(this).val();
+		if(groupName == '3'){
+			$("#locationPersonOnlyTable").css('display', '');
+		}
+		else{
+			$("#locationPersonOnlyTable").css('display', 'none');
+		}
+	});
+	
  </script>
     
  <script type="text/javascript">

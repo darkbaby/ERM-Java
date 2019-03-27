@@ -21,10 +21,13 @@
           			<div class="form-panel02">
                   	  <h4 class="mb"><i class="fa fa-search"></i><span style="padding-left:5px;"><s:text  name="label.search"/></span></h4>
 					  <s:form name="exchangeRateSearchForm"  id="exchangeRateSearchForm" theme="simple" class="form-inline" role="form">
-									<div class="form-group">
+							<s:hidden name="dateOfRate"/>
+							<div class="row mt">
+									<div class="col-sm-2">
 									
 										<div><s:text name="label.first.currency"/></div>
-							 			<s:select   class="form-control" 
+							 			<s:select   class="form-control"
+							 						cssStyle="width:100%;"
 												    headerKey="0"
 													headerValue="---ALL---"
 													list="currencyList"
@@ -34,9 +37,10 @@
 													id="baseCurrencyId" 
 													value="exchangeRateSearchForm.baseCurrencyId"/>
 					                </div>
-					                <div class="form-group">
+					                <div class="col-sm-2">
 										 <div><s:text name="label.pair.currency"/></div>
 										<s:select   class="form-control" 
+													cssStyle="width:100%;"
 												    headerKey="0"
 													headerValue="---ALL---"
 													list="currencyList"
@@ -47,9 +51,10 @@
 													value="exchangeRateSearchForm.pairCurrencyId"/>
 					                </div> 
 										 
-									<div class="form-group">
+									<div class="col-sm-2">
 										<div><s:text name="label.bank.country"/></div>
-										<s:select   class="form-control" 
+										<s:select   class="form-control"
+													cssStyle="width:100%;"
 												    headerKey="0"
 													headerValue="---ALL---"
 													list="countryList"
@@ -59,9 +64,10 @@
 													id="countryOfBank" 
 													value="exchangeRateSearchForm.countryOfBank"/>
 									</div>
-									<div class="form-group">
+									<div class="col-sm-2">
 										<div><s:text name="label.type"/></div>
-										<s:select   class="form-control" 
+										<s:select   class="form-control"
+													cssStyle="width:100%;"
 												    headerKey=""
 													headerValue="---ALL---"
 													list="#{'AUTO':'AUTO','MANUAL':'MANUAL'}"
@@ -69,16 +75,16 @@
 													id="origin" 
 													value="exchangeRateSearchForm.origin"/>
 									</div>	
-								<div class="form-group">
+								<div class="col-sm-2">
 									<br/>
-									<button style="width:100%" type="button" id="searchBtn"  class="btn btn-theme btn-sm"><s:text name="btn.search" /></button>
-								</div>
-								<div class="form-group">
-									<br/>
-									<button style="width:100%" type="button" id="resetBtn" class="btn btn-warning btn-sm"><s:text name="btn.clear" /></button>
+									<button style="width:40%" type="button" id="searchBtn"  class="btn btn-theme"><s:text name="btn.search" /></button>
+							
+									<button style="width:40%" type="button" id="resetBtn" class="btn btn-warning"><s:text name="btn.clear" /></button>
 								</div>
 
 						  <div class="has-error"><s:property value="errors['searchError']"/></div>
+						  <s:hidden name="exchangeRateSearchForm.currentDate" />
+					    </div>
 					    </s:form>
           			</div><!-- /form-panel -->
           		</div><!-- /col-lg-12 -->

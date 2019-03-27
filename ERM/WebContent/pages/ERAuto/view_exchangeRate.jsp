@@ -14,8 +14,8 @@
 </head>
  
  <body>
-			<h3 class="subject"><i class="fa fa-dashboard"></i><span class="subject-text"><s:text name="actionMsg['actionTitle']"/></span></h3>
-			    
+			<h3 class="subject"><i class="fa fa-dashboard"></i><span class="subject-text"><s:property value="menuName"/></span></h3>
+			<div class="has-error"><s:property value="errors['downloadFileError']" /></div>
 			<div >
 		      	<s:include value="view_detail_exchangeRate.jsp"/>
 		    </div>
@@ -23,14 +23,29 @@
 		    	<table style="width:100%" align="center">
 									<tr>
 										<td align="center">
-													<button style="width:150px" type="button" id="cancelBtn" class="btn btn-default btn-sm" title="<s:text name='btn.cancel'/>">
+										
+<%-- 												<s:url var="cancleURL" action="prepareAutoRateAdjust"/> --%>
+												<s:set var="targetAction" value="%{backAction}" />
+												<s:url var="cancleURL" action="%{#targetAction}"/>
+												
+												<s:a href="%{cancleURL}" >       	 
+								               	 	<button style="width:150px" 
+													type="button" id="cancelBtn" 
+													class="btn btn-default btn-sm" 
+													title="<s:text name='btn.cancel'/>">
 														<span class="glyphicon glyphicon-chevron-left"></span>
 														<span><s:text name='btn.back'/></span>
-													</button>
+													</button>	
+								               	</s:a>
+<%-- 													<button style="width:150px" type="button" id="cancelBtn" class="btn btn-default btn-sm" title="<s:text name='btn.cancel'/>"> --%>
+<%-- 														<span class="glyphicon glyphicon-chevron-left"></span> --%>
+<%-- 														<span><s:text name='btn.back'/></span> --%>
+<!-- 													</button> -->
 												 
-												<modong:sys-permission function="EditExchangeRateAuto">
+												<modong:sys-permission function="PrepareEditExchangeRateAuto">
 												<s:url var="editURL"   action="prepareEditExchangeRateAuto">
-													<s:param name="parm" value="%{exchangeRateAutoForm.id}" />
+													<s:param name="parmID" value="%{exchangeRateAutoForm.id}" />
+													<s:param name="parmBackAction" value="%{#targetAction}" />
 												</s:url>        
 									            <s:a href="%{editURL}">
 									                  <button style="width:150px"  class="btn btn-primary btn-sm" 

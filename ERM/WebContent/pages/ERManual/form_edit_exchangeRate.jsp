@@ -21,7 +21,8 @@
  
  <body>	 
 	<!-- ADD EXCHANGE RATE -->
-	<s:form name="exchangeRateManualForm" method="POST" enctype="multipart/form-data" id="exchangeRateManualForm" theme="simple" class="form-inline" role="form">
+	<s:form name="exchangeRateManualForm" method="POST" enctype="multipart/form-data" 
+		id="exchangeRateManualForm" theme="simple" role="form">
 	
           	<div class="row mt">
           		<div class="col-lg-12">
@@ -56,6 +57,7 @@
 								<div><strong><s:text name="label.setting.type.of.currency"/><span class="erm-required"></span></strong></div>
 								<s:select 
 								    class="form-control"
+								    style="width:20%;"
 								    name="exchangeRateManualForm.pairCurrencyType"
 								    id="exchangeRateManualForm.pairCurrencyType"
 									list="currencyTypeList"
@@ -72,14 +74,6 @@
                      <div><table align="right" style="margin-bottom:5px">
                       <tr>
                       	<td  align="right" >
-                      		<button style="width: 100px;" type="button" class="btn btn-theme" onclick="createExchangeRateInputRow('rateTbl','<%=IPageContains.API_URL%>','<%=user.getCountry().getCurrency().getId()%>')">
-                      			<span class="glyphicon glyphicon-plus-sign"></span>
-                      			<span ><s:text name="btn.add"/></span>
-                      		</button>
-                      		<button style="width: 100px;" type="button" class="btn btn-danger" onclick="removeFormList()" >
-                      			<span class="glyphicon glyphicon-minus-sign"></span>
-                      			<span ><s:text name="btn.remove"/></span>
-                      		</button>
                       	</td>
                       </tr>
                       </table></div>	 
@@ -87,52 +81,32 @@
 						  <tr>
 						  	<th></th>
 							<th style="text-align: center" colspan="2"><s:text name="label.currency"/></th>
-                            <th style="text-align: center" rowspan="2"><s:text name="label.value"/></th>
-                            <th style="text-align: center" colspan="7"><s:text name="label.exchenge.rate"/></th>
+                            <th style="text-align: center;width:8%;" rowspan="2"><s:text name="label.value"/></th>
+                            <th style="text-align: center" colspan="6"><s:text name="label.exchenge.rate"/></th>
 						  </tr>
 						  <tr>
-						    <th>#</th>
-						    <th><s:text name="label.first.currency"/></th>
-						    <th><s:text name="label.pair.currency"/></th>
-							<th><s:text name="label.buying.rate"/></th>
-							<th><s:text name="label.selling.rate"/></th>
-							<th><s:text name="label.option"/></th>
+						    <th style="text-align:center;width:2%;">#</th>
+						    <th style="text-align:center;width:10%;"><s:text name="label.first.currency"/></th>
+						    <th style="text-align:center;width:10%;"><s:text name="label.pair.currency"/></th>
+							<th style="text-align:center;width:35%;"><s:text name="label.buying.rate"/></th>
+							<th style="text-align:center;width:35%;"><s:text name="label.selling.rate"/></th>
 						  </tr>
 						  <s:iterator value="exchangeRateManualForm.exchangeRateDetailList" status="sts">
 						  <tr>
-						  			<td><s:property value="#sts.index+1" /></td>
+						  			<td>
+						  				<s:property value="#sts.index+1" />
+						  				<s:hidden name="exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].id" />
+						  			</td>
 						  			
-									<td>
-											<%-- <s:select 
-												disabled="true"
-											    class="form-control" 
-											    headerKey=""
-												headerValue="Plese Select"
-												list="currencyList"
-												listKey="id"
-												name="exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].pairCurrency"
-												id="exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].pairCurrency"
-												listValue="code"
-												value="pairCurrency" /> --%>
-												<%-- onchange= "populatePairCurrency(this,'exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].firstCurrency')"  --%>
-												 
-												 <%-- <div class="has-error"><s:property value="errors['pairCurrencyError'+#sts.index]" /></div>
-												 <div class="has-error"><s:property value="errors['currencyError'+#sts.index]" /></div> --%>
-									       		<%=user.getCountry().getCurrency().getCode()%>
-										</td>
-									<TD>
-										<s:select 
-										    class="form-control" 
-										    headerKey=""
-											headerValue="Plese Select"
-											list="currencyList"
-											listKey="id"
-											name="exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].pairCurrency"
-											id="exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].pairCurrency"
-											listValue="code"
-											value="pairCurrency" 
-											onclick="populateBaseCurrency('exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].pairCurrency')" />
-											<%-- onchange= "populatePairCurrency(this,'exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].pairCurrency')"  --%>	
+									<td style="text-align:center;">
+												<s:property value="firstCurrencyStatic" />
+												<s:hidden name="exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].firstCurrencyStatic"></s:hidden>
+												<s:hidden name="exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].firstCurrency"></s:hidden>
+									</td>
+									<td style="text-align:center;">
+											 <s:property value="pairCurrencyStatic" />
+											 <s:hidden name="exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].pairCurrencyStatic"></s:hidden>
+											 <s:hidden name="exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].pairCurrency"></s:hidden>
 											 <div class="has-error"><s:property value="errors['pairCurrencyError'+#sts.index]" /></div>
 											 <div class="has-error"><s:property value="errors['rateDupplicate'+#sts.index]" /></div>			 		
 									 </td>
@@ -142,12 +116,15 @@
 									   		name="exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].value" 
 									   		id="exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].value" 
 									   		class="form-control"
-									   		list="#{'1.00':'1.00','100.00':'100.00'}"
-									   		value="value"
+									   		list="valueList"
+									   		listKey="value"
+									   		listValue="descriptionShort"
+									   		value="%{value}"
 									   		required="true"/>
 									</td>
 									<td>
 									   <s:textfield class="form-control text-right"
+									   				
 									   				name="exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].buyingRate"
 									   				id="exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].buyingRate"/>
 										<div class="has-error"><s:property value="errors['rateRequire'+#sts.index]" /></div>
@@ -159,13 +136,6 @@
 													id="exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].sellingRate"/>
 										<div class="has-error"><s:property value="errors['sellingRateError'+#sts.index]"/></div>
 									</td>  
-		 						    <td><s:hidden name="exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].id"/>
-								  	 	 <label class="custom-control custom-checkbox">
-								  	 	<s:checkbox class="custom-control-input" 
-								  	 				name="exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].chk" 
-								  	 				 id="exchangeRateManualForm.exchangeRateDetailList[%{#sts.index}].chk" />
-										</label>
-									</td>
 								  </tr>
 							 </s:iterator>
 						</table>
@@ -196,56 +166,57 @@
 							</thead>
 						
 							<tbody>
-								<s:iterator value="exchangeRateManualForm.fileUploadERManualList" status="st">
+								<s:iterator value="exchangeRateManualForm.fileUploadList" status="st">
 								<tr>
 										<td><s:property value="#st.index+1"/></td>
 									<s:if test="id > 0">
 										<td> 
-										   <s:hidden name="exchangeRateManualForm.fileUploadERManualList[%{#st.index}].id"/>
-										   <s:hidden name="exchangeRateManualForm.fileUploadERManualList[%{#st.index}].url"/>
-										   <s:hidden name="exchangeRateManualForm.fileUploadERManualList[%{#st.index}].name"/>	               
+										   <s:hidden name="exchangeRateManualForm.fileUploadList[%{#st.index}].id"/>
+										   <s:hidden name="exchangeRateManualForm.fileUploadList[%{#st.index}].url"/>
+										   <s:hidden name="exchangeRateManualForm.fileUploadList[%{#st.index}].name"/>	               
 							               <s:property value="name"/>
 										</td>
 										<td style="text-align:center;">
 												<s:url var="donwloadFileUrl" action="downloadFileERByManual">
-									               	  	<s:param name="parm" value="id"/>
+									               	  	<s:param name="parmID" value="exchangeRateManualForm.id"/>
+									               	  	<s:param name="parmURL" value="url"/>
 									            </s:url>
-												<s:a href="%{donwloadFileUrl}" >       	 
+												<s:a href="%{donwloadFileUrl}"  target="_blank" >       	 
 								               	 		<span class="glyphicon glyphicon-download-alt" 
-								               	 			 title="<s:text name='label.download'/>" 
+								               	 			 title="<s:text name='label.download'/>"
 								               	 			 style="padding: 2px 10px 3px 10px;">
-								               	 		</span>	             	 
+								               	 		</span>
 								               	</s:a>					                
 								               		   <span class="glyphicon glyphicon-trash text-danger"   
 								               		   		 title="<s:text name='label.remove'/>"   
 								               		   		 style="padding: 2px 10px 3px 10px;"
 								               		   		 onclick="removeFile('<s:property value='#st.index'/>')">
-								               		   	</span> 
+								               		   	</span>
 										</td>
 									</s:if>
 									 <s:if test="id == 0">
 										<td>
 											<div style="padding-bottom: 10px;">
-												  <div style="display: none;">  
-															<s:file name="exchangeRateManualForm.fileUploadERManualList[%{#st.index}].file" 
-																	id="exchangeRateManualForm.fileUploadERManualList[%{#st.index}].file" />
+												  <div style="display: none;">
+															<s:file name="exchangeRateManualForm.fileUploadList[%{#st.index}].file" 
+																	id="exchangeRateManualForm.fileUploadList[%{#st.index}].file"
+																	value="%{file}" />
 												  </div>  
-												  <s:textfield size="50%"     name="exchangeRateManualForm.fileUploadERManualList[%{#st.index}].name" 
-												 					id="exchangeRateManualForm.fileUploadERManualList[%{#st.index}].name"
+												  <s:textfield size="50%"     name="exchangeRateManualForm.fileUploadList[%{#st.index}].name" 
+												 					id="exchangeRateManualForm.fileUploadList[%{#st.index}].name"
 												 					readonly="true"/>
-												 <span id='<s:property value='nameFileId'/>'>
-												 	<s:property value="exchangeRateManualForm.fileUploadERManualList[%{#st.index}].name"  />
-												 </span>
+<%-- 												 <span id='<s:property value='nameFileId'/>'> --%>
+<%-- 												 	<s:property value="exchangeRateManualForm.fileUploadList[%{#st.index}].name"  /> --%>
+<%-- 												 </span> --%>
 											</div> 
 										</td>
 										<td style="text-align:center;">
-											<s:set var="fileUploadId" value="%{'exchangeRateManualForm.fileUploadERManualList['+#st.index+'].file'}"/>
-											<s:set var="fileInputName" value="%{'exchangeRateManualForm.fileUploadERManualList['+#st.index+'].name'}"/>
+											<s:set var="fileUploadId" value="%{'exchangeRateManualForm.fileUploadList['+#st.index+'].file'}"/>
+											<s:set var="fileInputName" value="%{'exchangeRateManualForm.fileUploadList['+#st.index+'].name'}"/>
  											<s:set var="removeFileBtn" value="%{'remove['+#st.index+']'}"/>
  											<span   title="<s:text name='label.browse'/>" 
- 													onclick="browseFile('<s:property value='fileUploadId'/>','<s:property value='fileInputName'/>','<s:property value='nameFileId'/>','<s:property value='removeFileBtn'/>')"> 	 
+ 													onclick="browseFile('<s:property value='fileUploadId'/>','<s:property value='fileInputName'/>','','<s:property value='removeFileBtn'/>')"> 	 
 											    <a><span class="glyphicon glyphicon-folder-open" style="padding: 2px 10px 3px 10px;"></span></a>
-											    
 											</span>
 												<span class="glyphicon glyphicon-trash text-danger"  id="remove[<s:property value='#st.index'/>]" 
 									               		   		 title="<s:text name='label.remove'/>"   
@@ -257,16 +228,28 @@
 									</s:if>
 								</tr>
 								</s:iterator>
+								
+								
+								
+								
 								</tbody>
 								</table>
-					</div><!-- /form-panel -->		
-          		</div><!-- /col-lg-12 -->
-          	</div><!-- /row --> 
+					</div>
+          		</div>
+          	</div>
+
+			<div style="display:none;">
+				<s:iterator value="exchangeRateManualForm.fileUploadFormRemoveList" status="st">
+					<s:hidden name="exchangeRateManualForm.fileUploadFormRemoveList[%{#st.index}].id" />
+					<s:hidden name="exchangeRateManualForm.fileUploadFormRemoveList[%{#st.index}].url" />
+					<s:hidden name="exchangeRateManualForm.fileUploadFormRemoveList[%{#st.index}].name" />
+				</s:iterator>
+			</div>
 
           					<table style="width:100%" align="center">
 								<tr>
 									<td align="center">
-										<s:url var="cancelURL"   action="searchExchangeRateByManual"/>
+										<s:url var="cancelURL" action="prepareManageExchangeRateManual"/>
 											<s:a href="%{cancelURL}">	 
 												<button type="button" id="cancelBtn" style="width:150px" class="btn btn-default btn-sm" title="<s:text name='btn.cancel'/>">
 														<span class="glyphicon glyphicon-chevron-left"></span>
@@ -279,7 +262,8 @@
 												<span><s:text name='btn.remove'/></span>
 											</button>
 										</s:if>
-											<button style="width:150px" type="button" class="btn btn-primary btn-sm" onclick="save();" title="<s:text name='btn.save'/>">
+											<button style="width:150px" type="button" class="btn btn-primary btn-sm" onclick="save();" title="<s:text name="btn.save"/>" >
+											
 												<span class="glyphicon glyphicon-floppy-disk"></span>
 												<span><s:text name='btn.save'/></span>
 											</button>
@@ -291,6 +275,15 @@
 					<br/>
 					<br/>	
 	</s:form>
+	
+	<div style="display:none;">
+          		<select id="valueListDeposit">
+          		<s:iterator value="valueList">
+          			<option value='<s:property value="value"/>'><s:property value="descriptionShort"/></option>
+          		</s:iterator>
+          		</select>
+          	</div>	      
+	
 <script src="<s:url value='/resources/assets/js/select2.min.js' />"></script>   
 <script src="<s:url value='/resources/assets/js/custom-util/exchangeRateByManual-detail.js' />"></script>   
 <script src="<s:url value="/resources/assets/moment-master/min/moment.min.js"/>"></script>
@@ -298,6 +291,14 @@
 <script src="<s:url value="/resources/assets/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"/>"></script>
 
  <script type ="text/javascript">
+ 
+ var valueList = [];
+ $("#valueListDeposit option").each(function(){
+	 let temp = {};
+	 temp.value = $(this).val();
+	 temp.descriptionShort = $(this).html();
+	 valueList.push(temp);
+ });
  
  //$('#exchangeRateManualForm.exchangeRateDetailList[0].chk').prop( "disabled", true );
  $( "input[type='checkbox' ][name='exchangeRateManualForm.exchangeRateDetailList[0].chk']" ).prop({
@@ -307,35 +308,38 @@
  var rowCount = rateTbl.rows.length;
 	if(rowCount==2){
 		 for(var i=0;i<3;i++){
-			 createExchangeRateInputRow("rateTbl","<%=IPageContains.API_URL%>","<%=user.getCountry().getCurrency().getId()%>");
+			 //cho comment 2018/03/20 : initial 3 rows at first load page
 		 }
 	}
 	 
-	if($('#rateDate').val()==""){
-		$(function () {
-		      $('#rateDatePicker').datetimepicker({
-		    	  maxDate: moment(),
-		    	  showClear:true,
-		    	  showTodayButton: true,
-		    	  allowInputToggle:true,
-		    	  format:'<s:text name='ui.js.date.format'/>',
-		    	  useCurrent: true
+	$(document).ready(function(){
+		if($('#rateDate').val()==""){
+			$(function () {
+			      $('#rateDatePicker').datetimepicker({
+			    	  maxDate: moment(),
+			    	  showClear:true,
+			    	  showTodayButton: true,
+			    	  allowInputToggle:true,
+			    	  format:"<s:text name='ui.js.date.format'/>",
+			    	  useCurrent: true
 
-			}); 
-		});
-	}else{
-		$(function () {
-		      $('#rateDatePicker').datetimepicker({
-		    	  maxDate: moment(),
-		    	  showClear:true,
-		    	  showTodayButton: true,
-		    	  allowInputToggle:true,
-		    	  format:'<s:text name='ui.js.date.format'/>',
-		    	  useCurrent: false
+				}); 
+			});
+		}else{
+			$(function () {
+			      $('#rateDatePicker').datetimepicker({
+			    	  maxDate: moment(),
+			    	  showClear:true,
+			    	  showTodayButton: true,
+			    	  allowInputToggle:true,
+			    	  format:"<s:text name='ui.js.date.format'/>",
+			    	  useCurrent: false
 
-			}); 
-		});	
-	}
+				}); 
+			});	
+		}
+	});
+	
 	 
 	/* $('#cancelBtn').click(function(){
 		window.history.back();
@@ -462,15 +466,23 @@
 		 valueRateCol.className = styleClass;
 		 valueRateCol.name=exchangeRateDetailList+".value";
 		 valueRateCol.id = exchangeRateDetailList+".value";
-		 var optionValue1 = document.createElement("option");
-		 optionValue1.value = "1.00";
-		 optionValue1.innerHTML = "1.00";
-		 valueRateCol.appendChild(optionValue1);
 		 
-		 var optionValue100 = document.createElement("option");
-		 optionValue100.value = "100.00";
-		 optionValue100.innerHTML = "100.00";
-		 valueRateCol.appendChild(optionValue100);
+		 $.each(valueList, function(i,obj){
+			 var optionValue = document.createElement("option");
+			 optionValue.value = obj.value
+			 optionValue.innerHTML = obj.descriptionShort;
+			 valueRateCol.appendChild(optionValue);
+		 });
+		 
+// 		 var optionValue1 = document.createElement("option");
+// 		 optionValue1.value = "1.00";
+// 		 optionValue1.innerHTML = "1.00";
+// 		 valueRateCol.appendChild(optionValue1);
+		 
+// 		 var optionValue100 = document.createElement("option");
+// 		 optionValue100.value = "100.00";
+// 		 optionValue100.innerHTML = "100.00";
+// 		 valueRateCol.appendChild(optionValue100);
 		 
 		 cell3.appendChild(valueRateCol);
 		 

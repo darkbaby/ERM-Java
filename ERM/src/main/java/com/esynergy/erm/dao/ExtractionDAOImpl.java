@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -27,23 +28,18 @@ public class ExtractionDAOImpl extends AbstractHiberbateDAO<Integer, Extraction>
 		return super.save(o);
 	}
 	
-	public Session getSession() {
-		return session;
-	}
-
-	public void setSession(Session session) {
-		this.session = session;
-	}
-	
 	@SuppressWarnings("unchecked")
 	public List<Extraction> listAllExtraction() {
 		logger.debug("----------listAllExtraction--------");
-		
+
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
 //		Criteria criteria = super.createEntityCriteria();
-//		criteria.addOrder(Order.desc("a.id"));
+		criteria.add(Restrictions.eq("a.deleteFlag", (long)0));
 //		return criteria.list();
+		return super.executeDetachedCriteria(criteria);
 		
-		return super.hibernateNameQuery("HQL.listAllExtraction").list();
+//		return super.hibernateNameQuery("HQL.listAllExtraction").list();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -54,7 +50,7 @@ public class ExtractionDAOImpl extends AbstractHiberbateDAO<Integer, Extraction>
 //		criteria.addOrder(Order.desc("a.id"));
 //		return criteria.list();
 		
-		return super.hibernateNameQuery("HQL.listAllExtractionActive").list();
+		return super.hibernateNameQuery("HQL.listAllExtractionActive");
 	}
 
 	@Override
@@ -74,7 +70,9 @@ public class ExtractionDAOImpl extends AbstractHiberbateDAO<Integer, Extraction>
 	public List<Extraction> search(String bankName, long countryId,
 			long TypeOfSetting, String status) {
 		logger.debug("----------search--------");
-		Criteria criteria = super.createEntityCriteria();
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
+//		Criteria criteria = super.createEntityCriteria();
 		criteria.add(Restrictions.eq("a.deleteFlag", (long)0));
 		criteria.createAlias("a.bank", "b");
 		if(!UIUtil.isEmptyOrNull(bankName)){
@@ -90,7 +88,9 @@ public class ExtractionDAOImpl extends AbstractHiberbateDAO<Integer, Extraction>
 		if(!status.equals("-1")){
 			criteria.add(Restrictions.eq("a.status", status));
 		}
-		return criteria.list();
+//		return criteria.list();
+		return super.executeDetachedCriteria(criteria);
+
 	}
 
 	@Override
@@ -101,16 +101,19 @@ public class ExtractionDAOImpl extends AbstractHiberbateDAO<Integer, Extraction>
 	}
 	@Override
 	public List<Extraction> listAllExtractionByURL(String url) {
-		
-		Criteria criteria = super.createEntityCriteria();
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
+//		Criteria criteria = super.createEntityCriteria();
 		criteria.add(Restrictions.eq("a.bankURL",url));
-		return criteria.list();
+//		return criteria.list();
+		return super.executeDetachedCriteria(criteria);
+
 	}
 
-@Override
-public List<Extraction> listFailByDate(Date date) {
-	// TODO Auto-generated method stub
-	return null;
-}
+	@Override
+	public List<Extraction> listFailByDate(Date date) {
+		// TODO Auto-generated method stub
+		return null;
+	}
  
 }

@@ -38,6 +38,7 @@ public interface IExchangeRate {
 	public void addFileUploadERManualList(FileUploadERManual fileUploadERManual);
 	public void setBankOfRate(Set<BankOfRate> bankOfRate);
 	public Set<BankOfRate> getBankOfRate();
+	public Date getRefDate();
 //	public BankOfRate getBankOfRate();
 //	public void setBankOfRate(BankOfRate bankOfRate);
 }

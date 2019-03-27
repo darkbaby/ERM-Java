@@ -9,40 +9,31 @@
 	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
 	"http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
- 	<package name="UserLogonWeb" extends="struts-default" >
- 		<global-results>
-			<result name="exception">pages/PageHalper/exception.jsp</result>
-			<result name="runtime_exception">pages/PageHalper/error.jsp</result>
-			<result name="jdbcException">pages/PageHalper/jdbc_exception.jsp</result>
-		</global-results>
-		
-		<global-exception-mappings>
-			<exception-mapping exception="java.lang.Exception" result="exception"></exception-mapping>
-			<exception-mapping exception="java.lang.NullPointerException" result="exception"></exception-mapping>
-			<exception-mapping exception="java.lang.RuntimeException" result="runtime_exception"></exception-mapping>
-			<exception-mapping exception="org.hibernate.exception.GenericJDBCException" result="jdbcException" ></exception-mapping>
-		</global-exception-mappings>
+ 	<package name="UserLogonWeb" extends="struts-default,default" >
  	
- 	
-		<action name="prepareLogon" class="userLogonAction" method="prepareLogon">
+		<action name="prepareLogon" class="com.esynergy.erm.web.action.UserLogonAction" method="prepareLogon">
 	    	<result name="success">pages/UserLogon/logon_form.jsp</result>
 	    </action>
-	    <action name="logon" class="userLogonAction" method="logOn">
-	    	<result type="chain" name="success">
+	    <action name="logon" class="com.esynergy.erm.web.action.UserLogonAction" method="logOn">
+	    	<result type="redirectAction" name="success">
 			  <param name="actionName">prepareDasboard</param>
 			 </result>
 	    	<result name="input">pages/UserLogon/logon_form.jsp</result>
 	    </action>
-	    <action name="logOut" class="userLogonAction" method="logOut">
-	    	<result type="chain" name="success">
+	    <action name="logOut" class="com.esynergy.erm.web.action.UserLogonAction" method="logOut">
+	    	<result type="redirectAction" name="success">
 			  <param name="actionName">prepareLogon</param>
 			</result>
 	    </action>
-	    <action name="prepareChangePwd" class="userChangePwdAction" method="prepareChangePwd">
+	    <action name="prepareChangePwd" class="com.esynergy.erm.web.action.UserChangePwdAction" method="prepareChangePwd">
 	    	<result name="success">pages/UserLogon/prepare_change_pwd.jsp</result>
 	    </action>
-	    <action name="changePwd" class="userChangePwdAction" method="changePwd">
-	    	<result name="success">pages/UserLogon/prepare_change_pwd.jsp</result>
+	    <action name="changePwd" class="com.esynergy.erm.web.action.UserChangePwdAction" method="changePwd">
+	    	<result type="redirectAction" name="success" >
+	    		<param name="actionName">prepareChangePwd</param>
+	    		<param name="updated">true</param>
+	    	</result>
+	    	<result name="input">pages/UserLogon/prepare_change_pwd.jsp</result>
 	    </action>
  	</package>
 </struts>

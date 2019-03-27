@@ -23,65 +23,69 @@
                   	  <h4 class="mb"><i class="fa fa-cog"></i><span class="subject-text"><s:text name="label.search"/></span></h4>
                   	  <div class="row mt">
                   	  	<div class="col-sm-2">
-                  	  		<div class="form-group">
+                  	  		<div>
                   	  			<div><strong><s:text name="user.logon.id"></s:text></strong></div> 
                   	  			<s:textfield name="userLogonSearchForm.userLogonId" 
                   	  						id="userLogonId" 
                   	  						cssClass="form-control" 
-                  	  						cssStyle="width:200px;" 
+                  	  						cssStyle="width:100%;" 
                   	  						maxLength="16" 
-                  	  						value="%{userLogonSearchForm.userLogonId}"/>
+                  	  						value="%{userLogonSearchForm.userLogonId}"
+                  	  						onkeypress="onKeyPressed(event);"/>
                   	  			<div class="has-error"><s:property value="errors['logOnIdError']"/></div>
                   	  			<div class="has-error"><s:property value="errors['logOnIdInvalidError']"/></div> 
                   	  		</div>
                   	  	</div>
                   	  	<div class="col-sm-2">
-                  	  		<div class="form-group">
+                  	  		<div>
                   	  			<div><strong><s:text name="user.first.name"></s:text></strong></div> 
                   	  			<s:textfield name="userLogonSearchForm.firstName"  
                   	  						id="firstName"
                   	  						value="%{userLogonSearchForm.firstName}"
                   	  						cssClass="form-control"  
-                  	  						cssStyle="width:200px;"
-                  	  						 maxLength="20"/>
+                  	  						cssStyle="width:100%;" 
+                  	  						maxLength="20"
+                  	  						onkeypress="onKeyPressed(event);"/>
                   	  			<div class="has-error"><s:property value="errors['firstNameError']"/></div>
                   	  		</div>
                   	  	</div>
                   	  	<div class="col-sm-2">
-                  	  		<div class="form-group">
+                  	  		<div>
                   	  			<div><strong><s:text name="user.last.name"></s:text></strong></div> 
                   	  			<s:textfield name="userLogonSearchForm.lastName" 
                   	  						id="lastName"
                   	  						value="%{userLogonSearchForm.lastName}"
                   	  						cssClass="form-control"  
-                  	  						cssStyle="width:200px;" 
-                  	  						maxLength="20"/>
+                  	  						cssStyle="width:100%;" 
+                  	  						maxLength="20"
+                  	  						onkeypress="onKeyPressed(event);"/>
                   	  			<div class="has-error"><s:property value="errors['lastNameError']"/></div>
                   	  		</div>
                   	  	</div>
-                  	  	<div class="col-sm-4">
-                  	  		<div class="form-group">
+                  	  	<div class="col-sm-3">
+                  	  		<div>
                   	  			<div><strong><s:text name="user.email"></s:text></strong></div> 
                   	  			<s:textfield name="userLogonSearchForm.emailAddr"
                   	  						id="emailAddr" 
                   	  						value="%{userLogonSearchForm.emailAddr}"
                   	  						cssClass="form-control"  
-                  	  						cssStyle="width:400px;" 
-                  	  						maxLength="100"/>
+                  	  						cssStyle="width:100%;" 
+                  	  						maxLength="100"
+                  	  						onkeypress="onKeyPressed(event);"/>
                   	  			<div class="has-error"><s:property value="errors['emailRequireError']"/></div>
                   	  			<div class="has-error"><s:property value="errors['emailPatternError']"/></div>
                   	  		</div>
                   	  	</div>
                   	  </div>
                   	  <div class="row mt">
-                  	  	<div class="col-sm-3">
-                  	  		<div class="form-group">
+                  	  	<div class="col-sm-2">
+                  	  		<div>
                   	  			<div><strong><s:text name="user.country"></s:text></strong></div> 
-                  	  			<s:select class="form-control" 
+                  	  			<s:select cssStyle="width:100%;"
                   	  					  id="countryId"
                   	  					  name="userLogonSearchForm.countryId" 
                   	  					  headerKey=""
-                  	  					  headerValue="----------------------ALL----------------------"
+                  	  					  headerValue="---ALL---"
                   	  					  list="countryList"
                   	  					  listKey="id"
                   	  					  listValue="countryName"
@@ -92,13 +96,13 @@
                   	  	</div>
                   	 
                   	  	<div class="col-sm-2">
-                  	  		<div class="form-group">
+                  	  		<div>
                   	  			<div><strong><s:text name="user.authorize.group"></s:text></strong></div> 
-                  	  			<s:select class="form-control" 
+                  	  			<s:select cssStyle="width:100%;"
                   	  					  id="groupId"
                   	  					  name="userLogonSearchForm.groupId" 
                   	  					  headerKey=""
-                  	  					  headerValue="---------------ALL--------------"
+                  	  					  headerValue="---ALL---"
                   	  					  list="authorizeGroupList"
                   	  					  listKey="id"
                   	  					  listValue="groupName"
@@ -108,16 +112,13 @@
                   	  		</div>
                   	  		
                   	  	</div>
-                  	   <div class="col-sm-3">
-                  	  			<div class="form-group">
-									<br/>
-									<button style="width:100%" type="button" class="btn btn-theme btn-sm" id="searchBtn">Search</button>
+                  	   <div class="col-sm-2">
+                  	   			<div>
+                  	   			<br>
+									<button style="width:40%;" type="button" class="btn btn-theme" id="searchBtn">Search</button>
+									<button style="width:40%;" type="button" id="resetBtn" class="btn btn-warning"><s:text name="btn.clear" /></button>
 								</div>
-								<div class="form-group">
-									<br/>
-									<button style="width:100%" type="button" id="resetBtn" class="btn btn-warning btn-sm"><s:text name="btn.clear" /></button>
-								</div>
-                  	  </div>	 
+                  	  	</div>	 
                   	  </div>
 
 					</div><!-- /form-panel -->		
@@ -130,6 +131,13 @@
 <script src="<s:url value="/resources/assets/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"/>"></script>
 
  <script type ="text/javascript">
+ 	
+ 	function onKeyPressed(event){
+		if(event.keyCode == 13){
+	 		$('#searchBtn').click();
+		}
+	}
+ 
 	$('#searchBtn').click(function(){
 		$('#userLogonSearchForm').attr('action','searchUser').submit();
 	});

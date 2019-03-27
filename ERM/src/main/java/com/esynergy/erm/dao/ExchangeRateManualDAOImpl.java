@@ -9,6 +9,7 @@ import org.hibernate.Criteria;
  
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -43,29 +44,31 @@ public class ExchangeRateManualDAOImpl extends AbstractHiberbateDAO<Integer, Exc
 
 	public ExchangeRateManual getExchangeRateManualById(long id) {
 		logger.debug("----------getExchangeRateManualById--------");
-		session = HibernateUtil.getSession();
+//		session = HibernateUtil.getSession();
 		//ExchangeRateManual current =(ExchangeRateManual) session.load(ExchangeRateManual.class, id);
-		return (ExchangeRateManual) session.load(ExchangeRateManual.class, id);
+//		ExchangeRateManual reVal = (ExchangeRateManual) session.load(ExchangeRateManual.class, id);
+		return super.getByKey(id);
+//		return reVal;
 	}
      
-	public void saveExchangeRateManual(ExchangeRateManual o){
-		
-		session = HibernateUtil.getSession();
-		session.clear();
-		Transaction tx =session.beginTransaction();
-		try{
-			if(o.getId()==0){
-				session.save(o);
-			}else{
-				session.update(o);
-			}
-			session.flush();
-			tx.commit();
-		}catch(Exception e){
-			tx.rollback();
-			e.printStackTrace();
-		}
-	}
+//	public void saveExchangeRateManual(ExchangeRateManual o){
+//		
+//		session = HibernateUtil.getSession();
+//		session.clear();
+//		Transaction tx =session.beginTransaction();
+//		try{
+//			if(o.getId()==0){
+//				session.save(o);
+//			}else{
+//				session.update(o);
+//			}
+//			session.flush();
+//			tx.commit();
+//		}catch(Exception e){
+//			tx.rollback();
+//			e.printStackTrace();
+//		}
+//	}
 	 
 	public ExchangeRateManual updateExchangeRateManual(ExchangeRateManual o) {
 		logger.debug("----------updateExchangeRateManual--------");
@@ -77,7 +80,7 @@ public class ExchangeRateManualDAOImpl extends AbstractHiberbateDAO<Integer, Exc
 	public List<IExchangeRate> listAllExchangeRateManual() {
 		logger.debug("----------listAllExchangeRateManual--------");
 		
-		return super.hibernateNameQuery("HQL.listAllExchangeRateManual").list();
+		return super.hibernateNameQuery("HQL.listAllExchangeRateManual");
 	}
 	
 	public void deleteExchangeRateManual(ExchangeRateManual o) {
@@ -87,11 +90,14 @@ public class ExchangeRateManualDAOImpl extends AbstractHiberbateDAO<Integer, Exc
 
 	@SuppressWarnings("unchecked")
 	public List<IExchangeRate> listExchangeRateManualByLastUpdateUser(String arg) {
-		logger.debug("----------listExchangeRateManualByLastUpdateUser Arg : "+arg); 
-		Criteria criteria = super.createEntityCriteria();
+		logger.debug("----------listExchangeRateManualByLastUpdateUser Arg : "+arg);
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
+//		Criteria criteria = super.createEntityCriteria();
 		criteria.add(Restrictions.eq("a.lastUpdateUser", arg));
 		criteria.addOrder(Order.desc("a.rateDate"));
-		return  criteria.list();
+//		return  criteria.list();
+		return super.executeDetachedCriteria(criteria);
 	}
 
 	@SuppressWarnings({ "unchecked", "deprecation" })
@@ -99,15 +105,17 @@ public class ExchangeRateManualDAOImpl extends AbstractHiberbateDAO<Integer, Exc
 	public List<IExchangeRate> listExchangeRateManualByRateDate(
 			Date strDate, Date endDate)    {
 		logger.debug("----------listExchangeRateManualByRateDate  "); 
-		Criteria criteria = super.createEntityCriteria();
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
+//		Criteria criteria = super.createEntityCriteria();
 		criteria.add(Expression.ge("a.rateDate", strDate));
 		criteria.add(Expression.le("a.rateDate", endDate));
 	/*	criteria.add(Restrictions.between("rateDate", strDate, endDate));*/
 		/*criteria.add(Restrictions.ge("rateDate", strDate, endDate));*/
 		criteria.addOrder(Order.desc("a.rateDate"));
 		
-		List<IExchangeRate> exchangeRates = criteria.list();
-		
+//		List<IExchangeRate> exchangeRates = criteria.list();
+		List<IExchangeRate> exchangeRates = super.executeDetachedCriteria(criteria);
 		return exchangeRates;
 //		return   criteria.list();
 	}
@@ -117,27 +125,32 @@ public class ExchangeRateManualDAOImpl extends AbstractHiberbateDAO<Integer, Exc
 	public List<IExchangeRate> listExchangeRateManualByRateDateAndLastUpdateUser(
 			Date strDate, Date endDate, String lastUpdateUser) {
 		logger.debug("----------listExchangeRateManualByRateDateAndLastUpdateUser  "); 
-		 
-		Criteria criteria = super.createEntityCriteria();
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
+//		Criteria criteria = super.createEntityCriteria();
 		criteria.add(Expression.ge("a.rateDate", strDate));
 		criteria.add(Expression.le("a.rateDate", endDate));
 		criteria.add(Restrictions.eq("a.lastUpdateUser", lastUpdateUser));
 		criteria.addOrder(Order.desc("a.rateDate"));
 		
-		List<IExchangeRate> exchangeRates = criteria.list();
-		
+//		List<IExchangeRate> exchangeRates = criteria.list();
+		List<IExchangeRate> exchangeRates = super.executeDetachedCriteria(criteria);
+
 		return exchangeRates;
 //		return criteria.list();
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<IExchangeRate> listExchangeRateManualByRateDate(Date date){
-		Criteria criteria = super.createEntityCriteria();
+//		Criteria criteria = super.createEntityCriteria();
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
 		criteria.add(Restrictions.sqlRestriction("to_char(rate_Date,'"+IPageContains.FORMAT_DATE+"')=? order by RECORD_CHANGE_DATE DESC"
 					, IPageContains.DATE_FORMAT.format(date)
 					,StandardBasicTypes.STRING));
 		
-		List<IExchangeRate> exchangeRates = criteria.list();
+//		List<IExchangeRate> exchangeRates = criteria.list();
+		List<IExchangeRate> exchangeRates = super.executeDetachedCriteria(criteria);
 		
 		return exchangeRates;
 	}
@@ -153,7 +166,9 @@ public class ExchangeRateManualDAOImpl extends AbstractHiberbateDAO<Integer, Exc
 	@SuppressWarnings("unchecked")
 	public List<IExchangeRate> search(long pairCurrencyId,
 			long baseCurrencyId){
-		Criteria criteria = super.createEntityCriteria();
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
+//		Criteria criteria = super.createEntityCriteria();
 		if(pairCurrencyId!=0){
 			String sql = "this_.PK_RATE_HDR_SEQ in (select b1_.FK_RATE_HDR_SEQ "
 					+ "  from ERM_EXCHANGE_RATE_DTL b1_ "
@@ -168,12 +183,15 @@ public class ExchangeRateManualDAOImpl extends AbstractHiberbateDAO<Integer, Exc
 					+ " order by RECORD_CHANGE_DATE DESC ";
 			criteria.add(Restrictions.sqlRestriction(sql, baseCurrencyId, StandardBasicTypes.LONG));
 		}
-		return criteria.list();
+//		return criteria.list();
+		return super.executeDetachedCriteria(criteria);
 	}
 	public List<IExchangeRate> search(
 				Date strDate, Date endDate,String userUpdate)    {
 			logger.debug("----------listExchangeRateManualByRateDate  "); 
-			Criteria criteria = super.createEntityCriteria();
+			DetachedCriteria criteria = super.createDetachedCriteria();
+
+//			Criteria criteria = super.createEntityCriteria();
 			if(strDate==null && endDate==null && UIUtil.isEmptyOrNull(userUpdate)){
 				return this.listExchangeRateManualByRateDate(new Date());
 			}
@@ -187,8 +205,40 @@ public class ExchangeRateManualDAOImpl extends AbstractHiberbateDAO<Integer, Exc
 				criteria.add(Restrictions.eq("a.lastUpdateUser", userUpdate));
 			}
 			criteria.addOrder(Order.desc("a.lastUpdateDate"));
-			List<IExchangeRate> exchangeRates = criteria.list();			
+//			List<IExchangeRate> exchangeRates = criteria.list();	
+			List<IExchangeRate> exchangeRates = super.executeDetachedCriteria(criteria);
 			return exchangeRates;
- 
+	}
+	
+	public List<IExchangeRate> search(
+			Date strDate, Date endDate,long baseCurrencyId,
+			long pairCurrencyId )    {
+		logger.debug("----------listExchangeRateManualByRateDate  "); 
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
+//		Criteria criteria = super.createEntityCriteria();
+		if(strDate!=null){
+			criteria.add(Expression.ge("a.rateDate", strDate));
+		}
+		if(endDate!=null){
+			criteria.add(Expression.le("a.rateDate", endDate));
+		}
+				
+//		criteria.createAlias("a.exchangeRateDetails", "b");
+//		criteria.createAlias("b.firstCurrency", "c");
+//		criteria.createAlias("b.pairCurrency", "d");
+//		if(pairCurrencyId!=0){
+//			criteria.add(Restrictions.eqOrIsNull("d.id", pairCurrencyId));
+//		}
+//		if(baseCurrencyId!=0){
+//			criteria.add(Restrictions.eqOrIsNull("c.id", baseCurrencyId));
+//		}
+		
+		criteria.addOrder(Order.desc("a.lastUpdateDate"));
+//		List<IExchangeRate> exchangeRates = criteria.list();	
+		List<IExchangeRate> exchangeRates = super.executeDetachedCriteria(criteria);
+
+		return exchangeRates;
+
 	}
 }

@@ -4,19 +4,21 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.hibernate.Session;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.esynergy.common.dao.AbstractHiberbateDAO;
 import com.esynergy.common.dao.ResultKeyListMapper;
 import com.esynergy.common.dao.ResultStringListMapper;
+import com.esynergy.erm.hbm.util.HibernateUtil;
 import com.esynergy.erm.web.action.IPageContains;
 
 @Repository("exchangeRateByManualJdbc")
-public class ExchangeRateByManualJdbcImpl implements ExchangeRateByManualJdbc {
+public class ExchangeRateByManualJdbcImpl  implements ExchangeRateByManualJdbc {
 	
 	@SuppressWarnings("unused")
 	private DataSource dataSource;
-	
  
 	private JdbcTemplate jdbcTemplateObject;
 	
@@ -31,6 +33,7 @@ public class ExchangeRateByManualJdbcImpl implements ExchangeRateByManualJdbc {
 				   + "    on dtl.FK_RATE_HDR_SEQ = hdr.PK_RATE_HDR_SEQ "
 				   + "   and dtl.FK_BASE_CURRENCY = ? "
 				   + "   and dtl.FK_PAIR_CURRENCY = ? "
+				   + "   and hdr.type = '" + IPageContains.ER_ORIGIN_MANUAL + "' "
 				   + "   and dtl.PK_RATE_DTL_SEQ <> ?" 
 				   + " where to_char(hdr.RATE_DATE,'"+IPageContains.FORMAT_DATE+"')  = to_char(to_date(?,'"+IPageContains.FORMAT_DATE+"'),'"+IPageContains.FORMAT_DATE+"') "
 				   + "   and hdr.PK_RATE_HDR_SEQ <> ? "; 
@@ -41,6 +44,12 @@ public class ExchangeRateByManualJdbcImpl implements ExchangeRateByManualJdbc {
 
 	public List<String> listAllUserUpdate() {
 		String sql = " select distinct hdr.RECORD_CHANGE_USER txt from ERM_EXCHANGE_RATE_HDR hdr ";
+		
+//		Session session = HibernateUtil.getSession();
+//		List<String> returnList = session.createSQLQuery(sql).list();
+//		HibernateUtil.closeSession(session);
+//		return returnList;
+		
 		return jdbcTemplateObject.query(sql, new ResultStringListMapper());
 	}
 

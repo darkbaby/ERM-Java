@@ -20,10 +20,12 @@
 		<property name="lastUpdateUser"     column="RECORD_CHANGE_USER"      type="string"/>
 		<property name="createdDate"        column="RECORD_ADD_DATE"         type="timestamp"/>
 		<property name="lastUpdateDate"     column="RECORD_CHANGE_DATE"      type="timestamp"/>
+		<property name="idExchangeRateAuto"     column="FK_RATE_HDR_SEQ"      type="long"/>
 		
-		<many-to-one name="exchangeRateAuto" class="ExchangeRateAuto" fetch="select" unique="true">
-	    	<column name="FK_RATE_HDR_SEQ" index="idx_histlog_2"></column>
-	    </many-to-one>
+<!-- 		<many-to-one name="exchangeRateAuto" class="ExchangeRateAuto" fetch="select" unique="true"> -->
+<!-- 	    	<column name="FK_RATE_HDR_SEQ" index="idx_histlog_2"></column> -->
+<!-- 	    </many-to-one> -->
+		
 	    
 	    <many-to-one name="extraction" class="Extraction" fetch="select" not-null="true" >
 	    	<column name="FK_SET_HDR_ID" index="idx_histlog_1"></column>

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -26,31 +27,40 @@ public class ExchangeRateDAOImpl extends AbstractHiberbateDAO<Integer, ExchangeR
 	@Override
 	public List<ExchangeRate> getByRateDate(Date date) {
 		logger.debug("--------------getByRateDate----------");
-		Criteria criteria = super.createEntityCriteria();
+//		Criteria criteria = super.createEntityCriteria();
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
 		criteria.add(Restrictions.sqlRestriction("to_char(rate_Date,'"+IPageContains.FORMAT_DATE+"')=?", IPageContains.DATE_FORMAT.format(date),StandardBasicTypes.STRING));
 		
 		/*return super.hibernateQuery("from ExchangeRate a where to_char(a.rateDate,'DD/MM/YYYY')='"
 				+IPageContains.DATE_FORMAT.format(date)+"'");*/
-		return criteria.list();
+//		return criteria.list();
+		return super.executeDetachedCriteria(criteria);
 	}
 
 	@Override
 	public IExchangeRate getbyId(long id) {
 		logger.debug("--------------getbyId----------");
-		Criteria criteria = super.createEntityCriteria();
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
+//		Criteria criteria = super.createEntityCriteria();
 		criteria.add(Restrictions.eq("a.id", id));
 		criteria.createAlias("a.exchangeRateDetails", "b");
 		criteria.addOrder(Order.asc("b.id"));
-		if(criteria.list()!=null && criteria.list().size()>0)
-			return (IExchangeRate)criteria.list().get(0);
+		
+		List temp = super.executeDetachedCriteria(criteria);
+		
+		if(temp!=null && temp.size()>0)
+			return (IExchangeRate)temp.get(0);
 		return null;
 	}
 
 	@SuppressWarnings({ "unchecked" })
 	@Override
 	public List<IExchangeRate> search(long pairCurrencyId, long baseCurrencyId,String type) {
-		Criteria criteria = super.createEntityCriteria();
-		 
+//		Criteria criteria = super.createEntityCriteria();
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
 		if(pairCurrencyId!=0){
 			criteria.createAlias("a.pairCurrency", "cp");
 			criteria.add(Expression.eq("cp.id", pairCurrencyId));
@@ -74,7 +84,8 @@ public class ExchangeRateDAOImpl extends AbstractHiberbateDAO<Integer, ExchangeR
 			criteria.add(Expression.eq("bkc.id", countryOfBankId));
 		}*/
 		//criteria.add(criterion) 
-		return criteria.list();
+//		return criteria.list();
+		return super.executeDetachedCriteria(criteria);
 	}
 
 }

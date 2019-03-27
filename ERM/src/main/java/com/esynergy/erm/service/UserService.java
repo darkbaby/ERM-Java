@@ -12,6 +12,7 @@ public interface UserService {
 	public void save(User user);
 	public void savePwd(User user);
 	public List<IUser> list();
+	public Map<Long, IUser> listMap();
 	public boolean getDupllicate(long id,String logonId);
 	public List<IUser> search(Map<String,Object> parm);
 	public boolean checkPwd(String pariPwd,IUser user);

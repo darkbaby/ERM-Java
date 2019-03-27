@@ -47,8 +47,10 @@
 		        <h2 class="form-login-heading">sign in now</h2>
 		        <div class="login-wrap">
 		            
-		            <s:textfield cssClass="form-control" name="userLogonForm.userLogonId"/>
+<%-- 		            <s:textfield cssClass="form-control" name="userLogonForm.userLogonId" autocomplete="username"/> --%>
+		            <s:textfield cssClass="form-control" name="userLogonForm.userLogonId" />
 		            <br>
+<%-- 		            <s:password cssClass="form-control" name="userLogonForm.pwd" autocomplete="current-password"/> --%>
 		            <s:password cssClass="form-control" name="userLogonForm.pwd"/>
 		            <div class="has-error"><s:property value="errors['logonError']"/></div>
 		            <label class="checkbox">
@@ -71,6 +73,7 @@
 		                      </div>
 		                      <div class="modal-body">
 		                          <p>Enter your e-mail address below to reset your password.</p>
+<!-- 		                          <input type="text" name="email" id="email" placeholder="Email" autocomplete="email" class="form-control placeholder-no-fix"> -->
 		                          <input type="text" name="email" id="email" placeholder="Email" autocomplete="off" class="form-control placeholder-no-fix">
 		                          <span id="resetMsg"></span>
 		                      </div>

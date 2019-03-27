@@ -1,11 +1,15 @@
 package com.esynergy.erm.service;
 
+import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.esynergy.erm.common.util.ICommonContains;
+import com.esynergy.erm.common.util.UIUtil;
 import com.esynergy.erm.dao.ExchangeRateAutoDAO;
 import com.esynergy.erm.dao.ExchangeRateDetailDAO;
 import com.esynergy.erm.dao.ExtractionDAO;
@@ -40,13 +44,37 @@ public class ExchangeRateAutoServiceImpl implements ExchangeRateAutoService{
 
 	@Override
 	public List<IExchangeRate> listByDate(Date date) {
-		return exchangeRateAutoDAO.listByDate(date);
+		List<IExchangeRate> reVal = exchangeRateAutoDAO.listByDate(date);
+		for(IExchangeRate item : reVal) {
+			item.setOwnerType("AUTO");
+		}
+		return reVal;
 	}
 
 	@Override
-	public List<ExchangeRateAuto> search(Date dateStart, Date dateEnd,
-			String bankName, int status) {
-		return null;//exchangeRateAutoDAO.search(dateStart, dateEnd, bankName, status);
+	public List<IExchangeRate> search(String dateStartStr, String dateEndStr,
+			String bankName, long baseCID, long pairCID) {
+		try {
+			Date dateStart =UIUtil.isEmptyOrNull(dateStartStr)?null:ICommonContains.DATE_FORMAT_ORACLE.parse(dateStartStr+" 00:00:00");
+			Date dateEnd = UIUtil.isEmptyOrNull(dateEndStr)?null:ICommonContains.DATE_FORMAT_ORACLE.parse(dateEndStr+" 23:59:59");
+			
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(dateStart);
+			dateStart = cal.getTime();
+			cal.setTime(dateEnd);
+			dateEnd = cal.getTime();
+			
+			List<IExchangeRate> reVal = exchangeRateAutoDAO.search(dateStart, dateEnd, bankName, baseCID, pairCID);
+			for(IExchangeRate item : reVal) {
+				item.setOwnerType("AUTO");
+			}
+			
+			return reVal;
+		
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	public ExchangeRateAuto getByExtractionId(long id){

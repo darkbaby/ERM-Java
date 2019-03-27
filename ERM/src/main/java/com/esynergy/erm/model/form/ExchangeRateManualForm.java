@@ -14,18 +14,23 @@ public class ExchangeRateManualForm {
 	private long   id;
 	private String  rateDate;
 	private String  rateDateStatic;
-	private String createdUser;
-	private String lastUpdateUser;
-	private Date   createdDate;
-	private Date   lastUpdateDate;
+	private String refDate;
+//	private String createdUser;
+//	private String lastUpdateUser;
+//	private Date   createdDate;
+//	private Date   lastUpdateDate;
 	private String pairCurrencyType;
     private List<ExchangeRateManualDetailForm> exchangeRateDetailList;
-    private List<FileUploadERManualForm> fileUploadERManualList;
-    private Map<String,IFileUpload> fileUploadMap;
+    private List<FileUploadForm> fileUploadList;
+	private List<Long> exchangeRateDetailFormRemoveList;
+	private List<FileUploadForm> fileUploadFormRemoveList;
+//    private Map<String,IFileUpload> fileUploadMap;
     public ExchangeRateManualForm(){
     	this.exchangeRateDetailList = new ArrayList<ExchangeRateManualDetailForm>();
-    	this.fileUploadERManualList = new  ArrayList<FileUploadERManualForm>();
-    	this.fileUploadMap = new HashMap<String, IFileUpload>();
+    	this.fileUploadList = new  ArrayList<FileUploadForm>();
+    	this.exchangeRateDetailFormRemoveList = new ArrayList<Long>();
+    	this.fileUploadFormRemoveList = new ArrayList<FileUploadForm>();
+//    	this.fileUploadMap = new HashMap<String, IFileUpload>();
     }
 	public long getId() {
 		return id;
@@ -40,18 +45,18 @@ public class ExchangeRateManualForm {
 		this.rateDate = rateDate;
 	}
 	 
-	public Date getCreatedDate() {
-		return createdDate;
-	}
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
-	public Date getLastUpdateDate() {
-		return lastUpdateDate;
-	}
-	public void setLastUpdateDate(Date lastupdateDate) {
-		this.lastUpdateDate = lastupdateDate;
-	}
+//	public Date getCreatedDate() {
+//		return createdDate;
+//	}
+//	public void setCreatedDate(Date createdDate) {
+//		this.createdDate = createdDate;
+//	}
+//	public Date getLastUpdateDate() {
+//		return lastUpdateDate;
+//	}
+//	public void setLastUpdateDate(Date lastupdateDate) {
+//		this.lastUpdateDate = lastupdateDate;
+//	}
 	public List<ExchangeRateManualDetailForm> getExchangeRateDetailList() {
 		return exchangeRateDetailList;
 	}
@@ -67,43 +72,61 @@ public class ExchangeRateManualForm {
 	public void setRateDateStatic(String rateDateStatic) {
 		this.rateDateStatic = rateDateStatic;
 	}
-	public Map<String, IFileUpload> getFileUploadMap() {
-		return fileUploadMap;
+//	public Map<String, IFileUpload> getFileUploadMap() {
+//		return fileUploadMap;
+//	}
+//	public void setFileUploadMap(Map<String, IFileUpload> fileUploadMap) {
+//		this.fileUploadMap = fileUploadMap;
+//	}
+// 
+//	public void putFileUploadMap(String key,FileUploadERManualForm obj){
+//		this.fileUploadMap.put(key, obj);
+//	}
+	public List<FileUploadForm> getFileUploadList() {
+		return fileUploadList;
 	}
-	public void setFileUploadMap(Map<String, IFileUpload> fileUploadMap) {
-		this.fileUploadMap = fileUploadMap;
+	public void setFileUploadList(
+			List<FileUploadForm> fileUploadList) {
+		this.fileUploadList = fileUploadList;
 	}
- 
-	public void putFileUploadMap(String key,FileUploadERManualForm obj){
-		this.fileUploadMap.put(key, obj);
+	public void addFileUploadList(FileUploadForm f){
+		this.fileUploadList.add(f);
 	}
-	public List<FileUploadERManualForm> getFileUploadERManualList() {
-		return fileUploadERManualList;
-	}
-	public void setFileUploadERManualList(
-			List<FileUploadERManualForm> fileUploadERManualList) {
-		this.fileUploadERManualList = fileUploadERManualList;
-	}
-	public void addFileUploadERManualList(FileUploadERManualForm f){
-		this.fileUploadERManualList.add(f);
-	}
-	public String getCreatedUser() {
-		return createdUser;
-	}
-	public String getLastUpdateUser() {
-		return lastUpdateUser;
-	}
-	public void setCreatedUser(String createdUser) {
-		this.createdUser = createdUser;
-	}
-	public void setLastUpdateUser(String lastUpdateUser) {
-		this.lastUpdateUser = lastUpdateUser;
-	}
+//	public String getCreatedUser() {
+//		return createdUser;
+//	}
+//	public String getLastUpdateUser() {
+//		return lastUpdateUser;
+//	}
+//	public void setCreatedUser(String createdUser) {
+//		this.createdUser = createdUser;
+//	}
+//	public void setLastUpdateUser(String lastUpdateUser) {
+//		this.lastUpdateUser = lastUpdateUser;
+//	}
 	public String getPairCurrencyType() {
 		return pairCurrencyType;
 	}
 	public void setPairCurrencyType(String pairCurrencyType) {
 		this.pairCurrencyType = pairCurrencyType;
+	}
+	public String getRefDate() {
+		return refDate;
+	}
+	public void setRefDate(String refDate) {
+		this.refDate = refDate;
+	}
+	public List<Long> getExchangeRateDetailFormRemoveList() {
+		return exchangeRateDetailFormRemoveList;
+	}
+	public void setExchangeRateDetailFormRemoveList(List<Long> exchangeRateDetailFormRemoveList) {
+		this.exchangeRateDetailFormRemoveList = exchangeRateDetailFormRemoveList;
+	}
+	public List<FileUploadForm> getFileUploadFormRemoveList() {
+		return fileUploadFormRemoveList;
+	}
+	public void setFileUploadFormRemoveList(List<FileUploadForm> fileUploadFormRemoveList) {
+		this.fileUploadFormRemoveList = fileUploadFormRemoveList;
 	}
 
 }

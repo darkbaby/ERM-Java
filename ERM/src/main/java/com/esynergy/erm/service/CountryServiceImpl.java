@@ -1,5 +1,6 @@
 package com.esynergy.erm.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,14 +14,25 @@ import com.esynergy.erm.model.ob.Country;
 public class CountryServiceImpl implements CountryService {
 	
 	@Autowired
-	private CountryDAO countryService;
+	private CountryDAO countryDao;
 
 	public List<Country> listAll() {
-		return countryService.listAllCountry();
+		return countryDao.listAllCountry();
+	}
+	
+	public Map<Long, Country> listAllMap(){
+		Map<Long, Country> returnMap = new HashMap<Long, Country>();
+		List<Country> counList = countryDao.listAllCountry();
+		if(counList != null) {
+			for(Country item : counList) {
+				returnMap.put(item.getId(), item);
+			}
+		}
+		return returnMap;
 	}
 	
 	public Country getById(long id) {
-		return countryService.getCountryById(id);
+		return countryDao.getCountryById(id);
 	}
 		
 }

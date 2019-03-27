@@ -11,9 +11,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
  <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <%
-      String mainMenu = (String) request.getAttribute(IPageContains.MAIN_MENU_ATTR);
-    %>
+    
 </head>
     <style>
 @import url(http://fonts.googleapis.com/css?family=PT+Sans:400,700);
@@ -254,6 +252,13 @@
   width: 170px;
   display: block;
 }
+.btn {
+	
+	margin-left:1px;
+	margin-right:1px;
+}
+
+
 @media all and (max-width: 800px), only screen and (-webkit-min-device-pixel-ratio: 2) and (max-width: 1024px), only screen and (min--moz-device-pixel-ratio: 2) and (max-width: 1024px), only screen and (-o-min-device-pixel-ratio: 2/1) and (max-width: 1024px), only screen and (min-device-pixel-ratio: 2) and (max-width: 1024px), only screen and (min-resolution: 192dpi) and (max-width: 1024px), only screen and (min-resolution: 2dppx) and (max-width: 1024px) {
   #cssmenu > ul {
     max-height: 0;
@@ -386,11 +391,11 @@
     <!--   <!-- **********************************************************************************************************************************************************
       MAIN SIDEBAR MENU -->
 <%
-	
-
-%> 
-    
-      
+//     	String test = IPageContains.MAIN_MENU_ATTR;
+//     	Object test2 = request.getAttribute(test);
+        String mainMenu = (String) request.getAttribute(IPageContains.MAIN_MENU_ATTR);
+//     	String m2 = mainMenu;
+%>      
 <div id='cssmenu'>
 	<ul>
 	   <li <%=request.getAttribute(IPageContains.MAIN_MENU_ATTR).equals(IPageContains.MENU_DASHBOARD)? "class='active'":" " %> >
@@ -402,24 +407,24 @@
 	   <li class='has-sub <%=request.getAttribute(IPageContains.MAIN_MENU_ATTR).equals(IPageContains.MENU_EXCHANGE_RATE)? " active":" " %>'><a href='#'><span><s:text name="menu.main.exchange.rate"/></span></a>
 	      <ul>
 	         <li class='has-sub <%=request.getAttribute(IPageContains.SUB_MENU_ATTR).equals(IPageContains.MENU_EXCHANGE_RATE_AUTO)? "active":" " %> '>
-	         	<s:url var="prepareMangeExchangeRateAutoUrl" action="prepareMangeExtraction.action"></s:url>
-	         	<s:a href="%{prepareMangeExchangeRateAutoUrl}">
+	         	<s:url var="exchangeRateAutoUrl" action="prepareManageExtraction.action"></s:url>
+	         	<s:a href="%{exchangeRateAutoUrl}">
 	         		<span>
 	         			<s:text name="menu.sub.auto.process"/>
 	         		</span>
 	         	</s:a>
 	         	<ul>
 	         		<li <%=request.getAttribute(IPageContains.SUB_MENU1_ATTR).equals(IPageContains.MENU_EXTRACTION_MANAGE)? "class='active'":" " %> >
-				   		<s:url var="prepareMangeExtractionUrl" action="prepareMangeExtraction.action"></s:url>
-				   		<s:a href='%{prepareMangeExtractionUrl}'>
+				   		<s:url var="prepareManageExtractionUrl" action="prepareManageExtraction.action"></s:url>
+				   		<s:a href='%{prepareManageExtractionUrl}'>
 				   			<span>
 				   				<s:text name="menu.main.extraction.manage"/>
 				   			</span>
 				   		</s:a>
 				   </li>
 				   <li <%=request.getAttribute(IPageContains.SUB_MENU1_ATTR).equals(IPageContains.MENU_EXCHANGE_RATE_AUTO_HISTLOG_SCRAPED)? "class='active'":" " %> >
-				   		<s:url var="prepareMangeExchangeRateAutoUrl" action="prepareMangeExchangeRateAuto.action"></s:url>
-				   		<s:a href='%{prepareMangeExchangeRateAutoUrl}'>
+				   		<s:url var="prepareManageExchangeRateAutoUrl" action="prepareManageExchangeRateAuto.action"></s:url>
+				   		<s:a href='%{prepareManageExchangeRateAutoUrl}'>
 				   			<span>
 				   				<s:text name="menu.main.auto.histlog.scraped"/>
 				   			</span>
@@ -427,13 +432,31 @@
 				   </li>
 	         	</ul>
 	         </li>
-	         <li <%=request.getAttribute(IPageContains.SUB_MENU_ATTR).equals(IPageContains.MENU_EXCHANGE_RATE_MANUAL)? "class='active'":" " %>>
-	         	<s:url var="prepareMangeExchangeRateManualUrl" action="prepareMangeExchangeRateManual.action"></s:url>
-	         	<s:a href="%{prepareMangeExchangeRateManualUrl}">
+	         <li class='has-sub <%=request.getAttribute(IPageContains.SUB_MENU_ATTR).equals(IPageContains.MENU_EXCHANGE_RATE_MANUAL)? "active":" " %> '>
+	         	<s:url var="exchangeRateManualUrl" action="prepareManageExchangeRateManual.action"></s:url>
+	         	<s:a href="%{exchangeRateManualUrl}">
 	         		<span>
 	         			<s:text name="menu.sub.manual.process"/>
 	         		</span>
 	         	</s:a>
+	         	<ul>
+	         		<li <%=request.getAttribute(IPageContains.SUB_MENU1_ATTR).equals(IPageContains.MENU_EXCHANGE_RATE_MANUAL_RATE_MANAGE)? "class='active'":" " %> >	         	
+				   		<s:url var="prepareManageExchangeRateManualUrl" action="prepareManageExchangeRateManual.action"></s:url>
+				   		<s:a href='%{prepareManageExchangeRateManualUrl}'>
+				   			<span>
+				   				<s:text name="menu.main.manual.rate.manage"/>
+				   			</span>
+				   		</s:a>
+				   </li>
+				   <li <%=request.getAttribute(IPageContains.SUB_MENU1_ATTR).equals(IPageContains.MENU_EXCHANGE_RATE_MANUAL_LIST_MAINTAIN)? "class='active'":" " %> >
+				   		<s:url var="prepareManageManualListUrl" action="prepareManageManualList.action"></s:url>
+				   		<s:a href='%{prepareManageManualListUrl}'>
+				   			<span>
+				   				<s:text name="menu.main.manual.list.maintain"/>
+				   			</span>
+				   		</s:a>
+				   </li>
+	         	</ul>
 	        </li>
 	        <li <%=request.getAttribute(IPageContains.SUB_MENU_ATTR).equals(IPageContains.MENU_EXCHANGE_RATE_AUTO_VIEW_ADJUST)? "class='active'":" " %> >
 		   		<s:url var="prepareAutoRateAdjustUrl" action="prepareAutoRateAdjust.action"></s:url>

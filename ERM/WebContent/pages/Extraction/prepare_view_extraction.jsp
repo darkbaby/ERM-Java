@@ -27,12 +27,12 @@
             <div class="row">
             <ul class="breadcrumb">
               <li><s:text name="menu.sub.auto.process"/></li>
-              <li><s:a href="%{prepareMangeExtractionUrl}"><s:text name="header.mangement.extraction"/></s:a></li>
+              <li><s:a href="%{prepareManageExtractionUrl}"><s:text name="header.mangement.extraction"/></s:a></li>
               <li><s:text name="header.extraction.view"/> </li>
             </ul>
             </div>
             <!--BREADCRUM END-->  
-			<h3 class="subject"><i class="fa fa-dashboard"></i><span class="subject-text"><s:text name="actionMsg['actionTitle']"/></span></h3>
+			<h3 class="subject"><i class="fa fa-dashboard"></i><span class="subject-text"><s:property value="menuName"/></span></h3>
 			   
 			<div >
 		      	<s:include value="view_detail_extraction.jsp"/>

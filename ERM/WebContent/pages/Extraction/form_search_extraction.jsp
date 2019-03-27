@@ -20,7 +20,7 @@
           		<div class="col-md-12">
           			<div class="form-panel02">
                   	  <h4 class="mb"><i class="fa fa-search"></i><span class="subject-text"><s:text name="label.search"/></span></h4>
-					  <s:form name="extractionSearchForm"  id="extractionSearchForm" theme="simple" class=" " role="form">
+					  <s:form name="extractionSearchForm"  id="extractionSearchForm" theme="simple" class="" role="form">
 						  <table id="searchTable" >
 							<tr>
 								<td style="width:20%">
@@ -28,7 +28,14 @@
 <!-- 										 	<label for="bankName"> -->
 										 		<s:text name="label.bank.name"/>
 <!-- 										 	</label> -->
-											<s:textfield name="extractionSearchForm.bankName" id="bankName" value="%{extractionSearchForm.bankName}" class="form-control" />
+											<s:textfield name="forHide" style="display:none;" />
+											
+											<s:textfield 
+												name="extractionSearchForm.bankName" 
+												id="bankName" 
+												value="%{extractionSearchForm.bankName}" 
+												class="form-control"
+												onkeypress="onKeyPressed(event);" />
 					                    </div>	 
 								</td>
 								 <td style="width:1%"></td>
@@ -94,6 +101,13 @@
   
 <script src="<s:url value='/resources/assets/js/select2.min.js' />"></script>
  <script type ="text/javascript">
+ 	
+ 	function onKeyPressed(event){
+ 		if(event.keyCode == 13){
+ 	 		$('#searchBtn').click();
+ 		}
+ 	}
+ 	
     $('#searchBtn').click(function(){
     	$('#extractionSearchForm').attr('action','searchExtraction.action').submit();
 	});

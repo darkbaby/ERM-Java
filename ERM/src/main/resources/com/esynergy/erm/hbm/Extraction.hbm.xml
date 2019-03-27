@@ -6,7 +6,6 @@
 <hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
 	<class name="Extraction" table="ERM_SETTING_HDR" dynamic-update="true" >
 		<id name="id" column="PK_SET_HDR_SEQ" type="long">
-			<!-- <generator class="identity"/>  -->     
 			<generator class="sequence-identity">
                 <param name="sequence" >ERM_SETTING_HDR_ID_SEQ</param>           
             </generator>             
@@ -43,18 +42,18 @@
 			</key>
 			<one-to-many entity-name="com.esynergy.erm.model.ob.ExtractionDetail"  />
 		</set>
-		<set name="histLogs" table="ERM_HIST_LOG" cascade="save-update"   inverse="true" fetch="select" >
-			<key>
-				<column name="FK_SET_HDR_ID" not-null="true"/>
-			</key>
-			<one-to-many entity-name="com.esynergy.erm.model.ob.ExchangeRateAutoHISTLog"  />
-		</set>
-		<set name = "bankOfRate" table="ERM_EXCHANGE_RATE_BANK" cascade="none"  inverse="true" fetch="select">
-	      		<key>
-	      			<column name="FK_SET_BANK_SEQ"/>
-	      		</key>
-	      		<one-to-many entity-name="com.esynergy.erm.model.ob.BankOfRate"/>
-	     </set>
+<!-- 		<set name="histLogs" table="ERM_HIST_LOG" cascade="save-update"   inverse="true" fetch="select" > -->
+<!-- 			<key> -->
+<!-- 				<column name="FK_SET_HDR_ID" not-null="true"/> -->
+<!-- 			</key> -->
+<!-- 			<one-to-many entity-name="com.esynergy.erm.model.ob.ExchangeRateAutoHISTLog"  /> -->
+<!-- 		</set> -->
+<!-- 		<set name = "bankOfRate" table="ERM_EXCHANGE_RATE_BANK" cascade="none"  inverse="true" fetch="select"> -->
+<!-- 	      		<key> -->
+<!-- 	      			<column name="FK_SET_BANK_SEQ"/> -->
+<!-- 	      		</key> -->
+<!-- 	      		<one-to-many entity-name="com.esynergy.erm.model.ob.BankOfRate"/> -->
+<!-- 	     </set> -->
 	</class>
 	
 	<query name="HQL.listAllExtraction">

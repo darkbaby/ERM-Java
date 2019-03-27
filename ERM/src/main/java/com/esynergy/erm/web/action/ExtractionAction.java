@@ -1,27 +1,24 @@
 package com.esynergy.erm.web.action;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.interceptor.ServletRequestAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.esynergy.common.web.action.ActionCommon;
 import com.esynergy.erm.common.util.UIUtil;
-import com.esynergy.erm.common.util.ValidatorUtil;
-import com.esynergy.erm.model.IUser;
 import com.esynergy.erm.model.form.ExtractionDetailForm;
 import com.esynergy.erm.model.form.ExtractionForm;
 import com.esynergy.erm.model.form.ExtractionSearchForm;
@@ -34,39 +31,32 @@ import com.esynergy.erm.model.ob.ExtractionDetail;
 import com.esynergy.erm.model.ob.ExtractionTime;
 import com.esynergy.erm.model.ob.Extraction;
 import com.esynergy.erm.service.BankService;
-import com.esynergy.erm.service.CodeValueService;
-import com.esynergy.erm.service.CountryService;
-import com.esynergy.erm.service.CurrencyService;
 import com.esynergy.erm.service.ExtractionDetailService;
 import com.esynergy.erm.service.ExtractionService;
 import com.esynergy.erm.service.ExtractionTimeService;
-import com.esynergy.erm.service.SeleniumService;
+import com.esynergy.erm.service.PreviewExtractionService;
+import com.esynergy.erm.service.ScrapExtractionRunable;
+import com.esynergy.erm.service.ScrapExtractionService;
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ModelDriven;
 
-@SuppressWarnings({ "serial", "rawtypes" })
-@Controller("extractionAction")
-public class ExtractionAction extends ActionCommon implements
-	 ServletRequestAware, ModelDriven {
+@SuppressWarnings({ "serial" })
+public class ExtractionAction extends ActionCommon {
 	
 	private static final Logger logger = Logger
 			.getLogger(ExtractionAction.class);
 	
-	private Extraction extraction = new Extraction();
 	private ExtractionForm extractionForm = new ExtractionForm();
-	private List<Long> extractionDetailRemoveList = new ArrayList<Long>();
 	
 	private List<Extraction> extractionList = new ArrayList<Extraction>();
 	private ExtractionSearchForm extractionSearchForm = new ExtractionSearchForm();
 	
 	private String parm;
 	
-	@Autowired
-	private CurrencyService currencyService;
+	private String menuName;
 	
 	@Autowired
-	private CountryService countryService;
-	
+	private MandatoryAsset mandatoryAsset;
+		
 	@Autowired
 	private ExtractionService extractionService;
 	
@@ -75,19 +65,20 @@ public class ExtractionAction extends ActionCommon implements
 	
 	@Autowired
 	private ExtractionTimeService extractionTimeService;
-	
-	@Autowired
-	private CodeValueService codeValueService;
-	
+		
 	@Autowired
 	private BankService bankService;
 	
 	@Autowired
-	private SeleniumService seleniumService;
+	private PreviewExtractionService previewExtractionServiceService;
+	
+	@Autowired
+	private ScrapExtractionService scrapExtractionService;
 	
 	private List<Currency> currencyList = new ArrayList<Currency>();
 	private Map<Long,Currency> currencyMap = new HashMap<Long,Currency>();
 	private List<Country> countryList = new ArrayList<Country>();
+	private Map<Long, Country> countryMap = new HashMap<Long, Country>();
 	private List<CodeValue> extractionTimeList = new ArrayList<CodeValue>();
 	private List<CodeValue> extractionTypeList = new ArrayList<CodeValue>();
 	private List<CodeValue> extractionDateList = new ArrayList<CodeValue>();
@@ -95,80 +86,30 @@ public class ExtractionAction extends ActionCommon implements
 	private List<CodeValue> currencyTypeList = new ArrayList<CodeValue>();
 	private List<CodeValue> statusList = new ArrayList<CodeValue>();
 	private List<CodeValue> formatDateList = new ArrayList<CodeValue>();
-
-	private List<Currency> currencyListAPIPool = new ArrayList<Currency>();
-	private List<Currency> currencyListSelectedAPI = new ArrayList<Currency>();
-
+	private List<CodeValue> valueList = new ArrayList<CodeValue>();
+	private String pythonDirectory = "";
+		
 	@SuppressWarnings("unchecked")
 	public void setServletRequest(HttpServletRequest request) {
 		super.setServletRequest(request);
+
 		request.setAttribute(MAIN_MENU_ATTR, MENU_EXCHANGE_RATE);
 		request.setAttribute(SUB_MENU_ATTR, MENU_EXCHANGE_RATE_AUTO);
 		request.setAttribute(SUB_MENU1_ATTR, MENU_EXTRACTION_MANAGE);
-		HttpSession session = request.getSession(false) == null ? request
-				.getSession(true) : request.getSession(false);
-		if (session.getAttribute(SESSION_CURRENCY_LIST) == null) {
-			currencyList = currencyService.listAll();
-			session.setAttribute(SESSION_CURRENCY_LIST, currencyList);
-		} else {
-			currencyList = (List<Currency>) session
-					.getAttribute(SESSION_CURRENCY_LIST);
-		}
-		if (session.getAttribute(SESSION_CURRENCY_MAP) == null) {
-			currencyMap = currencyService.listAllMap();
-			session.setAttribute(SESSION_CURRENCY_MAP, currencyMap);
-		} else {
-			currencyMap = (Map<Long, Currency>) session
-					.getAttribute(SESSION_CURRENCY_MAP);
-		}
-		if(session.getAttribute(SESSION_COUNTRY_LIST) == null) {
-			countryList = countryService.listAll();
-			session.setAttribute(SESSION_COUNTRY_LIST, countryList);
-		} else {
-			countryList = (List<Country>) session.getAttribute(SESSION_COUNTRY_LIST);
-		}
-		if(session.getAttribute(SESSION_EXTRACTION_TIME_LIST) == null) {
-			extractionTimeList = codeValueService.listAllExtractionTimeField();
-			session.setAttribute(SESSION_EXTRACTION_TIME_LIST, extractionTimeList);
-		} else {
-			extractionTimeList = (List<CodeValue>) session.getAttribute(SESSION_EXTRACTION_TIME_LIST);
-		}
-		if(session.getAttribute(SESSION_EXTRACTION_TYPE_LIST) == null) {
-			extractionTypeList = codeValueService.listAllExtractionType();
-			session.setAttribute(SESSION_EXTRACTION_TYPE_LIST, extractionTypeList);
-		} else {
-			extractionTypeList = (List<CodeValue>) session.getAttribute(SESSION_EXTRACTION_TYPE_LIST);
-		}
-		if(session.getAttribute(SESSION_EXTRACTION_DATE_LIST) == null) {
-			extractionDateList = codeValueService.listAllExtractionDate();
-			session.setAttribute(SESSION_EXTRACTION_DATE_LIST, extractionDateList);
-		} else {
-			extractionDateList = (List<CodeValue>) session.getAttribute(SESSION_EXTRACTION_DATE_LIST);
-		}
-		if(session.getAttribute(SESSION_PAGE_TYPE_LIST) == null) {
-			pageTypeList = codeValueService.listAllPageType();
-			session.setAttribute(SESSION_PAGE_TYPE_LIST, pageTypeList);
-		} else {
-			pageTypeList = (List<CodeValue>) session.getAttribute(SESSION_PAGE_TYPE_LIST);
-		}
-		if(session.getAttribute(SESSION_CURRENCY_TYPE_LIST) == null) {
-			currencyTypeList = codeValueService.listAllCurrencyType();
-			session.setAttribute(SESSION_CURRENCY_TYPE_LIST, currencyTypeList);
-		} else {
-			currencyTypeList = (List<CodeValue>) session.getAttribute(SESSION_CURRENCY_TYPE_LIST);
-		}
-		if(session.getAttribute(SESSION_STATUS_LIST) == null) {
-			statusList = codeValueService.listAllStatus();
-			session.setAttribute(SESSION_STATUS_LIST, statusList);
-		} else {
-			statusList = (List<CodeValue>) session.getAttribute(SESSION_STATUS_LIST);
-		}
-		if(session.getAttribute(SESSION_FORMAT_DATE_LIST) == null) {
-			formatDateList = codeValueService.listAllFormatDate();
-			session.setAttribute(SESSION_FORMAT_DATE_LIST, formatDateList);
-		} else {
-			formatDateList = (List<CodeValue>) session.getAttribute(SESSION_FORMAT_DATE_LIST);
-		}
+		
+		currencyList = mandatoryAsset.getCurrencyList();
+		currencyMap = mandatoryAsset.getCurrencyMap();
+		countryList = mandatoryAsset.getCountryList();
+		countryMap = mandatoryAsset.getCountryMap();
+		extractionTimeList = mandatoryAsset.getExtractionTimeList();
+		extractionTypeList = mandatoryAsset.getExtractionTypeList();
+		extractionDateList = mandatoryAsset.getExtractionDateList();
+		pageTypeList = mandatoryAsset.getExtractionPageTypeList();
+		currencyTypeList = mandatoryAsset.getExtractionCurrencyTypeList();
+		statusList = mandatoryAsset.getExtractionStatusList();
+		formatDateList = mandatoryAsset.getExtractionFormatDateList();
+		valueList = mandatoryAsset.getExtractionValueList();
+		pythonDirectory = mandatoryAsset.getPythonDirectory();
 	}
 
 	public HttpServletRequest getReq() {
@@ -178,263 +119,130 @@ public class ExtractionAction extends ActionCommon implements
 	
 	public String prepareCreate() {
 		
-		IUser user =(IUser) getReq().getSession(false).getAttribute(SESSION_USER);
-		if(!ValidatorUtil.checkPermission(user, "CreateScraping")){
-			return ERROR;
-		}
+		menuName = getText("header.extraction.create");
 		
-		super.setActionMsg(new HashMap<String,Object>());
-		super.setErrors(new HashMap<String,Object>());
-		
-		super.addActionMsg("actionTitle","header.extraction.create");
-		
-		extraction = new Extraction();
-		extractionDetailRemoveList = new ArrayList<Long>();
 		extractionForm = new ExtractionForm();
-		currencyListAPIPool = new ArrayList<Currency>(currencyList);
-		currencyListSelectedAPI = new ArrayList<Currency>();
-		for(CodeValue item : extractionTimeList) {
-			ExtractionTimeForm timeForm = new ExtractionTimeForm();
-			timeForm.setExtractionTime(item.getValue());
-			timeForm.setChk("false");
-			timeForm.setExtractionTimeLabel(item.getDescriptionShort());
-			extractionForm.addExtractionTimeFormList(timeForm);
-		}
+		extractionForm.setExtractionType(1);
 		List<ExtractionDetailForm> tempDetailFormList = new ArrayList<ExtractionDetailForm>();
+		List<ExtractionDetailForm> tempDetailFormList2 = new ArrayList<ExtractionDetailForm>();
 		for(int i=0;i<3;i++) {
 			ExtractionDetailForm tempDetailForm = new ExtractionDetailForm();
+			ExtractionDetailForm tempDetailForm2 = new ExtractionDetailForm();
 			tempDetailFormList.add(tempDetailForm);
+			tempDetailFormList2.add(tempDetailForm2);
 		}
 		extractionForm.setExtractionDetailFormList(tempDetailFormList);
+		extractionForm.setExtractionDetailFormList2(tempDetailFormList2);
+		
+		populateTimeList(extractionForm);
+		
 		return SUCCESS;
 	}
 	
 	public String prepareEdit() {
+		menuName = getText("header.extraction.edit");
 		
-		
-		super.setActionMsg(new HashMap<String,Object>());
-		super.setErrors(new HashMap<String,Object>());
-		
-		super.addActionMsg("actionTitle","header.extraction.edit");
-		
-		HttpServletRequest request = getReq();
-		if(request.getParameter("parm") == null) {
+		if(getReq().getParameter("parm") == null) {
 			return INPUT;
 		}
 		else {
-//			System.out.println("not null");
-			long id = Long.parseLong(UIUtil.prepareConvertStringToNumber(request.getParameter("parm")));
-			extractionDetailRemoveList = new ArrayList<Long>();
-			extraction = extractionService.getById(id);
-			IUser user =(IUser) getReq().getSession(false).getAttribute(SESSION_USER);
-			if(!ValidatorUtil.checkPermission(user, "EditScraping")){
-				return ERROR;
-			}
-
+			long id = Long.parseLong(UIUtil.prepareConvertStringToNumber(getReq().getParameter("parm")));
+			Extraction extraction = extractionService.getById(id);
 			extractionForm = new ExtractionForm();
-			currencyListAPIPool = new ArrayList<Currency>(currencyList);
-			currencyListSelectedAPI = new ArrayList<Currency>();
 			populateObToForm(extraction, extractionForm);
-			Collections.sort(currencyListSelectedAPI, new Comparator<Currency>() {
-				public int compare(Currency o1, Currency o2) {
-					return o1.getCode().compareTo(o2.getCode()) < 0 ? -1:1;
-				}
-			});
 			return SUCCESS;
 		}
 	}
 	
-	public String prepareMange(){		
-		if(UIUtil.isEmptyOrNull(getReq().getParameter("updated"))){
-			super.errors.clear();
+	public String prepareManage(){		
+		if(getReq().getParameter("updated") != null && getReq().getParameter("updated").equalsIgnoreCase("true")){
+		 	super.addActionMsg("resultMessage",getText("msg.action.save.success"));
+		 	super.addErrors("haveResult",true);
 		}
-	    super.addActionMsg("actionTitle", "header.mangement.extraction");
+		if(getReq().getParameter("removed") != null && getReq().getParameter("removed").equalsIgnoreCase("true")){
+			super.addActionMsg("resultMessage",getText("msg.action.remove.success"));
+		 	super.addErrors("haveResult",true);
+		}
+		if(getReq().getParameter("begin") != null && getReq().getParameter("begin").equalsIgnoreCase("true")){
+			super.addActionMsg("resultMessage",getText("msg.scrap.all.begin"));
+		 	super.addErrors("haveResult",true);
+		}
+		if(getReq().getParameter("running") != null && getReq().getParameter("running").equalsIgnoreCase("true")){
+			super.addActionMsg("resultMessageRed",getText("msg.scrap.all.running"));
+		 	super.addErrors("haveResultRed",true);
+		}
+		if(getReq().getParameter("error") != null && getReq().getParameter("error").equalsIgnoreCase("true")){
+			super.addActionMsg("resultMessageRed",getText("msg.invalid.field"));
+		 	super.addErrors("haveResultRed",true);
+		}
+		
+		menuName = getText("header.mangement.extraction");
+		
 	    extractionList = extractionService.listAll();
 	    extractionSearchForm = new ExtractionSearchForm();
 	    return SUCCESS;
 	}
    
 	public String search(){
-	   extractionList = extractionService.search(extractionSearchForm.getBankName(), extractionSearchForm.getBankCountry(), extractionSearchForm.getTypeOfSetting(), extractionSearchForm.getStatus());
-	   return SUCCESS;
+		menuName = getText("header.mangement.extraction");
+		
+		extractionList = extractionService.search(extractionSearchForm.getBankName(), extractionSearchForm.getBankCountry(), extractionSearchForm.getTypeOfSetting(), extractionSearchForm.getStatus());
+		return SUCCESS;
 	}
    
 	public String prepareView(){
-		IUser user =(IUser) getReq().getSession(false).getAttribute(SESSION_USER);
-		if(!ValidatorUtil.checkPermission(user, "ViewScraping")){
-			return ERROR;
-		}
 		
-	   super.errors =new HashMap<String, Object>();
-	   super.actionMsg = new HashMap<String, Object>();
-	   super.addActionMsg("actionTitle", "header.extraction.view");
-	   HttpServletRequest req =  getReq();
-	   extractionForm = new ExtractionForm();
-	   if(!UIUtil.isEmptyOrNull(req.getParameter("parm"))){
-		   extraction = extractionService.getById(Long.parseLong(req.getParameter("parm").trim()));
-		   populateObToForm(extraction,extractionForm);
-	   }
-	   return SUCCESS;
-	}
-	
-	public String prepareRedirect() {
-		if(extractionForm.getExtractionType() == 3) {
-			currencyListAPIPool = new ArrayList<Currency>(currencyList);
-			currencyListSelectedAPI = new ArrayList<Currency>();
-			if(extractionForm.getSelectedCurrencyAPI() != null) {
-				for (long item : extractionForm.getSelectedCurrencyAPI()) {
-					for (Currency item2 : currencyList) {
-						if(item == item2.getId()) {
-							currencyListSelectedAPI.add(item2);
-							currencyListAPIPool.remove(item2);
-							break;
-						}
-					}
-				}
-			}
-		}
-		
-		List<String> extractionTimeSelectedValue = new ArrayList<String>();
-		for(ExtractionTimeForm item : extractionForm.getExtractionTimeFormList()) {
-			if(!item.getExtractionTime().equals("false")) {
-				extractionTimeSelectedValue.add(item.getExtractionTime());
-			}
-		}
-		
-		List<ExtractionTimeForm> newExtractionTimeForm = new ArrayList<ExtractionTimeForm>();
-		for(CodeValue item : extractionTimeList) {
-			ExtractionTimeForm timeForm = new ExtractionTimeForm();
-			timeForm.setExtractionTime(item.getValue());
-			if(extractionTimeSelectedValue.contains(item.getValue())) {
-				timeForm.setChk("true");
-			}
-			else {
-				timeForm.setChk("false");
-			}
-			timeForm.setExtractionTimeLabel(item.getDescriptionShort());
-			newExtractionTimeForm.add(timeForm);
-		}
-		extractionForm.setExtractionTimeFormList(newExtractionTimeForm);
+		menuName = getText("header.extraction.view");
 
+		extractionForm = new ExtractionForm();
+		if(!UIUtil.isEmptyOrNull(getReq().getParameter("parm"))){
+			Extraction extraction = extractionService.getById(Long.parseLong(getReq().getParameter("parm").trim()));
+			populateObToForm(extraction,extractionForm);
+		}
 		return SUCCESS;
 	}
 	
 	public String removeDetailForm() {
-//		super.errors = new HashMap<String, Object>();
-//		super.actionMsg = new HashMap<String, Object>();
 		
-//		super.addActionMsg("actionTitle","header.extraction.create");
-		
-		List<ExtractionDetailForm> removeList = new ArrayList<ExtractionDetailForm>();
-		for (int i = 0; i < extractionForm.getExtractionDetailFormList().size(); i++) {
-			ExtractionDetailForm formDetail = extractionForm.getExtractionDetailFormList().get(i);
-			if (!UIUtil.isEmptyOrNull(formDetail.getChk())
-					&& (formDetail.getChk().equals(CHK_ON) 
-					|| formDetail.getChk().equals("true"))) {
-				removeList.add(formDetail);
-				if (formDetail.getId() > 0) {
-//					ExchangeRateManualDetail obDetail = new ExchangeRateManualDetail();
-//					populateFormToObDetail(formDetail, obDetail);
-					extractionDetailRemoveList.add(formDetail.getId());
-				}
-			}
-		}
-		
-		extractionForm.getExtractionDetailFormList().removeAll(removeList);
-		
-		////////////////
-		
-		List<String> extractionTimeSelectedValue = new ArrayList<String>();
-		for(ExtractionTimeForm item : extractionForm.getExtractionTimeFormList()) {
-			if(!item.getExtractionTime().equals("false")) {
-				extractionTimeSelectedValue.add(item.getExtractionTime());
-			}
-		}
-		
-		List<ExtractionTimeForm> newExtractionTimeForm = new ArrayList<ExtractionTimeForm>();
-		for(CodeValue item : extractionTimeList) {
-			ExtractionTimeForm timeForm = new ExtractionTimeForm();
-			timeForm.setExtractionTime(item.getValue());
-			if(extractionTimeSelectedValue.contains(item.getValue())) {
-				timeForm.setChk("true");
-			}
-			else {
-				timeForm.setChk("false");
-			}
-			timeForm.setExtractionTimeLabel(item.getDescriptionShort());
-			newExtractionTimeForm.add(timeForm);
-		}
-		extractionForm.setExtractionTimeFormList(newExtractionTimeForm);
-		
-		return SUCCESS;
-	}
-	
-	public String changeExtractionType() {
-		if(extraction.getId() > 0 && extraction.getExtractionType() == extractionForm.getExtractionType()) {
-			List<ExtractionDetailForm> newExtractionDetailFormList = new ArrayList<ExtractionDetailForm>();
-			ExtractionDetailForm detailForm;
-			for (ExtractionDetail detail : extraction.getExtractionDetailList()) {
-				detailForm = new ExtractionDetailForm();
-				detailForm.setCurrency(detail.getCurrency().getId());
-				detailForm.setCurrencyCode(detail.getCurrency().getCode());
-				detailForm.setExtractionCurrency(detail.getExtractCurrency());
-				detailForm.setId(detail.getId());
-				detailForm.setValue(detail.getValue());
-				detailForm.setExtractionBuyingRate(detail.getExtractBuyingRate());
-				detailForm.setExtractionSellingRate(detail.getExtractSellingRate());
-				newExtractionDetailFormList.add(detailForm);
-				if(extractionForm.getExtractionType() == 3) {
-					currencyListSelectedAPI.add(detail.getCurrency());
-					currencyListAPIPool.remove(detail.getCurrency());
-				}
-			}
-			for(long item : extractionDetailRemoveList) {
-				for(int i=newExtractionDetailFormList.size()-1 ; i>=0 ; i--) {
-					if(item == newExtractionDetailFormList.get(i).getId()) {
-						newExtractionDetailFormList.remove(i);
-						break;
+		if(extractionForm.getExtractionType() == 1) {
+			List<ExtractionDetailForm> removeList = new ArrayList<ExtractionDetailForm>();
+			for (int i = 0; i < extractionForm.getExtractionDetailFormList().size(); i++) {
+				ExtractionDetailForm formDetail = extractionForm.getExtractionDetailFormList().get(i);
+				if (!UIUtil.isEmptyOrNull(formDetail.getChk())
+						&& (formDetail.getChk().equals(CHK_ON) 
+						|| formDetail.getChk().equals("true"))) {
+					removeList.add(formDetail);
+					if (formDetail.getId() > 0) {
+						extractionForm.getExtractionDetailFormRemoveList().add(formDetail.getId());
 					}
 				}
 			}
-			extractionForm.setExtractionDetailFormList(newExtractionDetailFormList);
-			extractionForm.setCssDate(extraction.getCssDate());
+			extractionForm.getExtractionDetailFormList().removeAll(removeList);
 		}
-		else {
-			List<ExtractionDetailForm> tempDetailFormList = new ArrayList<ExtractionDetailForm>();
-			for(int i=0;i<3;i++) {
-				ExtractionDetailForm tempDetailForm = new ExtractionDetailForm();
-				tempDetailFormList.add(tempDetailForm);
+		else if(extractionForm.getExtractionType() == 2) {
+			List<ExtractionDetailForm> removeList = new ArrayList<ExtractionDetailForm>();
+			for (int i = 0; i < extractionForm.getExtractionDetailFormList2().size(); i++) {
+				ExtractionDetailForm formDetail = extractionForm.getExtractionDetailFormList2().get(i);
+				if (!UIUtil.isEmptyOrNull(formDetail.getChk())
+						&& (formDetail.getChk().equals(CHK_ON) 
+						|| formDetail.getChk().equals("true"))) {
+					removeList.add(formDetail);
+					if (formDetail.getId() > 0) {
+						extractionForm.getExtractionDetailFormRemoveList().add(formDetail.getId());
+					}
+				}
 			}
-			extractionForm.setExtractionDetailFormList(tempDetailFormList);
+			extractionForm.getExtractionDetailFormList2().removeAll(removeList);
 		}
 		
-		List<String> extractionTimeSelectedValue = new ArrayList<String>();
-		for(ExtractionTimeForm item : extractionForm.getExtractionTimeFormList()) {
-			if(!item.getExtractionTime().equals("false")) {
-				extractionTimeSelectedValue.add(item.getExtractionTime());
-			}
-		}
+		////////////////
 		
-		List<ExtractionTimeForm> newExtractionTimeForm = new ArrayList<ExtractionTimeForm>();
-		for(CodeValue item : extractionTimeList) {
-			ExtractionTimeForm timeForm = new ExtractionTimeForm();
-			timeForm.setExtractionTime(item.getValue());
-			if(extractionTimeSelectedValue.contains(item.getValue())) {
-				timeForm.setChk("true");
-			}
-			else {
-				timeForm.setChk("false");
-			}
-			timeForm.setExtractionTimeLabel(item.getDescriptionShort());
-			newExtractionTimeForm.add(timeForm);
-		}
-		extractionForm.setExtractionTimeFormList(newExtractionTimeForm);
+		populateTimeList(extractionForm);
 		
 		return SUCCESS;
 	}
 	
 	public String compose() {
-		super.errors = new HashMap<String, Object>();
 		
 		try {
 			System.out.println(extractionForm.getUrl());
@@ -448,50 +256,42 @@ public class ExtractionAction extends ActionCommon implements
 			System.out.println(extractionForm.getBankCountry());
 			System.out.println(extractionForm.getExtractionDetailFormList().size());
 			
-			if(validateForm(extractionForm)) {
+			Extraction tempHeader = null;
+			if(extractionForm.getId() > 0) {
+				tempHeader = extractionService.getById(extractionForm.getId());
+			}
+			
+			if(validateForm(tempHeader, extractionForm)) {
 				System.out.println("validate");
 			}
 			else {
-//				super.addErrors("isError",true);
-				super.addActionMsg("error",super.getText("error.action.message"));
+				super.addActionMsg("error", super.getText("error.action.message"));
 				System.out.println("invalidate");
+				populateTimeList(extractionForm);
 				return INPUT;
 			}
 			
+//			Extraction extraction = extractionService.getById(extractionForm.getId());
 			Extraction header = new Extraction();
 			populateFormToOb(extractionForm, header);
-			
-			System.out.println("header bank name : " + header.getBank().getBankName());
-			System.out.println("header bank country : " + header.getBank().getCountry().getCountryName());
-			System.out.println("header bank url : " + header.getBankURL());
-			System.out.println("header extract day : " + header.getExtractionDate());
-			System.out.println("header extract time : " + header.getExtractionTimeList().size());
-			System.out.println("header format date : " + header.getFormatDate());
-			System.out.println("header pair type : " + header.getPairCurrencyType());
-			System.out.println("header extract type : " + header.getExtractionType());
-			for (ExtractionDetail item : header.getExtractionDetailList()) {
-				System.out.println("detail currency code : " + item.getCurrency().getCode());
-				System.out.println("detail currency name : " + item.getCurrency().getDescription());
-				System.out.println("detail value : " + item.getValue());
-				System.out.println("detail currency ex : " + item.getExtractCurrency());
-				System.out.println("detail buying rate : " + item.getExtractBuyingRate());
-				System.out.println("detail selling rate : " + item.getExtractSellingRate());
-			}
-
-			HttpSession session = getReq().getSession();
-			
-			IUser user = (IUser)session.getAttribute(SESSION_USER);
-			
+						
 			if(header.getId() > 0) {
-				if(extractionDetailRemoveList.size() > 0) {
-					for(int i=0;i<extractionDetailRemoveList.size();i++) {
+				if(tempHeader.getExtractionType() != header.getExtractionType()) {
+					while(tempHeader.getExtractionDetailList().iterator().hasNext()) {
 						ExtractionDetail detail = new ExtractionDetail();
-						detail.setId(extractionDetailRemoveList.get(i));
+						detail.setId(tempHeader.getExtractionDetailList().iterator().next().getId());
+						extractionDetailService.delete(detail);
+					}
+				}
+				else {
+					for(int i=0;i<extractionForm.getExtractionDetailFormRemoveList().size();i++) {
+						ExtractionDetail detail = new ExtractionDetail();
+						detail.setId(extractionForm.getExtractionDetailFormRemoveList().get(i));
 						extractionDetailService.delete(detail);
 					}
 				}
 				
-				for(ExtractionTime item : extraction.getExtractionTimeList()) {
+				for(ExtractionTime item : tempHeader.getExtractionTimeList()) {
 					boolean isFound = false;
 					long id = item.getId();
 					for(ExtractionTime item2 : header.getExtractionTimeList()) {
@@ -507,25 +307,32 @@ public class ExtractionAction extends ActionCommon implements
 					}
 				}
 				
-				header.setAddUser(extraction.getAddUser());
-				header.setAddDate(extraction.getAddDate());
-				header.setChangeDate(new Date());
-				header.setChangeUser(user.getLogOnId());
+				for(ExtractionDetail item : header.getExtractionDetailList()) {
+					for(ExtractionDetail item2 : tempHeader.getExtractionDetailList()) {
+						if(item.getId() == item2.getId()) {
+							item.setAddDate(item2.getAddDate());
+							item.setAddUser(item2.getAddUser());
+							break;
+						}
+					}
+				}
 				
+				header.setAddUser(tempHeader.getAddUser());
+				header.setAddDate(tempHeader.getAddDate());
+				header.setChangeDate(new Date());
+				header.setChangeUser(iUser.getLogOnId());
 				extractionService.update(header);
 			}
 			else {
 				
 				header.setAddDate(new Date());
-				header.setAddUser(user.getLogOnId());
+				header.setAddUser(iUser.getLogOnId());
 				header.setChangeDate(new Date());
-				header.setChangeUser(user.getLogOnId());
+				header.setChangeUser(iUser.getLogOnId());
 				extractionService.save(header);
 			}
 
-		 	super.addActionMsg("saveSuccess",getText("msg.action.save.success"));
-		 	super.addErrors("isSuccess",true);
-		 	
+
 			return SUCCESS;
 		}
 		catch (Exception e) {
@@ -535,48 +342,20 @@ public class ExtractionAction extends ActionCommon implements
 	}
 	
 	public String remove() {
-		
-		HttpServletRequest req = getReq();
-		
-		if(UIUtil.isEmptyOrNull(req.getParameter("parm"))) {
+				
+		if(UIUtil.isEmptyOrNull(getReq().getParameter("parm"))) {
 			return INPUT;
 		}
 		else {
-			long idRemove = Long.parseLong(req.getParameter("parm"));
+			long idRemove = Long.parseLong(getReq().getParameter("parm"));
 			Extraction ob = extractionService.getById(idRemove);
-			IUser user =(IUser) getReq().getSession(false).getAttribute(SESSION_USER);
-			if(!ValidatorUtil.checkPermission(user, "DeleteScraping")){
-				return ERROR;
-			}
 			ob.setDeleteFlag(1);
 			extractionService.update(ob);
-			
-			super.addActionMsg("saveSuccess",getText("msg.action.remove.success"));
-		 	super.addErrors("isSuccess",true);
-			
 			return SUCCESS;
-			
-
-		 	
-		/*	for(int i=0 ;i<extractionList.size();i++) {
-				Extraction ob = extractionList.get(i);
-				if(ob.getId() == idRemove) {
-					if(ob.getStatus().equals("A")) {
-						return INPUT;
-					}
-					else {
-						extractionService.delete(ob);
-						return SUCCESS;
-					}
-				}
-			}*/
-			
-		//	return INPUT;
 		}		
 	}
 	
 	public String preview() {		
-		super.errors = new HashMap<String, Object>();
 		
 		String tbURL = extractionForm.getUrl();
 		Long ddlExtractionType = extractionForm.getExtractionType();
@@ -584,167 +363,122 @@ public class ExtractionAction extends ActionCommon implements
 		if(!UIUtil.isEmptyOrNull(tbURL)) {
 			
 			try {
-				seleniumService.initialWebDriver();
-				seleniumService.scrapPage(tbURL);
-				if(seleniumService.isSuccessfullyScrap()) {
-					super.addErrors("errorURL","");
-					int runningNumber = 0;
-					if(ddlExtractionType == 1) {
-						for (ExtractionDetailForm detailForm : extractionForm.getExtractionDetailFormList()) {
-							String textExtractCurrency = detailForm.getExtractionCurrency();
-							String textExtractBuyingRate = detailForm.getExtractionBuyingRate();
-							String textExtractSellingRate = detailForm.getExtractionSellingRate();
-							
-							if(UIUtil.isEmptyOrNull(textExtractCurrency)) {
-								super.addErrors("s1ExtractionCurrency" + runningNumber, "");
-							}
-							else {
-								String resultExtractCurrency = seleniumService.getFieldData(textExtractCurrency,false);
-								if(UIUtil.isEmptyOrNull(resultExtractCurrency)) {
-									super.addErrors("s1errorExtractionCurrency" + runningNumber, "No Data");
-								}
-								else {
-									try {
-			            				double testParse = Double.parseDouble(resultExtractCurrency);
-										super.addErrors("s1errorExtractionCurrency" + runningNumber, "Data Incorrect");
-			            			}
-			            			catch (Exception e) {
-										super.addErrors("s1ExtractionCurrency" + runningNumber, resultExtractCurrency);
-									}
-								}
-							}
-							
-							if(UIUtil.isEmptyOrNull(textExtractBuyingRate)) {
-								super.addErrors("s1ExtractionBuyingRate" + runningNumber, "");
-							}
-							else {
-								String resultExtractBuyingRate = seleniumService.getFieldData(textExtractBuyingRate,false);
-								if(UIUtil.isEmptyOrNull(resultExtractBuyingRate)) {
-									super.addErrors("s1errorExtractionBuyingRate" + runningNumber, "No Data");
-								}
-								else {
-									try {
-			            				double testParse = Double.parseDouble(resultExtractBuyingRate);
-										super.addErrors("s1ExtractionBuyingRate" + runningNumber, resultExtractBuyingRate);
-			            			}
-			            			catch (Exception e) {
-										super.addErrors("s1errorExtractionBuyingRate" + runningNumber, "Data Incorrect");
-									}
-								}
-							}
-							
-							if(UIUtil.isEmptyOrNull(textExtractSellingRate)) {
-								super.addErrors("s1ExtractionSellingRate" + runningNumber, "");
-							}
-							else {
-								String resultExtractSellingRate = seleniumService.getFieldData(textExtractSellingRate,false);
-								if(UIUtil.isEmptyOrNull(resultExtractSellingRate)) {
-									super.addErrors("s1errorExtractionSellingRate" + runningNumber, "No Data");
-								}
-								else {
-									try {
-			            				double testParse = Double.parseDouble(resultExtractSellingRate);
-										super.addErrors("s1ExtractionSellingRate" + runningNumber, resultExtractSellingRate);
-			            			}
-			            			catch (Exception e) {
-										super.addErrors("s1errorExtractionSellingRate" + runningNumber, "Data Incorrect");
-									}
-								}
-							}
+				int runningNumber = 0;
+				List<String> descriptionCssSelectors = new ArrayList<String>();
+				descriptionCssSelectors.add(ddlExtractionType.toString());
+				descriptionCssSelectors.add(tbURL);
+				if(ddlExtractionType == 1) {
+					for (ExtractionDetailForm detailForm : extractionForm.getExtractionDetailFormList()) {
+						String textExtractCurrency = detailForm.getExtractionCurrency();
+						String textExtractBuyingRate = detailForm.getExtractionBuyingRate();
+						String textExtractSellingRate = detailForm.getExtractionSellingRate();
 						
-							runningNumber++;
-						}
+						descriptionCssSelectors.add(textExtractCurrency + "," + textExtractBuyingRate
+								+ "," + textExtractSellingRate);
 					}
-					else if(ddlExtractionType == 2) {
-						seleniumService.dividePageResult("td");
+					previewExtractionServiceService.initialProcessBuilder();
+					previewExtractionServiceService.setPythonDirectory(pythonDirectory);
+					previewExtractionServiceService.createInputFile(descriptionCssSelectors);
+					previewExtractionServiceService.callPythonPhantomJS();
+					previewExtractionServiceService.readOutputFile();
+					if(previewExtractionServiceService.getIsSuccessful()) {
 						for (ExtractionDetailForm detailForm : extractionForm.getExtractionDetailFormList()) {
-							
-							if(detailForm.getCurrency() == -1) {
-								super.addErrors("s2errorCurrency" + runningNumber, "currency must be selected");
+							String resultExtractCurrency = previewExtractionServiceService.getFieldValue(runningNumber+1, 1);
+							String resultExtractBuyingRate = previewExtractionServiceService.getFieldValue(runningNumber+1, 2);
+							String resultExtractSellingRate = previewExtractionServiceService.getFieldValue(runningNumber+1, 3);
+
+							if(resultExtractCurrency.equalsIgnoreCase("No Data")
+									|| resultExtractCurrency.equalsIgnoreCase("Data Incorrect")) {
+								super.addErrors("s1errorExtractionCurrency" + runningNumber, resultExtractCurrency);
 							}
 							else {
-								
-								String currencyCode = currencyMap.get(detailForm.getCurrency()).getCode();
-								
-								String textExtractBuyingRate = detailForm.getExtractionBuyingRate();
-								String textExtractSellingRate = detailForm.getExtractionSellingRate();
-								
-								if(UIUtil.isEmptyOrNull(textExtractBuyingRate)) {
-									super.addErrors("s2ExtractionBuyingRate" + runningNumber, "");
-								}
-								else {
-									boolean isNumber = true;
-									try {
-							    		int testParse = Integer.parseInt(textExtractBuyingRate);
-							    	}
-							    	catch (Exception e) {
-							    		isNumber = false;
-										super.addErrors("s2errorExtractionBuyingRate" + runningNumber, "Need number format");
-									}
-									
-									if(isNumber) {
-										String resultExtractBuyingRate = seleniumService.getFieldData(currencyCode, Integer.parseInt(textExtractBuyingRate));
-										if(UIUtil.isEmptyOrNull(resultExtractBuyingRate)) {
-											super.addErrors("s2errorExtractionBuyingRate" + runningNumber, "No Data");
-										}
-										else {
-											super.addErrors("s2ExtractionBuyingRate" + runningNumber, resultExtractBuyingRate);
-										}
-									}
-									
-								}
-								
-								if(UIUtil.isEmptyOrNull(textExtractSellingRate)) {
-									super.addErrors("s2ExtractionSellingRate" + runningNumber, "");
-								}
-								else {
-									boolean isNumber = true;
-									try {
-							    		int testParse = Integer.parseInt(textExtractSellingRate);
-							    	}
-							    	catch (Exception e) {
-							    		isNumber = false;
-										super.addErrors("s2errorExtractionSellingRate" + runningNumber, "Need number format");
-									}
-									
-									if(isNumber) {
-										String resultExtractSellingRate = seleniumService.getFieldData(currencyCode, Integer.parseInt(textExtractSellingRate));
-										if(UIUtil.isEmptyOrNull(resultExtractSellingRate)) {
-											super.addErrors("s2errorExtractionSellingRate" + runningNumber, "No Data");
-										}
-										else {
-											super.addErrors("s2ExtractionSellingRate" + runningNumber, resultExtractSellingRate);
-										}
-									}
-
-								}
+								super.addErrors("s1ExtractionCurrency" + runningNumber, resultExtractCurrency);
+							}
+							
+							if(resultExtractBuyingRate.equalsIgnoreCase("No Data")
+									|| resultExtractBuyingRate.equalsIgnoreCase("Data Incorrect")) {
+								super.addErrors("s1errorExtractionBuyingRate" + runningNumber, resultExtractBuyingRate);
+							}
+							else {
+								super.addErrors("s1ExtractionBuyingRate" + runningNumber, resultExtractBuyingRate);
+							}
+							
+							if(resultExtractSellingRate.equalsIgnoreCase("No Data")
+									|| resultExtractSellingRate.equalsIgnoreCase("Data Incorrect")) {
+								super.addErrors("s1errorExtractionSellingRate" + runningNumber, resultExtractSellingRate);
+							}
+							else {
+								super.addErrors("s1ExtractionSellingRate" + runningNumber, resultExtractSellingRate);
 							}
 							
 							runningNumber++;
 						}
 					}
-					seleniumService.quitWebDriver();
+					else {
+						super.addErrors("errorURL", previewExtractionServiceService.getErrorFromFile());
+					}
+					previewExtractionServiceService.deleteOutputFile();
+				}
+				else if(ddlExtractionType == 2) {
+					for (ExtractionDetailForm detailForm : extractionForm.getExtractionDetailFormList2()) {
+						String currencyCode = currencyMap.get(detailForm.getCurrency()).getCode();
+						String textExtractBuyingRate = detailForm.getExtractionBuyingRate();
+						String textExtractSellingRate = detailForm.getExtractionSellingRate();
+						
+						descriptionCssSelectors.add(currencyCode + "," + textExtractBuyingRate + "," + textExtractSellingRate);
+					}
+					previewExtractionServiceService.initialProcessBuilder();
+					previewExtractionServiceService.setPythonDirectory(pythonDirectory);
+					previewExtractionServiceService.createInputFile(descriptionCssSelectors);
+					previewExtractionServiceService.callPythonPhantomJS();
+					previewExtractionServiceService.readOutputFile();
+					if(previewExtractionServiceService.getIsSuccessful()) {
+						for (ExtractionDetailForm detailForm : extractionForm.getExtractionDetailFormList2()) {
+							String resultExtractBuyingRate = previewExtractionServiceService.getFieldValue(runningNumber+1, 1);
+							String resultExtractSellingRate = previewExtractionServiceService.getFieldValue(runningNumber+1, 2);
+							
+							if(resultExtractBuyingRate.equalsIgnoreCase("No Data")
+									|| resultExtractBuyingRate.equalsIgnoreCase("Data Incorrect")) {
+								super.addErrors("s2errorExtractionBuyingRate" + runningNumber, resultExtractBuyingRate);
+							}
+							else {
+								super.addErrors("s2ExtractionBuyingRate" + runningNumber, resultExtractBuyingRate);
+							}
+							
+							if(resultExtractSellingRate.equalsIgnoreCase("No Data")
+									|| resultExtractSellingRate.equalsIgnoreCase("Data Incorrect")) {
+								super.addErrors("s2errorExtractionSellingRate" + runningNumber, resultExtractSellingRate);
+							}
+							else {
+								super.addErrors("s2ExtractionSellingRate" + runningNumber, resultExtractSellingRate);
+							}
+							
+							runningNumber++;
+						}
+					}
+					else {
+						super.addErrors("errorURL", previewExtractionServiceService.getErrorFromFile());
+					}
+					previewExtractionServiceService.deleteOutputFile();
 				}
 				else {
-					super.addErrors("errorURL","cant open the webpage, please check the url and try again after few minutes");
-					seleniumService.quitWebDriver();
+					super.addErrors("errorURL","extraction type error");
 				}
 			}
 			catch (Exception e) {
-				super.addErrors("errorTotal",e.getMessage() + e.getStackTrace());
-				seleniumService.quitWebDriver();
+				super.addErrors("errorTotal","exception occured");
 			}
 		}
 		else {
 			super.addErrors("errorURL","URL cant be empty");
 		}
 		
+		populateTimeList(extractionForm);
 		
 		return SUCCESS;
-		
 	}
 	
-	public boolean validateForm(ExtractionForm form) {
+	public boolean validateForm(Extraction tempHeader ,ExtractionForm form) {
 		
 		boolean resultValidate = true;
 		
@@ -754,8 +488,9 @@ public class ExtractionAction extends ActionCommon implements
 			super.addErrors("errorBankName","Bank Name cant be empty");
 		}
 		else {
-			if(!UIUtil.isEmptyOrNull(extraction.getBank().getBankName()) &&
-					!tbBankName.equalsIgnoreCase(extraction.getBank().getBankName())) {
+			
+			if(tempHeader != null &&
+					!tbBankName.equalsIgnoreCase(tempHeader.getBank().getBankName())) {
 				List<Bank> bankList = bankService.getBankWithName(tbBankName);
 				if(bankList.size() > 0) {
 					resultValidate = false;
@@ -770,9 +505,10 @@ public class ExtractionAction extends ActionCommon implements
 			super.addErrors("errorBankShortName","Short Name cant be empty");
 		}
 		else {
-			if(!UIUtil.isEmptyOrNull(extraction.getBank().getBankShortName()) && 
-					!tbBankShortName.equalsIgnoreCase(extraction.getBank().getBankShortName())) {
-				List<Bank> bankList = bankService.getBankWithName(tbBankShortName);
+			
+			if(tempHeader != null && 
+					!tbBankShortName.equalsIgnoreCase(tempHeader.getBank().getBankShortName())) {
+				List<Bank> bankList = bankService.getBankWithShortName(tbBankShortName);
 				if(bankList.size() > 0) {
 					resultValidate = false;
 					super.addErrors("errorBankShortName","Short Name is existed in Database, Plz use another");
@@ -798,8 +534,9 @@ public class ExtractionAction extends ActionCommon implements
 			super.addErrors("errorURL","URL cant be empty");
 		}
 		else {
-			if(!UIUtil.isEmptyOrNull(extraction.getBankURL()) && 
-					!tbURL.equalsIgnoreCase(extraction.getBankURL())) {
+			
+			if(tempHeader != null &&
+					!tbURL.equalsIgnoreCase(tempHeader.getBankURL())) {
 				if(extractionService.isExistURL(tbURL)) {
 					resultValidate = false;
 					super.addErrors("errorURL","URL is existed in Database, Plz use another");
@@ -902,112 +639,70 @@ public class ExtractionAction extends ActionCommon implements
 			
 			if(resultValidate && "A".equalsIgnoreCase(form.getStatus())) {
 				
-				try {
-					seleniumService.initialWebDriver();
-					seleniumService.scrapPage(tbURL);
-					if(seleniumService.isSuccessfullyScrap()) {
-						
-						int runningNumber = 0;						
-						
-						for (ExtractionDetailForm detailForm : extractionForm.getExtractionDetailFormList()) {
-							
-							String textExtractCurrency = detailForm.getExtractionCurrency();
-							String textExtractBuyingRate = detailForm.getExtractionBuyingRate();
-							String textExtractSellingRate = detailForm.getExtractionSellingRate();
-							
-							if(UIUtil.isEmptyOrNull(textExtractCurrency)) {
-								super.addErrors("s1ExtractionCurrency" + runningNumber, "");
-							}
-							else {
-								String resultExtractCurrency = seleniumService.getFieldData(textExtractCurrency,false);
-								if(UIUtil.isEmptyOrNull(resultExtractCurrency)) {
-									resultValidate = false;
-									super.addErrors("s1errorExtractionCurrency" + runningNumber, "No Data");
-								}
-								else {
-									try {
-			            				double testParse = Double.parseDouble(resultExtractCurrency);
-										resultValidate = false;
-										super.addErrors("s1errorExtractionCurrency" + runningNumber, "Data Incorrect");
-			            			}
-			            			catch (Exception e) {
-										super.addErrors("s1ExtractionCurrency" + runningNumber, resultExtractCurrency);
-									}
-								}
-							}
-							
-							if(UIUtil.isEmptyOrNull(textExtractBuyingRate)) {
-								super.addErrors("s1ExtractionBuyingRate" + runningNumber, "");
-							}
-							else {
-								String resultExtractBuyingRate = seleniumService.getFieldData(textExtractBuyingRate,false);
-								if(UIUtil.isEmptyOrNull(resultExtractBuyingRate)) {
-									resultValidate = false;
-									super.addErrors("s1errorExtractionBuyingRate" + runningNumber, "No Data");
-								}
-								else {
-									try {
-			            				double testParse = Double.parseDouble(resultExtractBuyingRate);
-										super.addErrors("s1ExtractionBuyingRate" + runningNumber, resultExtractBuyingRate);
-			            			}
-			            			catch (Exception e) {
-										resultValidate = false;
-										super.addErrors("s1errorExtractionBuyingRate" + runningNumber, "Data Incorrect");
-									}
-								}
-							}
-							
-							if(UIUtil.isEmptyOrNull(textExtractSellingRate)) {
-								super.addErrors("s1ExtractionSellingRate" + runningNumber, "");
-							}
-							else {
-								String resultExtractSellingRate = seleniumService.getFieldData(textExtractSellingRate,false);
-								if(UIUtil.isEmptyOrNull(resultExtractSellingRate)) {
-									resultValidate = false;
-									super.addErrors("s1errorExtractionSellingRate" + runningNumber, "No Data");
-								}
-								else {
-									try {
-			            				double testParse = Double.parseDouble(resultExtractSellingRate);
-										super.addErrors("s1ExtractionSellingRate" + runningNumber, resultExtractSellingRate);
-			            			}
-			            			catch (Exception e) {
-										resultValidate = false;
-										super.addErrors("s1errorExtractionSellingRate" + runningNumber, "Data Incorrect");
-									}
-								}
-							}
-						
-							runningNumber++;
-						}
-						
-						
-						runningNumber = 0;
-						for(ExtractionDetailForm item : form.getExtractionDetailFormList()) {
-							if(item.getCurrency() != -1
-									&& !UIUtil.isEmptyOrNull(item.getExtractionCurrency())) {
-								String resultExtractionCurrency = seleniumService.getFieldData(item.getExtractionCurrency(),false);
-								if(!resultExtractionCurrency.contains(currencyMap.get(item.getCurrency()).getCode())) {
-									resultValidate = false;
-									super.addErrors("s1errorExtractionCurrency" + runningNumber
-											, "Currency is not match - " + resultExtractionCurrency);
-								}
-							}
-							runningNumber++;
-						}
-						
-					}
-					else {
-						resultValidate = false;
-						super.addErrors("errorURL","cant open the webpage, please check the url and try again after few minutes");
-					}
-					seleniumService.quitWebDriver();
+				runningIndex = 0;
+				List<String> descriptionCssSelectors = new ArrayList<String>();
+				descriptionCssSelectors.add(ddlExtractionType.toString());
+				descriptionCssSelectors.add(tbURL);
+				
+				for (ExtractionDetailForm detailForm : extractionForm.getExtractionDetailFormList()) {
+					String textExtractCurrency = detailForm.getExtractionCurrency();
+					String textExtractBuyingRate = detailForm.getExtractionBuyingRate();
+					String textExtractSellingRate = detailForm.getExtractionSellingRate();
+					
+					descriptionCssSelectors.add(textExtractCurrency + "," + textExtractBuyingRate
+							+ "," + textExtractSellingRate);
 				}
-				catch (Exception e) {
+				previewExtractionServiceService.initialProcessBuilder();
+				previewExtractionServiceService.setPythonDirectory(pythonDirectory);
+				previewExtractionServiceService.createInputFile(descriptionCssSelectors);
+				previewExtractionServiceService.callPythonPhantomJS();
+				previewExtractionServiceService.readOutputFile();
+				if(previewExtractionServiceService.getIsSuccessful()) {
+					for (ExtractionDetailForm detailForm : extractionForm.getExtractionDetailFormList()) {
+						String resultExtractCurrency = previewExtractionServiceService.getFieldValue(runningIndex+1, 1);
+						String resultExtractBuyingRate = previewExtractionServiceService.getFieldValue(runningIndex+1, 2);
+						String resultExtractSellingRate = previewExtractionServiceService.getFieldValue(runningIndex+1, 3);
+
+						if(resultExtractCurrency.equalsIgnoreCase("No Data")
+								|| resultExtractCurrency.equalsIgnoreCase("Data Incorrect")) {
+							resultValidate = false;
+							super.addErrors("s1errorExtractionCurrency" + runningIndex, resultExtractCurrency);
+						}
+						
+						if(resultExtractBuyingRate.equalsIgnoreCase("No Data")
+								|| resultExtractBuyingRate.equalsIgnoreCase("Data Incorrect")) {
+							resultValidate = false;
+							super.addErrors("s1errorExtractionBuyingRate" + runningIndex, resultExtractBuyingRate);
+						}
+						
+						if(resultExtractSellingRate.equalsIgnoreCase("No Data")
+								|| resultExtractSellingRate.equalsIgnoreCase("Data Incorrect")) {
+							resultValidate = false;
+							super.addErrors("s1errorExtractionSellingRate" + runningIndex, resultExtractSellingRate);
+						}
+						
+						runningIndex++;
+					}
+					
+					runningIndex = 0;
+					for(ExtractionDetailForm item : form.getExtractionDetailFormList()) {
+						if(item.getCurrency() != -1
+								&& !UIUtil.isEmptyOrNull(item.getExtractionCurrency())) {
+							String resultExtractionCurrency = previewExtractionServiceService.getFieldValue(runningIndex+1, 1);
+							if(!resultExtractionCurrency.contains(currencyMap.get(item.getCurrency()).getCode())) {
+								resultValidate = false;
+								super.addErrors("s1errorExtractionCurrency" + runningIndex
+										, "Currency is not match - " + resultExtractionCurrency);
+							}
+						}
+						runningIndex++;
+					}
+				}
+				else {
 					resultValidate = false;
-					super.addErrors("errorTotal", e.getMessage() + e.getStackTrace());
-					seleniumService.quitWebDriver();
+					super.addErrors("errorURL", previewExtractionServiceService.getErrorFromFile());
 				}
+				previewExtractionServiceService.deleteOutputFile();
 			}
 		}
 		else if(ddlExtractionType == 2) {
@@ -1015,7 +710,7 @@ public class ExtractionAction extends ActionCommon implements
 			int countValidateDetailForm = 0;
 			List<String> checkExistPair = new ArrayList<String>(); 
 			int runningNumber = 0;
-			for (ExtractionDetailForm detailForm : form.getExtractionDetailFormList()) {
+			for (ExtractionDetailForm detailForm : form.getExtractionDetailFormList2()) {
 				long ddlCurrency = detailForm.getCurrency();
 				long ddlValue = detailForm.getValue();
 				String validateDDL = ddlCurrency + " " + ddlValue;
@@ -1055,113 +750,105 @@ public class ExtractionAction extends ActionCommon implements
 			}
 			
 			if(resultValidate && "A".equalsIgnoreCase(form.getStatus())) {
-				try {
-					seleniumService.initialWebDriver();
-					seleniumService.scrapPage(tbURL);
-					if(seleniumService.isSuccessfullyScrap()) {
-						seleniumService.dividePageResult("td");
-						runningNumber = 0;
-						for (ExtractionDetailForm detailForm : extractionForm.getExtractionDetailFormList()) {
-							if(detailForm.getCurrency() == -1) {
-								super.addErrors("s2errorExtractionCurrency" + runningNumber, "currency must be selected");
-								resultValidate = false;
-							}
-							else {
-								
-								String currencyCode = currencyMap.get(detailForm.getCurrency()).getCode();
-								
-								String textExtractBuyingRate = detailForm.getExtractionBuyingRate();
-								String textExtractSellingRate = detailForm.getExtractionSellingRate();
-								
-								if(UIUtil.isEmptyOrNull(textExtractBuyingRate)) {
-									super.addErrors("s2ExtractionBuyingRate" + runningNumber, "");
-								}
-								else {
-									boolean isNumber = true;
-									try {
-							    		int testParse = Integer.parseInt(textExtractBuyingRate);
-							    	}
-							    	catch (Exception e) {
-							    		isNumber = false;
-										super.addErrors("s2errorExtractionBuyingRate" + runningNumber, "Need number format");
-									}
-									
-									if(isNumber) {
-										String resultExtractBuyingRate = seleniumService.getFieldData(currencyCode, Integer.parseInt(textExtractBuyingRate));
-										if(UIUtil.isEmptyOrNull(resultExtractBuyingRate)) {
-											super.addErrors("s2errorExtractionBuyingRate" + runningNumber, "No Data");
-										}
-										else {
-											super.addErrors("s2ExtractionBuyingRate" + runningNumber, resultExtractBuyingRate);
-										}
-									}
-									
-								}
-								
-								if(UIUtil.isEmptyOrNull(textExtractSellingRate)) {
-									super.addErrors("s2ExtractionSellingRate" + runningNumber, "");
-								}
-								else {
-									boolean isNumber = true;
-									try {
-							    		int testParse = Integer.parseInt(textExtractSellingRate);
-							    	}
-							    	catch (Exception e) {
-							    		isNumber = false;
-										super.addErrors("s2errorExtractionSellingRate" + runningNumber, "Need number format");
-									}
-									
-									if(isNumber) {
-										String resultExtractSellingRate = seleniumService.getFieldData(currencyCode, Integer.parseInt(textExtractSellingRate));
-										if(UIUtil.isEmptyOrNull(resultExtractSellingRate)) {
-											super.addErrors("s2errorExtractionSellingRate" + runningNumber, "No Data");
-										}
-										else {
-											super.addErrors("s2ExtractionSellingRate" + runningNumber, resultExtractSellingRate);
-										}
-									}
-
-								}
-							}
-						}	
-					}
-					else {
-						resultValidate = false;
-						super.addErrors("errorURL","cant open the webpage, please check the url and try again after few minutes");
-					}
-					seleniumService.quitWebDriver();
+				
+				runningNumber = 0;
+				List<String> descriptionCssSelectors = new ArrayList<String>();
+				descriptionCssSelectors.add(ddlExtractionType.toString());
+				descriptionCssSelectors.add(tbURL);
+				
+				for (ExtractionDetailForm detailForm : extractionForm.getExtractionDetailFormList2()) {
+					String currencyCode = currencyMap.get(detailForm.getCurrency()).getCode();
+					String textExtractBuyingRate = detailForm.getExtractionBuyingRate();
+					String textExtractSellingRate = detailForm.getExtractionSellingRate();
+					
+					descriptionCssSelectors.add(currencyCode + "," + textExtractBuyingRate + "," + textExtractSellingRate);
 				}
-				catch (Exception e) {
+				previewExtractionServiceService.initialProcessBuilder();
+				previewExtractionServiceService.setPythonDirectory(pythonDirectory);
+				previewExtractionServiceService.createInputFile(descriptionCssSelectors);
+				previewExtractionServiceService.callPythonPhantomJS();
+				previewExtractionServiceService.readOutputFile();
+				if(previewExtractionServiceService.getIsSuccessful()) {
+					for (ExtractionDetailForm detailForm : extractionForm.getExtractionDetailFormList2()) {
+						String resultExtractBuyingRate = previewExtractionServiceService.getFieldValue(runningNumber+1, 1);
+						String resultExtractSellingRate = previewExtractionServiceService.getFieldValue(runningNumber+1, 2);
+						
+						if(resultExtractBuyingRate.equalsIgnoreCase("No Data")
+								|| resultExtractBuyingRate.equalsIgnoreCase("Data Incorrect")) {
+							resultValidate = false;
+							super.addErrors("s2errorExtractionBuyingRate" + runningNumber, resultExtractBuyingRate);
+						}
+						
+						if(resultExtractSellingRate.equalsIgnoreCase("No Data")
+								|| resultExtractSellingRate.equalsIgnoreCase("Data Incorrect")) {
+							resultValidate = false;
+							super.addErrors("s2errorExtractionSellingRate" + runningNumber, resultExtractSellingRate);
+						}
+						
+						runningNumber++;
+					}
+				}
+				else {
 					resultValidate = false;
-					super.addErrors("errorTotal", e.getMessage() + e.getStackTrace());
-					seleniumService.quitWebDriver();
+					super.addErrors("errorURL", previewExtractionServiceService.getErrorFromFile());
 				}
-			}
-		}
-		else if(ddlExtractionType == 3) {
-			if(form.getSelectedCurrencyAPI().size() == 0) {
-				super.addErrors("errorSettingTable3","Please select at least one currency");
-				resultValidate = false;
+				previewExtractionServiceService.deleteOutputFile();
 			}
 		}
 				
 		return resultValidate;
 	}
 
-	public void populateFormToOb(ExtractionForm form,
-			Extraction ob) {
+	public String scrap() {
+		
+		
+		if(scrapExtractionService.isRunning()) {
+			
+			return INPUT;
+		}
+		else {
+
+			if(UIUtil.isEmptyOrNull(getReq().getParameter("parm"))) {
+				
+				Executor executor = Executors.newSingleThreadExecutor();
+				executor.execute(new ScrapExtractionRunable(scrapExtractionService, "0",iUser.getLogOnId()));
+			}
+			else {
+				String forSend = getReq().getParameter("parm");
+				try {
+					int forSendInt = Integer.parseInt(forSend);
+				}
+				catch (Exception e) {
+					return ERROR;
+				}
+				Executor executor = Executors.newSingleThreadExecutor();
+				executor.execute(new ScrapExtractionRunable(scrapExtractionService, forSend, iUser.getLogOnId()));
+			}
+			
+			return SUCCESS;
+		}
+		
+	}
+	
+	public void populateFormToOb(ExtractionForm form, Extraction ob) {
 		ob.setId(form.getId());
 		Bank tempBank = new Bank();
 		tempBank.setId(form.getBankID());
 		tempBank.setBankName(form.getBankName());
 		tempBank.setBankShortName(form.getBankShortName());
-		tempBank.setCountry(countryService.getById(form.getBankCountry()));
+		tempBank.setCountry(countryMap.get(form.getBankCountry()));
 		ob.setBank(tempBank);
-		ob.setBaseCurrency(currencyMap.get(form.getBaseCurrency()));
+		ob.setExtractionType(form.getExtractionType());
 		ob.setBankURL(form.getUrl());
+		ob.setFormatDate(form.getFormatDate());
+		ob.setBaseCurrency(currencyMap.get(form.getBaseCurrency()));
 		ob.setExtractionDate(form.getExtractionDate());
+		ob.setPageType(form.getPageType());
+		ob.setPairCurrencyType(form.getPairCurrencyType());
+		ob.setStatus(form.getStatus());
 		
 		ExtractionTime timeOB;
+		Set<ExtractionTime> tempTimeOBSet = new HashSet<ExtractionTime>();
 		for(ExtractionTimeForm item : form.getExtractionTimeFormList()) {
 			timeOB = new ExtractionTime();
 			if(item.getExtractionTime().equalsIgnoreCase("false")) {
@@ -1171,28 +858,16 @@ public class ExtractionAction extends ActionCommon implements
 				timeOB.setId(item.getId());
 				timeOB.setExtractionTime(Long.parseLong(item.getExtractionTime()));
 				timeOB.setExtraction(ob);
-				ob.addExtractionTimeList(timeOB);
+				tempTimeOBSet.add(timeOB);
 			}
 		}
+		ob.setExtractionTimeList(tempTimeOBSet);
 		
-		ob.setExtractionType(form.getExtractionType());
-		ob.setFormatDate(form.getFormatDate());
-		ob.setPageType(form.getPageType());
-		ob.setPairCurrencyType(form.getPairCurrencyType());
-		ob.setStatus(form.getStatus());
-
-		HttpSession session = getReq().getSession();
-		IUser user = (IUser)session.getAttribute(SESSION_USER);
-		
+		Set<ExtractionDetail> tempDetailOBSet = new HashSet<ExtractionDetail>();
 		if(ob.getExtractionType() == 1) {
 			ExtractionDetail detailOB;
 			for(ExtractionDetailForm item : form.getExtractionDetailFormList()){
 				detailOB = new ExtractionDetail();
-//				if(item.getCurrency() == -1 || item.getExtractionBuyingRate().equals("")
-//						|| item.getExtractionSellingRate().equals("")
-//						|| item.getValue() == -1) {
-//					continue;
-//				}
 				detailOB.setCurrency(currencyMap.get(item.getCurrency()));
 				detailOB.setExtractBuyingRate(item.getExtractionBuyingRate());
 				detailOB.setExtractCurrency(item.getExtractionCurrency());
@@ -1201,22 +876,17 @@ public class ExtractionAction extends ActionCommon implements
 				detailOB.setId(item.getId());
 				detailOB.setValue((long)item.getValue());
 				detailOB.setAddDate(new Date());
-				detailOB.setAddUser(user.getLogOnId());
+				detailOB.setAddUser(iUser.getLogOnId());
 				detailOB.setChangeDate(new Date());
-				detailOB.setChangeUser(user.getLogOnId());
-				ob.addExtractionDetailList(detailOB);
+				detailOB.setChangeUser(iUser.getLogOnId());
+				tempDetailOBSet.add(detailOB);
 			}
 			ob.setCssDate(form.getCssDate());
 		}
 		else if(ob.getExtractionType() == 2) {
 			ExtractionDetail detailOB;
-			for(ExtractionDetailForm item : form.getExtractionDetailFormList()){
+			for(ExtractionDetailForm item : form.getExtractionDetailFormList2()){
 				detailOB = new ExtractionDetail();
-//				if(item.getCurrency() == -1 || item.getExtractionBuyingRate().equals("")
-//						|| item.getExtractionSellingRate().equals("") || item.getValue() == -1) {
-//					continue;
-//				}
-				
 				detailOB.setCurrency(currencyMap.get(item.getCurrency()));
 				detailOB.setExtractBuyingRate(item.getExtractionBuyingRate());
 				detailOB.setExtraction(ob);
@@ -1224,65 +894,16 @@ public class ExtractionAction extends ActionCommon implements
 				detailOB.setId(item.getId());
 				detailOB.setValue((long)item.getValue());
 				detailOB.setAddDate(new Date());
-				detailOB.setAddUser(user.getLogOnId());
+				detailOB.setAddUser(iUser.getLogOnId());
 				detailOB.setChangeDate(new Date());
-				detailOB.setChangeUser(user.getLogOnId());
-				ob.addExtractionDetailList(detailOB);
+				detailOB.setChangeUser(iUser.getLogOnId());
+				tempDetailOBSet.add(detailOB);
 			}
 		}
-		else if(ob.getExtractionType() == 3) {
-			
-			List<ExtractionDetail> newDetailOBList = new ArrayList<ExtractionDetail>();
-			for(int i=0;i<form.getSelectedCurrencyAPI().size();i++) {
-				ExtractionDetail newDetailOB = new ExtractionDetail();
-				newDetailOB.setValue(1);
-				newDetailOB.setExtraction(ob);
-				newDetailOB.setAddDate(new Date());
-				newDetailOB.setAddUser(user.getLogOnId());
-				newDetailOB.setChangeDate(new Date());
-				newDetailOB.setChangeUser(user.getLogOnId());
-				boolean isFound = false;
-				Long cur = form.getSelectedCurrencyAPI().get(i);
-				for(ExtractionDetail item : extraction.getExtractionDetailList()) {
-					if(item.getCurrency().getId() == cur) {
-						newDetailOB.setCurrency(item.getCurrency());
-						newDetailOB.setId(item.getId());
-						newDetailOBList.add(newDetailOB);
-						isFound = true;
-						break;
-					}
-				}
-				if(!isFound) {
-					for (Currency item2 : currencyList) {
-						if(item2.getId() == cur) {
-							newDetailOB.setCurrency(item2);
-							break;
-						}
-					}
-					newDetailOBList.add(newDetailOB);
-				}
-			}
-			
-			extractionDetailRemoveList = new ArrayList<Long>();
-			for(ExtractionDetail item : extraction.getExtractionDetailList()) {
-				boolean isFound = false;
-				for(ExtractionDetail item2 : newDetailOBList) {
-					if(item.getId() == item2.getId()) {
-						isFound = true;
-						break;
-					}
-				}
-				if(!isFound) {
-					extractionDetailRemoveList.add(item.getId());
-				}
-			}
-			
-			ob.setExtractionDetailList(new HashSet<ExtractionDetail>(newDetailOBList));
-		}
+		ob.setExtractionDetailList(tempDetailOBSet);
 	}
 	
-	public void populateObToForm(Extraction ob,
-			ExtractionForm form) {
+	public void populateObToForm(Extraction ob, ExtractionForm form) {
 		form.setId(ob.getId());
 		form.setBankID(ob.getBank().getId());
 		form.setBankName(ob.getBank().getBankName());
@@ -1329,15 +950,33 @@ public class ExtractionAction extends ActionCommon implements
 			detailForm.setValue(detail.getValue());
 			detailForm.setExtractionBuyingRate(detail.getExtractBuyingRate());
 			detailForm.setExtractionSellingRate(detail.getExtractSellingRate());
-			form.addExtractionDetailFormList(detailForm);
-			if(ob.getExtractionType() == 3) {
-				currencyListSelectedAPI.add(detail.getCurrency());
-				currencyListAPIPool.remove(detail.getCurrency());
+			if(ob.getExtractionType() == 1) {
+				form.getExtractionDetailFormList().add(detailForm);
+			}
+			else if(ob.getExtractionType() == 2){
+				form.getExtractionDetailFormList2().add(detailForm);
 			}
 		}
 		
-		//For View Page
+		if(ob.getExtractionType() == 1) {
+			List<ExtractionDetailForm> tempDetailFormList = new ArrayList<ExtractionDetailForm>();
+			for(int i=0;i<3;i++) {
+				ExtractionDetailForm tempDetailForm = new ExtractionDetailForm();
+				tempDetailFormList.add(tempDetailForm);
+			}
+			extractionForm.setExtractionDetailFormList2(tempDetailFormList);
+		}
+		else if(ob.getExtractionType() == 2){
+			List<ExtractionDetailForm> tempDetailFormList = new ArrayList<ExtractionDetailForm>();
+			for(int i=0;i<3;i++) {
+				ExtractionDetailForm tempDetailForm = new ExtractionDetailForm();
+				tempDetailFormList.add(tempDetailForm);
+			}
+			extractionForm.setExtractionDetailFormList(tempDetailFormList);
+		}
 		
+		
+		//For View Page
 		form.setBankCountryName(ob.getBank().getCountry().getCountryName());
 		form.setPairCurrencyTypeName(ob.getPairCurrencyType() == 1 ? "Direct Quote" : "Indirect Quote");
 		form.setExtractionTypeName(ob.getExtractionType() == 1 ? "CSS Selector" : "Index Number of TD Tag");
@@ -1347,8 +986,31 @@ public class ExtractionAction extends ActionCommon implements
 		
 		form.setBaseCurrency(ob.getBaseCurrency().getId());
 		form.setBaseCurrencyName(ob.getBaseCurrency().getCode());
-		
 		//End For View Page
+	}
+	
+	public void populateTimeList(ExtractionForm form) {
+		List<String> extractionTimeSelectedValue = new ArrayList<String>();
+		for(ExtractionTimeForm item : form.getExtractionTimeFormList()) {
+			if(!item.getExtractionTime().equals("false")) {
+				extractionTimeSelectedValue.add(item.getExtractionTime());
+			}
+		}
+		
+		List<ExtractionTimeForm> newExtractionTimeForm = new ArrayList<ExtractionTimeForm>();
+		for(CodeValue item : extractionTimeList) {
+			ExtractionTimeForm timeForm = new ExtractionTimeForm();
+			timeForm.setExtractionTime(item.getValue());
+			if(extractionTimeSelectedValue.contains(item.getValue())) {
+				timeForm.setChk("true");
+			}
+			else {
+				timeForm.setChk("false");
+			}
+			timeForm.setExtractionTimeLabel(item.getDescriptionShort());
+			newExtractionTimeForm.add(timeForm);
+		}
+		form.setExtractionTimeFormList(newExtractionTimeForm);
 	}
 	
 	public String getParm() {
@@ -1359,33 +1021,12 @@ public class ExtractionAction extends ActionCommon implements
 		this.parm = parm;
 	}
 
-	public Object getModel() {
-		// TODO Auto-generated method stub
-		return extraction;
-	}
-
-	public Extraction getExtraction() {
-		return extraction;
-	}
-
-	public void setExtraction(Extraction extraction) {
-		this.extraction = extraction;
-	}
-
 	public List<Extraction> getExtractionList() {
 		return extractionList;
 	}
 
 	public void setExtractionList(List<Extraction> extractionList) {
 		this.extractionList = extractionList;
-	}
-	
-	public List<Long> getExtractionDetailRemoveList() {
-		return extractionDetailRemoveList;
-	}
-
-	public void setExtractionDetailRemoveList(List<Long> extractionDetailIDRemoveList) {
-		this.extractionDetailRemoveList = extractionDetailIDRemoveList;
 	}
 	
 	public ExtractionForm getExtractionForm() {
@@ -1418,22 +1059,6 @@ public class ExtractionAction extends ActionCommon implements
 
 	public void setCurrencyList(List<Currency> currencyList) {
 		this.currencyList = currencyList;
-	}
-	
-	public List<Currency> getCurrencyListAPIPool() {
-		return currencyListAPIPool;
-	}
-
-	public void setCurrencyListAPIPool(List<Currency> currencyListAPIPool) {
-		this.currencyListAPIPool = currencyListAPIPool;
-	}
-
-	public List<Currency> getCurrencyListSelectedAPI() {
-		return currencyListSelectedAPI;
-	}
-
-	public void setCurrencyListSelectedAPI(List<Currency> currencyListSelectedAPI) {
-		this.currencyListSelectedAPI = currencyListSelectedAPI;
 	}
 
 	public List<CodeValue> getExtractionTypeList() {
@@ -1476,6 +1101,14 @@ public class ExtractionAction extends ActionCommon implements
 		this.formatDateList = formatDateList;
 	}
 
+	public List<CodeValue> getValueList() {
+		return valueList;
+	}
+
+	public void setValueList(List<CodeValue> valueList) {
+		this.valueList = valueList;
+	}
+
 	public List<CodeValue> getExtractionDateList() {
 		return extractionDateList;
 	}
@@ -1484,6 +1117,14 @@ public class ExtractionAction extends ActionCommon implements
 		this.extractionDateList = extractionDateList;
 	}
 	
+	public String getMenuName() {
+		return menuName;
+	}
+
+	public void setMenuName(String menuName) {
+		this.menuName = menuName;
+	}
+
 	public String getDefaultStatusValue() {
 		return IPageContains.RECORD_STS_ACTIVE;
 	}

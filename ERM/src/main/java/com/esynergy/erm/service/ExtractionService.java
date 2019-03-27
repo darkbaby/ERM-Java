@@ -3,6 +3,7 @@ package com.esynergy.erm.service;
 import java.util.Date;
 import java.util.List;
 
+import com.esynergy.erm.model.IUser;
 import com.esynergy.erm.model.ob.Bank;
 import com.esynergy.erm.model.ob.ExtractionDetail;
 import com.esynergy.erm.model.ob.Extraction;

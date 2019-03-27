@@ -16,6 +16,9 @@
 		<property    name="buyingRate"      column="BUYING_RATE"      type="double"/>
 		<property    name="sellingRate"     column="SELLING_RATE"     type="double"/>
 		<property    name="recordStatus" 			column="RECORD_STATUS" type="string"/>
+		<property    name="lastUpdateUser"     column="RECORD_CHANGE_USER"     type="string"/>
+		<property    name="lastUpdateDate"     column="RECORD_CHANGE_DATE"     type="timestamp"/>
+		
 		<many-to-one name="firstCurrency"     class="com.esynergy.erm.model.ob.Currency"  column="FK_BASE_CURRENCY"/>
 		<many-to-one name="pairCurrency"     class="com.esynergy.erm.model.ob.Currency"  column="FK_PAIR_CURRENCY"/>
 		 

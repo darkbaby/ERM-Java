@@ -22,16 +22,22 @@
           			<div class="form-panel02">
                   	  <h4 class="mb"><i class="fa fa-search"></i><span style="padding-left:5px;"><s:text  name="label.search"/></span></h4>
 					  <s:form name="exchangeRateManualSearchForm"  id="exchangeRateManualSearchForm" theme="simple" class="form-inline" role="form">
-									<div class="form-group">
-										 <div><s:text name="label.date.from"/></div>
+								<div class="row mt">
+									<div class="col-sm-2">
+										<div><s:text name="label.date.from"/></div>
 										<div class="input-group date" id="rateDateStartPicker">
-												 <s:textfield name="exchangeRateManualSearchForm.rateDateStart" id="rateDateStart" value="%{exchangeRateManualSearchForm.rateDateStart}" class="form-control" />
+												 <s:textfield 
+												 name="exchangeRateManualSearchForm.rateDateStart" 
+												 id="rateDateStart" 
+												 value="%{exchangeRateManualSearchForm.rateDateStart}" 
+												 class="form-control"
+												  />
 												 <span class="input-group-addon">
 						                        	<span class="glyphicon glyphicon-calendar"></span>
 						                    	</span>
 					                    </div>	
 					                </div> 
-									<div class="form-group">
+									<div class="col-sm-2">
 										<div><s:text name="label.to"/></div>
 							 			<div class="input-group date" id="rateDateEndPicker">
 												<s:textfield name="exchangeRateManualSearchForm.rateDateEnd" id="rateDateEnd" value="%{exchangeRateManualSearchForm.rateDateEnd}" class="form-control" />
@@ -40,25 +46,27 @@
 						                    	</span>
 					                    </div>
 					                </div>	 
-									<div class="form-group">
+									<div class="col-sm-2">
 										<div><s:text name="label.last.update.by"/></div>
-										<s:select   class="form-control" 
+										<s:select   class="form-control"
+													cssStyle="width:100%;"
 												    headerKey=""
-													headerValue="---------ALL---------"
+													headerValue="---ALL---"
 													list="userUpdateList"
-													name="exchangeRateManualSearchForm.updateBy"
+													value="exchangeRateManualSearchForm.updateBy"
 													id="updateBy" />
+										<s:hidden id="formUpdateBy" name="exchangeRateManualSearchForm.updateBy"/>
 									</div>
-										<div class="form-group">
-											<br/>
-											<button style="width:100%" type="button" class="btn btn-theme btn-sm" onclick="search()">Search</button>
-										</div>
-										<div class="form-group">
-											<br/>
-											<button style="width:100%" type="button" id="resetBtn" class="btn btn-warning btn-sm"><s:text name="btn.clear" /></button>
-										</div>
+									<div class="col-sm-2">
+										<br/>
+										<button style="width:40%" type="button" class="btn btn-theme" onclick="search()">Search</button>
+									
+										
+										<button style="width:40%" type="button" id="resetBtn" class="btn btn-warning"><s:text name="btn.clear" /></button>
+									</div>
 
 						  <div class="has-error"><s:property value="errors['searchError']"/></div>
+					   	</div>
 					    </s:form>
           			</div><!-- /form-panel -->
           		</div><!-- /col-lg-12 -->
@@ -81,7 +89,9 @@
     	$('#rateDateEnd').val($.format.date(new Date(),"yyyy/MM/dd"));
     	$('#updateBy').val("");
     	$('#select2-updateBy-container').text("---ALL---");
-    	
+    });
+    $("#updateBy").on('change',function(){
+    	$("#formUpdateBy").val($(this).val());
     });
     
  </script>

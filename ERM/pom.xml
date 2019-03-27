@@ -15,6 +15,7 @@
 		<!-- <struts.version>2.3.15.1</struts.version> -->
 		<struts.version>2.3.34</struts.version>
 		<hibernate.version>4.2.11.Final</hibernate.version>
+<!-- 		<hibernate.version>5.1.0.Final</hibernate.version> -->
 	</properties>
 	
 <!--  	<profiles> -->
@@ -190,21 +191,21 @@
 <!-- 		    <artifactId>asm</artifactId> -->
 <!-- 		    <version>3.3.1</version> -->
 <!-- 		</dependency> -->
-		<dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <version>2.53.1</version> 
-        </dependency>
+<!-- 		<dependency> -->
+<!--             <groupId>org.seleniumhq.selenium</groupId> -->
+<!--             <artifactId>selenium-java</artifactId> -->
+<!--             <version>2.53.1</version>  -->
+<!--         </dependency> -->
 <!-- 		<dependency> -->
 <!--             <groupId>org.seleniumhq.selenium</groupId> -->
 <!--             <artifactId>selenium-java</artifactId> -->
 <!--             <version>2.45.0</version> -->
 <!--         </dependency> -->
-        <dependency>
-            <groupId>com.codeborne</groupId>
-            <artifactId>phantomjsdriver</artifactId>
-            <version>1.2.1</version>
-        </dependency>
+<!--         <dependency> -->
+<!--             <groupId>com.codeborne</groupId> -->
+<!--             <artifactId>phantomjsdriver</artifactId> -->
+<!--             <version>1.2.1</version> -->
+<!--         </dependency> -->
         
         <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
 		<dependency>

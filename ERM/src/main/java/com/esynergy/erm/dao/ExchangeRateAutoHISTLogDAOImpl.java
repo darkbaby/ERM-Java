@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -28,14 +29,19 @@ public class ExchangeRateAutoHISTLogDAOImpl extends AbstractHiberbateDAO<Integer
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ExchangeRateAutoHISTLog> getByDate(Date date) {
-		 Criteria criteria = super.createEntityCriteria();
+//		 Criteria criteria = super.createEntityCriteria();
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
 		 criteria.add(Restrictions.sqlRestriction("to_char(RECORD_ADD_DATE,'"+IPageContains.FORMAT_DATE+"')=?", ICommonContains.DATE_FORMAT.format(date), StandardBasicTypes.STRING));
 		 criteria.addOrder(Order.desc("a.id"));
-		 return criteria.list();
+//		 return criteria.list();
+		 return super.executeDetachedCriteria(criteria);
 	}
 	@SuppressWarnings("unchecked")
 	public List<ExchangeRateAutoHISTLog> search(Date dateStrat,Date dateEnd,String bankName,String logStatust) {
-		 Criteria criteria = super.createEntityCriteria();
+//		 Criteria criteria = super.createEntityCriteria();
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
 		 criteria.add(Restrictions.ge("a.createdDate", dateStrat));
 		 criteria.add(Restrictions.le("a.createdDate", dateEnd));
 		 if(!UIUtil.isEmptyOrNull(bankName)){
@@ -47,11 +53,14 @@ public class ExchangeRateAutoHISTLogDAOImpl extends AbstractHiberbateDAO<Integer
 			 criteria.add(Restrictions.eq("logStatus", logStatust));
 		 }
 		 criteria.addOrder(Order.desc("a.id"));
-		 return criteria.list();
+//		 return criteria.list();
+		 return super.executeDetachedCriteria(criteria);
 	}
 	@SuppressWarnings("unchecked")
 	public List<ExchangeRateAutoHISTLog> search(Date dateStrat,Date dateEnd,String userUpdate) {
-		 Criteria criteria = super.createEntityCriteria();
+//		 Criteria criteria = super.createEntityCriteria();
+		DetachedCriteria criteria = super.createDetachedCriteria();
+
 		 if(dateStrat==null && dateEnd==null && UIUtil.isEmptyOrNull(userUpdate)){
 			 Calendar cal = Calendar.getInstance();
 			 cal.setTime(new Date());
@@ -66,7 +75,8 @@ public class ExchangeRateAutoHISTLogDAOImpl extends AbstractHiberbateDAO<Integer
 		 }
 		  
 		 criteria.addOrder(Order.desc("a.id"));
-		 return criteria.list();
+//		 return criteria.list();
+		 return super.executeDetachedCriteria(criteria);
 	}
 
 }

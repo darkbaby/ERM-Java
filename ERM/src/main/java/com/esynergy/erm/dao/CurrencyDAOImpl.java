@@ -1,6 +1,8 @@
 package com.esynergy.erm.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
@@ -17,7 +19,7 @@ public class CurrencyDAOImpl extends AbstractHiberbateDAO<Integer, Currency> imp
 	@SuppressWarnings("unchecked")
 	public List<Currency> listAllCurrency() {
 		logger.debug("----------listAllCurrency--------");
-		return super.hibernateNameQuery("HQL.listAllCurrency").list();
+		return super.hibernateNameQuery("HQL.listAllCurrency");
 	}
 
 	public Currency getCurrencyById(long id) {
@@ -29,9 +31,12 @@ public class CurrencyDAOImpl extends AbstractHiberbateDAO<Integer, Currency> imp
 	@Override
 	public List<Currency> listWhitOutById(long id) {
 		logger.debug("----------listWhitOutById is "+id); 
-		Query q = super.hibernateNameQuery("HQL.listCurrencyWithOutId");
-		q.setParameter("parmId", id);
-		return q.list();
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("parmId", id);
+//		Query q = super.hibernateNameQuery("HQL.listCurrencyWithOutId");
+//		q.setParameter("parmId", id);
+//		return q.list();
+		return super.hibernateNameQuery("HQL.listCurrencyWithOutId", map);
 	}
 
 }

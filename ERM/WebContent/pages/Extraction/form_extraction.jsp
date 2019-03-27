@@ -6,7 +6,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
  <link href="<s:url value='/resources/assets/css/select2.min.css' />" rel="stylesheet" />
 	<s:form name="extractionForm" enctype="multipart/form-data" id="extractionForm" theme="simple" class="form-inline" role="form">
-		
+		<s:hidden name="menuName"/>
 		<div class="row mt">
 			<div class="col-lg-12">
 				<div class="form-panel">
@@ -72,7 +72,7 @@
 									listKey="id"
 									listValue="countryName"
 									headerKey="-1"
-									headerValue="-------- Please Select --------"
+									headerValue="---Please Select---"
 								/>
 								<div class="has-error" id="countryComboBoxError"><s:property value="errors['errorBankOfCountry']" /></div>			
 							</td>
@@ -86,7 +86,7 @@
 									listKey="id"
 									listValue="code"
 									headerKey="-1"
-									headerValue="-------- Please Select --------"
+									headerValue="---Please Select---"
 								/>
 								<div class="has-error" id="baseCurrencyComboBoxError"><s:property value="errors['errorBaseCurrency']" /></div>			
 							</td>
@@ -209,7 +209,7 @@
 									listKey="value"
 									listValue="descriptionShort"
 									headerKey="-1"
-									headerValue="-------- Please Select --------"
+									headerValue="---Please Select---"
 								/>
 								<div class="has-error" id="formatDateError"><s:property value="errors['errorFormatDate']" /></div> 		
 							</td>
@@ -221,10 +221,13 @@
 									<div class="has-error" id="cssDateError"><s:property value="errors['errorCSSSelector']" /></div> 
 								</s:if>
 								<s:else>
-									<s:textfield cssStyle="width:100%;" name="extractionForm.cssDate" 
-										id="cssDate" value=""
+									<s:textfield cssStyle="width:100%;" 
+										id="cssDate"
 										class="form-control"
-										disabled="true" />	
+										disabled="true" />
+									<s:hidden
+										name="extractionForm.cssDate"
+									/>	
 									<div class="has-error" id="cssDateError"><s:property value="errors['errorCSSSelector']" /></div> 
 								</s:else>
 							</td>
@@ -244,8 +247,8 @@
 								<span class="erm-required"></span>
 							</th>
 							<th>
-								<s:text name="label.setting.type.of.header.on.webpage"/>
-								<span class="erm-required"></span>
+<%-- 								<s:text name="label.setting.type.of.header.on.webpage"/> --%>
+<%-- 								<span class="erm-required"></span> --%>
 							</th>
 						</tr>
 						<tr>
@@ -259,7 +262,7 @@
 									listKey="value"
 									listValue="descriptionShort"
 									headerKey="-1"
-									headerValue="-------- Please Select --------"
+									headerValue="---Please Select---"
 								/>
 								<div class="has-error" id="pairCurrencyTypeError"><s:property value="errors['errorTypeOfCurrency']" /></div>
 							</td>
@@ -273,23 +276,24 @@
 									listKey="value"
 									listValue="descriptionShort"									
 									headerKey="-1"
-									headerValue="-------- Please Select --------"
+									headerValue="---Please Select---"
 								/>
 								<div class="has-error" id="extractionDateError"><s:property value="errors['errorDateToExtract']" /></div>				
 							</td>
 							<td>
-								<s:select 
-								    class="form-control" 
-								    cssStyle="width:100%;" 
-								    name="extractionForm.pageType"
-								    id="pageType"
-									list="pageTypeList"
-									listKey="value"
-									listValue="descriptionShort"
-									headerKey="-1"
-									headerValue="-------- Please Select --------"
-								/>
-								<div class="has-error" id="pageTypeError"><s:property value="errors['errorTypeOfHeader']" /></div>			
+								<s:hidden name="extractionForm.pageType" value="2"/>
+<%-- 								<s:select  --%>
+<%-- 								    class="form-control"  --%>
+<%-- 								    cssStyle="width:100%;"  --%>
+<%-- 								    name="extractionForm.pageType" --%>
+<%-- 								    id="pageType" --%>
+<%-- 									list="pageTypeList" --%>
+<%-- 									listKey="value" --%>
+<%-- 									listValue="descriptionShort" --%>
+<%-- 									headerKey="-1" --%>
+<%-- 									headerValue="-------- Please Select --------" --%>
+<%-- 								/> --%>
+<%-- 								<div class="has-error" id="pageTypeError"><s:property value="errors['errorTypeOfHeader']" /></div>			 --%>
 							</td>
 						</tr>
 						<tr>
@@ -321,8 +325,8 @@
  										fieldValue="%{extractionTime}"
  										value="%{chk}"
  									/>
- 									<s:text
- 										name="extractionTimeLabel" />
+ 									<s:property
+ 										value="extractionTimeLabel" />
  										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  									</td>
  									
@@ -354,14 +358,39 @@
 <%-- 					<h5><strong><s:text  name="label.pair.currency"/> is :</strong> <span  id="pairCurrencyCode"></span></h5> --%>
 					
 					<s:if test="extractionForm.extractionType == 2">
-						<s:include value="setting_table_type2.jsp"/>
-					</s:if>	
-					<s:elseif test="extractionFrom.extractionType == 3">
-						<s:include value="setting_table_type3.jsp"/>
-					</s:elseif>
+						<div id="hideSettingTable1" style="display:none;">
+							<s:include value="setting_table_type1.jsp"/>
+						</div>
+						<div id="hideSettingTable2" style="display:;">
+							<s:include value="setting_table_type2.jsp"/>
+						</div>
+					</s:if>
 					<s:else>
-						<s:include value="setting_table_type1.jsp"/>
+						<div id="hideSettingTable1" style="display:;">
+							<s:include value="setting_table_type1.jsp"/>
+						</div>
+						<div id="hideSettingTable2" style="display:none;">
+							<s:include value="setting_table_type2.jsp"/>
+						</div>
 					</s:else>
+					
+<%-- 					<s:if test="extractionForm.extractionType == 2"> --%>
+<%-- 						<s:include value="setting_table_type2.jsp"/> --%>
+<%-- 					</s:if>	 --%>
+<%-- 					<s:elseif test="extractionFrom.extractionType == 3"> --%>
+<%-- 						<s:include value="setting_table_type3.jsp"/> --%>
+<%-- 					</s:elseif> --%>
+<%-- 					<s:else> --%>
+<%-- 						<s:include value="setting_table_type1.jsp"/> --%>
+<%-- 					</s:else> --%>
+					</div>
+					
+					<div>
+						<s:iterator value="extractionForm.extractionDetailFormRemoveList" status="sts">
+							<s:hidden
+								name="extractionForm.extractionDetailFormRemoveList[%{#sts.index}]"
+							/>
+						</s:iterator>
 					</div>
 
 					</div><!-- /form-panel -->
@@ -371,7 +400,7 @@
         	<table style="width:100%" align="center">
 				<tr>
 					<td align="center">
-						<s:url var="cancleURL" action="prepareMangeExtraction"/>
+						<s:url var="cancleURL" action="prepareManageExtraction"/>
 			            <s:a href="%{cancleURL}">
 							<button type="button" style="width:150px" class="btn btn-default btn-sm" title="<s:text name='btn.cancel'/>">
 									<span class="glyphicon glyphicon-chevron-left"></span>
@@ -406,16 +435,21 @@
  	var settingTable = "";
  	var currentExtractionType = "";
  	var currentIndexRemoveDetail = 0;
- 	var ddlCurrencyAPIPool = "";
- 	var ddlSelectedCurrencyAPI = "";
+//  	var ddlCurrencyAPIPool = "";
+//  	var ddlSelectedCurrencyAPI = "";
  	var resultForTable = "";
  	
  	$(document).ready(function(){
  		settingTableArea = $("#settingTableArea");
- 		settingTable = $("#settingTable");
     	currentExtractionType = $("#extractionType").val();
-    	ddlCurrencyAPIPool = $("#ddlCurrencyAPIPool");
-    	ddlSelectedCurrencyAPI = $("#ddlSelectedCurrencyAPI");
+ 		if(currentExtractionType == 1){
+ 	    	settingTable = $("#settingTable");
+ 		} 
+ 		else if(currentExtractionType == 2){
+ 	    	settingTable = $("#settingTable2");
+ 		}
+//     	ddlCurrencyAPIPool = $("#ddlCurrencyAPIPool");
+//     	ddlSelectedCurrencyAPI = $("#ddlSelectedCurrencyAPI");
     	resultForTable = $("#resultForTable").val();
     	$('select').select2();
 
@@ -557,9 +591,9 @@
     	var cssDateVal = $("#cssDate").val();
     	var pairCurrencyTypeVal = $("#pairCurrencyType").val();
     	var extractionDateVal = $("#extractionDate").val();
-    	var pageTypeVal = $("#pageType").val();
+//     	var pageTypeVal = $("#pageType").val();
     	var extractionTimeTDVal = $("#extractionTimeTD").find("input[type=checkbox]");
-    	var settingTableVal = $("#settingTable").find("tr");
+    	var settingTableVal = $(settingTable).find("tr");
 
     	var isBankNameValid = true;
     	if(!bankNameVal || 0 === bankNameVal.trim().length){
@@ -642,14 +676,14 @@
     		$("#extractionDateError").html("");
     	}
 		
-		var isPageTypeValid = true;
-		if(!pageTypeVal || -1 == pageTypeVal){
-			isPageTypeValid = false
-			$("#pageTypeError").html("Page Type must be selected");
-    	}
-		else{
-    		$("#pageTypeError").html("");
-    	}
+// 		var isPageTypeValid = true;
+// 		if(!pageTypeVal || -1 == pageTypeVal){
+// 			isPageTypeValid = false
+// 			$("#pageTypeError").html("Page Type must be selected");
+//     	}
+// 		else{
+//     		$("#pageTypeError").html("");
+//     	}
 		
 		var isExtractionTimeValid = true;
 		var isChecked = false;
@@ -814,7 +848,7 @@
 					isSettingTableValid = false;
 				}
 			}
-		});		
+		});
 		
 //     	console.log("bankName : " + bankNameVal)
 //     	console.log("bankShortNameName : " + bankShortNameVal)
@@ -829,9 +863,13 @@
 
  		$('select').select2();
     	
-    	if(isBankNameValid && isBankShortNameValid && isCountryComboBoxValid && isBaseCurrencyComboBoxValid
+//     	if(isBankNameValid && isBankShortNameValid && isCountryComboBoxValid && isBaseCurrencyComboBoxValid
+//     			&& isUrlValid && isFormatDateValid && isCssDateValid
+//     			&& isPairCurrencyTypeValid && isExtractionDateValid && isPageTypeValid
+//     			&& isExtractionTimeValid && isSettingTableValid){
+		if(isBankNameValid && isBankShortNameValid && isCountryComboBoxValid && isBaseCurrencyComboBoxValid
     			&& isUrlValid && isFormatDateValid && isCssDateValid
-    			&& isPairCurrencyTypeValid && isExtractionDateValid && isPageTypeValid
+    			&& isPairCurrencyTypeValid && isExtractionDateValid
     			&& isExtractionTimeValid && isSettingTableValid){
     		return true;
     	}
@@ -842,9 +880,27 @@
     
     function onChangeExtractionType(obj){
     	
-    	$('#extractionForm').attr('action','changeExtractionType.action').submit();
+    	currentExtractionType = $("#extractionType").val();
+ 		if(currentExtractionType == 1){
+ 			$("#cssDate").removeAttr("disabled");
+ 	    	settingTable = $("#settingTable");
+ 	    	$("#hideSettingTable1").css("display","");
+	    	$("#hideSettingTable2").css("display","none");
+ 		} 
+ 		else if(currentExtractionType == 2){
+ 			$("#cssDate").val("");
+ 			$("#cssDate").attr("disabled","disabled");
+ 	    	settingTable = $("#settingTable2");
+ 	    	$("#hideSettingTable1").css("display","none");
+ 	    	$("#hideSettingTable2").css("display","");
+ 		}
     	
-    	$.LoadingOverlay("show");
+ 		$("select").select2('destroy');
+ 		$("select").select2();
+ 		
+//     	$('#extractionForm').attr('action','changeExtractionType.action').submit();
+    	
+//     	$.LoadingOverlay("show");
     }
         
     function preview(){

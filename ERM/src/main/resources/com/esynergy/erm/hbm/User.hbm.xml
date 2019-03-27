@@ -4,7 +4,7 @@
 	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
-	<class name="User" table="ERM_AUTH_USER" >
+	<class name="User" table="ERM_AUTH_USER" dynamic-update="true" >
 		<id name="id" column="PK_USER_SEQ" type="long">
 			<generator class="sequence-identity">
                 <param name="sequence" >ERM_USER_SEQ</param>           
@@ -20,8 +20,16 @@
 		<property name="lastUpdateUser" 	column="RECORD_CHANGE_USER"	type="string"/>
 		<property name="createdDate"     	column="RECORD_ADD_DATE"    type="timestamp"/>
 		<property name="lastUpdateDate"     column="RECORD_CHANGE_DATE" type="timestamp"/>
-		<many-to-one name="country"    		column="LOCATION"	    class="Country"  />
-		<many-to-one name="authorizeGroup"  column="FK_GROUP_SEQ"	class="AuthorizeGroup"  />
+		<many-to-one name="country"    		column="LOCATION"	    class="Country" 
+			not-null="true" cascade="save-update" />
+		<many-to-one name="authorizeGroup"  column="FK_GROUP_SEQ"	class="AuthorizeGroup"
+			not-null="true" cascade="save-update"  />
+		<set name="manualTargetList" table="ERM_MANUAL_TARGET" cascade="save-update,delete" inverse="true" fetch="select" >
+			<key>
+				<column name="OWNER_ID"/>
+			</key>
+			<one-to-many entity-name="com.esynergy.erm.model.ob.ManualTarget"  />
+		</set>
 	</class>
 	 
 </hibernate-mapping>

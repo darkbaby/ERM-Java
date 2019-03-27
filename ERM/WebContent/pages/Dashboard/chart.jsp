@@ -12,8 +12,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link href="<s:url value='/resources/assets/css/select2.min.css' />"
 	rel="stylesheet" />
-<link href="<s:url value='/resources/assets/css/c3.css' />"
+<link href="<s:url value='/resources/assets/css/c3.min.css' />"
 	rel="stylesheet" />
+<%-- <link href="<s:url value='https://cdnjs.cloudflare.com/ajax/libs/c3/0.5.4/c3.min.css' />" --%>
+<!-- 	rel="stylesheet" /> -->
 </head>
 
 <body>
@@ -104,10 +106,11 @@
 		<!-- /form-panel -->
 	</div>
 	<!-- /col-lg-12 -->
-	</div>
 	<!-- /row -->
-	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-	<script src="<s:url value='/resources/assets/js/c3.js'/>"></script>
+<%-- 	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> --%>
+	<script src="<s:url value='/resources/assets/js/chart-master/d3.v5.min.js'/>" ></script>
+	<script src="<s:url value='/resources/assets/js/chart-master/c3.min.js'/>"></script>
+<%-- 	<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.5.4/c3.min.js" ></script> --%>
 	<script src="<s:url value='/resources/assets/js/sparkline-chart.js' />"></script>
 	<script src="<s:url value='/resources/assets/js/zabuto_calendar.js' />"></script>
 	<script

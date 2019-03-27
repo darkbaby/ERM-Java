@@ -26,8 +26,10 @@
 								<th></th>
 							</tr>
 							<tr>
-								<td><s:hidden name="exchangeRateManual.id"/>
-									<s:date name="exchangeRateManual.rateDate" format='%{getText("ui.struts.date.format")}'/>
+								<td><s:hidden name="exchangeRateManualForm.id"/>
+									<s:property value="exchangeRateManualForm.rateDate" />
+								
+<%-- 									<s:date name="exchangeRateManualForm.rateDate" format='%{getText("ui.struts.date.format")}'/> --%>
 								</td>
 							</tr>
 						</table>
@@ -52,23 +54,23 @@
 						  </tr> 
 						  </thead> 
 						  <tbody>
-						  <s:iterator value="exchangeRateManual.exchangeRateDetails" status="sts">
+						  <s:iterator value="exchangeRateManualForm.exchangeRateDetailList" status="sts">
 						  		<tr>
 						  			<td><s:property value="#sts.index+1" /></td>
-						  			<td><s:property value="firstCurrency.code"/></td>
-						  			<td><s:property value="pairCurrency.code"/></td>									
+						  			<td><s:property value="firstCurrencyStatic"/></td>
+						  			<td><s:property value="pairCurrencyStatic"/></td>									
 									<td style="text-align:right;" ><s:property value="value"/></td>
 									<td style="text-align:right;" >
-										<s:text name="format.number.exchange.rate">
-											<s:param name="value" value="buyingRate"/>
-										</s:text>
-<%-- 									<s:property value="buyingRate"/> --%>
+<%-- 										<s:text name="format.number.exchange.rate"> --%>
+<%-- 											<s:param name="value" value="buyingRate"/> --%>
+<%-- 										</s:text> --%>
+									<s:property value="buyingRate"/>
 									</td>
 								 	<td style="text-align:right;" >
-								 		<s:text name="format.number.exchange.rate">
-											<s:param name="value" value="sellingRate"/>
-										</s:text>
-<%-- 								 		<s:property value="sellingRate"/> --%>
+<%-- 								 		<s:text name="format.number.exchange.rate"> --%>
+<%-- 											<s:param name="value" value="sellingRate"/> --%>
+<%-- 										</s:text> --%>
+								 		<s:property value="sellingRate"/>
 								 	</td>
 					 			     
 								</tr>
@@ -91,19 +93,21 @@
 							</thead>
 						
 							<tbody>
-								<s:iterator value="exchangeRateManual.fileUploadERManualList" status="st">
+								<s:iterator value="exchangeRateManualForm.fileUploadList" status="st">
 								<tr>
-										<td><s:property value="#st.index+1"/>    </td>
 									<s:if test="id > 0">
+										<td><s:property value="#st.index+1"/>    </td>
+									
 										<td> 
 										                  
 							               <s:property value="name"/>
 										</td>
 										<td>
 												<s:url var="donwloadFileUrl" action="downloadFileERByManual">
-									               	  	 <s:param name="parm" value="id"/>
+									               	  	 <s:param name="parmID" value="id"/>
+									               	  	 <s:param name="parmURL" value="url"/>
 									            </s:url>
-												<s:a href="%{donwloadFileUrl}" >       	 
+												<s:a href="%{donwloadFileUrl}"  target="_blank" >       	 
 							               	 		<span class="glyphicon glyphicon-download-alt" 
 							               	 			 title="<s:text name='label.download'/>" 
 							               	 			 style="padding: 2px 10px 3px 10px;">

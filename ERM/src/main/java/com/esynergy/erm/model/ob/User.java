@@ -1,6 +1,9 @@
 package com.esynergy.erm.model.ob;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import com.esynergy.erm.model.IUser;
 
@@ -18,9 +21,27 @@ public class User implements IUser{
 	private Date   lastUpdateDate;
 	private Country country;
 	private AuthorizeGroup authorizeGroup;
-	
+	private Set<ManualTarget> manualTargetList = new HashSet<ManualTarget>();
+
 	public User() {}
 	 
+	public User(User o) {
+		this.id = o.id;
+		this.logOnId = o.logOnId;
+		this.pwd = o.pwd;
+		this.firstName = o.firstName;
+		this.lastName = o.lastName;
+		this.emailAddress = o.emailAddress;
+		this.recordStatus = o.recordStatus;
+		this.createdUser = o.createdUser;
+		this.lastUpdateUser = o.lastUpdateUser;
+		this.createdDate = o.createdDate;
+		this.lastUpdateDate = o.lastUpdateDate;
+		this.country = o.country;
+		this.authorizeGroup = o.authorizeGroup;
+		this.manualTargetList = o.manualTargetList;
+	}
+	
 	public long getId() {
 		return id;
 	}
@@ -109,6 +130,13 @@ public class User implements IUser{
 	public void setRecordStatus(String recordStatus) {
 		this.recordStatus = recordStatus;
 	}
- 
+
+	public Set<ManualTarget> getManualTargetList() {
+		return manualTargetList;
+	}
+
+	public void setManualTargetList(Set<ManualTarget> manualTargetList) {
+		this.manualTargetList = manualTargetList;
+	}
 	
 }

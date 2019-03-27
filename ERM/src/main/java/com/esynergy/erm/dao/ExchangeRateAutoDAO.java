@@ -11,7 +11,9 @@ public interface ExchangeRateAutoDAO {
 	public void saveExchangeRateAuto(ExchangeRateAuto o);
 	public void updateExchangeRateAuto(ExchangeRateAuto o);
 	public List<IExchangeRate> listByDate(Date date);
-	public List<IExchangeRate> search(long pairCurrencyId, long baseCurrencyId,
-			long countryOfBankId);
+	public List<IExchangeRate> search(Date startDate, Date endDate,
+			String bankName, long baseCurrencyId, long pairCurrencyId);
+//	public List<IExchangeRate> search(long pairCurrencyId, long baseCurrencyId,
+//			long countryOfBankId);
 	public ExchangeRateAuto getByBankId(long id);
 }

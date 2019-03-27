@@ -3,8 +3,10 @@
 <%@page import="com.esynergy.erm.web.action.IPageContains"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>  
 <%@ taglib prefix="modong" uri="/WEB-INF/ModongTag.tld" %> 
+
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
 	"http://www.w3.org/TR/html4/loose.dtd">
@@ -23,17 +25,30 @@
                   	  <table align="right" style="margin-bottom:5px">
 	                      <tr>
 	                      	<td  align="right" >
-	                      		<s:url var="addURL" action="prepareCreateExtraction"></s:url>
+	                      	
+<%-- 	                        	<modong:sys-permission function="ScrapExtraction"> --%>
+<!-- 	                      		<button style="width:100px;" type="button" class="btn btn-danger"  -->
+<%-- 	                      			title="<s:text name='btn.scrap.all'/>" --%>
+<!-- 	                      			onclick="onClickScrapAll();"> -->
+<%-- 		                      		<span class="glyphicon glyphicon-cog"></span> --%>
+<%-- 		                      		<span ><s:text name="btn.scrap.all"/></span> --%>
+<!-- 		                      	</button> -->
+<%-- 	                      		</modong:sys-permission> --%>
+	                      	
+	                      		<modong:sys-permission function="PrepareCreateExtraction">
+				                 <s:url var="addURL" action="prepareCreateExtraction"></s:url>
 	                      		<s:a href="%{addURL}">
-		                      		<button style="width:100px;" type="button" class="btn btn-theme" title="<s:text name='msg.add.new.extraction'/>">
-		                      			<span class="glyphicon glyphicon-plus-sign"></span>
+		                      		<button style="width:100px;" type="button" class="btn btn-theme" 
+		                      		title="<s:text name='msg.add.new.extraction'/>">
+		                      			<span class="glyphicon glyphicon-plus-sign"></span>		                      		
 		                      			<span ><s:text name="btn.add"/></span>
 		                      		</button>
 	                      		</s:a>
+           	    			    </modong:sys-permission>
 	                      	</td>
 	                      </tr>
                       </table>
-   			           <table class="table table-bordered table-striped  table-hover" id="listExtracTbl">
+   			           <table class="table table-bordered table-striped  table-hover" id="listExtracTbl" style="display:none;">
 				                      <thead style="background:#ffd777;">
 										  <tr>
 										  	<th>#</th>
@@ -52,15 +67,9 @@
 				                      	    		 	 <td style="text-align: left;"><s:property value="bank.bankName"/>  
 				                      	    			  <td style="text-align: left;"><s:property value="bank.country.countryName" /></td>
 				                      	    			<td style="text-align: left;">
-				                      	    				<s:if test="extractionType == 1">
-				                      	    					<s:text name="msg.use.css.selector"/>
-				                      	    				</s:if>
-				                      	    				<s:if test="extractionType == 2">
-				                      	    					<s:text name="msg.use.specific.tag.id"/>
-				                      	    				</s:if>
-				                      	    				<s:if test="extractionType == 3">
-				                      	    					<s:text name="msg.use.api"/>
-				                      	    				</s:if>
+				                      	    				<s:if test="extractionType == 1"><s:text name="msg.use.css.selector"/></s:if>
+				                      	    				<s:if test="extractionType == 2"><s:text name="msg.use.specific.tag.id"/></s:if>
+				                      	    				<s:if test="extractionType == 3"><s:text name="msg.use.api"/></s:if>
 				                      	    			</td>
 				                      	    			<td style="text-align: left;">
 				                      	    				<s:if test='status.equals("A")'>
@@ -74,7 +83,9 @@
 				                      	    			<td style="text-align: center;"> 
 				                      	    			  <s:url var="editURL"   action="prepareEditExtraction"><s:param name="parm" value="%{id}" />  </s:url>
 				                      	    			  <s:url var="viewURL"   action="prepareViewExtraction"><s:param name="parm" value="%{id}" />  </s:url>
-				                      	    			    <modong:sys-permission function="ViewScraping">
+				                      	    			  <s:url var="scrapURL"   action="scrapExtraction"><s:param name="parm" value="%{id}" />  </s:url>
+				                      	    			    
+				                      	    			    <modong:sys-permission function="PrepareViewExtraction">
 				                      	    			    <s:a href="%{viewURL}">
 				                      	    			    	<button class="btn btn-success btn-sm" 
 				                      	    			    			title="<s:text name="label.view.detail"/>">
@@ -82,7 +93,7 @@
 				                      	    			    	</button>
 				                      	    			    </s:a>
 				                      	    			    </modong:sys-permission>
-				                      	    			    <modong:sys-permission function="EditScraping">
+				                      	    			    <modong:sys-permission function="PrepareEditExtraction">
 				                      	    			    <s:a href="%{editURL}">
 				                      	    			    	<button class="btn btn-primary btn-sm" 
 				                      	    			    			title="<s:text  name="msg.edit"/>">
@@ -90,14 +101,24 @@
 				                      	    			    	</button>
 				                      	    			    </s:a>
 				                      	    			    </modong:sys-permission>
-				                      	    			    <modong:sys-permission function="DeleteScraping">
+				                      	    			    <modong:sys-permission function="RemoveExtraction">
 				                      	    			    <s:if test='status.equals("S")'>
-				                      	    			    	<button class="btn btn-danger btn-sm" onclick="onClickDelete('<s:property value="id"/>')"
-				                      	    			    			title="<s:text  name="msg.remove"/>">
+				                      	    			    	<button class="btn btn-danger btn-sm" onclick="onClickDelete('<s:property value="id"/>');"
+				                      	    			    			title="<s:text  name="label.remove"/>">
 				                      	    			    		<i class="fa fa-trash-o"></i>
 				                      	    			    	</button>
 				                      	    			    </s:if>
 				                      	    			    </modong:sys-permission>
+<%-- 				                      	    			    <modong:sys-permission function="ScrapExtraction"> --%>
+<%-- 				                      	    			    	<s:if test='status.equals("A")'> --%>
+<!-- 				                      	    			    	<button class="btn btn-warning btn-sm"  -->
+<%-- 			                      	    			    			title="<s:text name="btn.scrap"/>" --%>
+<%-- 			                      	    			    			onclick="onClickScrap('<s:property value="id"/>');" --%>
+<!-- 			                      	    			    			> -->
+<!-- 			                      	    			    			<i class="fa fa-cog"></i> -->
+<!-- 			                      	    			    		</button> -->
+<%-- 			                      	    			    		</s:if> --%>
+<%-- 				                      	    			    </modong:sys-permission> --%>
 				                      	    			</td>     
 				                      	    		</tr>
 				                      	    </s:iterator>  
@@ -119,16 +140,30 @@
 	 		order:[[1,"asc"]],
  	    	columnDefs:[{
  	    		orderable: false, targets: [0,5], visible: true
- 	    	}]
+ 	    	}],
+ 	    	drawCallback: function(setting){
+//  	    		console.log(setting._iDisplayStart);
+ 	    		reDrawNumberExtractionTable(setting._iDisplayStart);
+ 	    	}
  	    });
+ 	    
+ 	    $("#listExtracTbl").css("display","");
 		
 //  	    var info = extractionTable.page.info();
  	    
- 	   reDrawNumberExtractionTable();
+ 	   reDrawNumberExtractionTable(0);
 	   
-	   $('#listExtracTbl').on('order.dt',function(){
-		   reDrawNumberExtractionTable();
-   	   })
+// 	   $('#listExtracTbl').on('order.dt',function(){
+// 		   reDrawNumberExtractionTable();
+//    	   })
+   	   
+//    	   $('#listExtracTbl').on('length.dt',function(){
+// 		   reDrawNumberExtractionTable();
+//    	   })
+   	   
+//    	   $('#listExtracTbl').on('page.dt',function(){
+// 		   reDrawNumberExtractionTable();
+//    	   })
  	  
 //  	  $('#listExtracTbl').on('page.dt',function(){
 //  		  console.log(info.page + " " + info.length + " " + info.pages);
@@ -136,14 +171,14 @@
  	  
  	});
   	
-  	function reDrawNumberExtractionTable(){
-		var sizeAr = "<s:property value="extractionList.size()"/>";
+  	function reDrawNumberExtractionTable(beginIndex){
+		var sizeAr = "<s:property value='extractionList.size()'/>";
 		
-		if(sizeAr == '0'){
+		if(sizeAr == "0"){
 			return false;
 		}
 		
-  		var runningNumber = 1;
+  		var runningNumber = beginIndex + 1;
   		$('#listExtracTbl').find("tr").each(function(i,obj){
   			if(i > 0){
   				$(obj).find("td:nth-child(1)").html(runningNumber);
@@ -156,7 +191,7 @@
   		  		
   		bootbox.confirm({
 	        title: "Confirm Remove!",
-	        message: "Do you want to remove this Record? This cannot be undone.",
+	        message: "Do you want to remove this Record?",
 	        buttons: {
 	            cancel: {
 	                label: '<i class="fa fa-times"></i> Cancel'
@@ -169,6 +204,52 @@
 	            if(result){
 	         		//$('#extractionForm').attr('action','removeExtraction.action').submit();
 	            	$(location).attr('href','removeExtraction?parm=' + id);
+	            }
+	        }
+	    });
+  		
+  		
+  	}
+  	
+  	function onClickScrapAll(){
+	  		
+  		bootbox.confirm({
+	        title: "Confirm Scrap All!",
+	        message: "Do you want to scrap all these extractions?",
+	        buttons: {
+	            cancel: {
+	                label: '<i class="fa fa-times"></i> Cancel'
+	            },
+	            confirm: {
+	                label: '<i class="fa fa-check"></i> Confirm'
+	            }
+	        },
+	        callback: function (result) {
+	            if(result){
+	            	$(location).attr('href','scrapExtraction');
+	            }
+	        }
+	    });
+  		
+  		
+  	}
+  	
+  	function onClickScrap(id){
+	  		
+  		bootbox.confirm({
+	        title: "Confirm Scrap!",
+	        message: "Do you want to scrap this extraction?",
+	        buttons: {
+	            cancel: {
+	                label: '<i class="fa fa-times"></i> Cancel'
+	            },
+	            confirm: {
+	                label: '<i class="fa fa-check"></i> Confirm'
+	            }
+	        },
+	        callback: function (result) {
+	            if(result){
+	            	$(location).attr('href','scrapExtraction?parm=' + id);
 	            }
 	        }
 	    });

@@ -1,12 +1,12 @@
 package com.esynergy.erm.model.form;
 
-
 public class ExchangeRateSearchForm {
 	private long baseCurrencyId;
 	private long pairCurrencyId;
 	private long countryOfBank;
 	private String origin;
 	private String status;
+	private String currentDate;
  
 	public long getCountryOfBank() {
 		return countryOfBank;
@@ -37,6 +37,12 @@ public class ExchangeRateSearchForm {
 	}
 	public void setOrigin(String origin) {
 		this.origin = origin;
+	}
+	public String getCurrentDate() {
+		return currentDate;
+	}
+	public void setCurrentDate(String currentDate) {
+		this.currentDate = currentDate;
 	}
 	 
  

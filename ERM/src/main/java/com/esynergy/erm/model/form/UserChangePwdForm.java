@@ -1,13 +1,15 @@
 package com.esynergy.erm.model.form;
 
 public class UserChangePwdForm extends UserLogonForm {
-	private String currenctPwd;
+	private String currentPwd;
 
-	public String getCurrenctPwd() {
-		return currenctPwd;
+	public String getCurrentPwd() {
+		return currentPwd;
 	}
 
-	public void setCurrenctPwd(String currenctPwd) {
-		this.currenctPwd = currenctPwd;
+	public void setCurrentPwd(String currentPwd) {
+		this.currentPwd = currentPwd;
 	}
+
+
 }

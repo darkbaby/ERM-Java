@@ -14,4 +14,7 @@ public interface CodeValueDao {
 	public List<CodeValue> listAllCurrencyType();
 	public List<CodeValue> listAllStatus();
 	public List<CodeValue> listAllFormatDate();
+	public List<CodeValue> listAllValue();
+	public CodeValue getPythonPath();
+	public CodeValue getManualPath();
 }

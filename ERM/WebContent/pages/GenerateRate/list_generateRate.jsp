@@ -41,7 +41,7 @@
 	            </tr>
 	        </table>
 	        
-	        <table class="table table-bordered table-striped  table-hover" id="listGenerateRate">
+	        <table class="table table-bordered table-striped  table-hover" id="listGenerateRate" style="display:none;">
 	        	<thead>
 	        		<tr>
 	        			<th style="width:5%;">#</th>
@@ -59,7 +59,7 @@
              	    	<td style="text-align: left;"><s:date name="changeDate" format="yyyy/MM/dd HH:mm:ss" /></td>
              	    	<td style="text-align: left;"><s:property value="changeUser" /></td>
 				        <td style="text-align: center;"> 
-				        <modong:sys-permission function="ViewGenerateRate">
+				        <modong:sys-permission function="PrepareViewGenerateRate">
 				        <s:url var="viewURL" action="prepareViewGenerateRate"><s:param name="parm" value="%{id}" /></s:url>
 				        <s:a href="%{viewURL}">
 				            <button class="btn btn-success btn-sm" title="<s:text name="label.view.detail"/>">
@@ -67,7 +67,7 @@
 				            </button>
 						</s:a>
 						</modong:sys-permission>
-						<modong:sys-permission function="EditGenerateRate">
+						<modong:sys-permission function="PrepareEditGenerateRate">
 						<s:url var="editURL" action="prepareEditGenerateRate"><s:param name="parm" value="%{id}" /></s:url>
 				        <s:a href="%{editURL}">
 				           	<button class="btn btn-primary btn-sm" title="<s:text name="msg.edit"/>">
@@ -75,8 +75,8 @@
 				           	</button>
 				        </s:a>
 				        </modong:sys-permission>
-				        <modong:sys-permission function="DeleteGenerateRate">
-				        	<button class="btn btn-danger btn-sm" onclick="onClickDelete('<s:property value="id"/>')" title="<s:text  name="msg.remove"/>">
+				        <modong:sys-permission function="RemoveGenerateRate">
+				        	<button class="btn btn-danger btn-sm" onclick="onClickDelete('<s:property value="id"/>')" title="<s:text name="label.remove"/>">
 				            	<i class="fa fa-trash-o"></i>
 				            </button>
 				        </modong:sys-permission>		    
@@ -105,6 +105,8 @@
 	 			orderable: false, targets: [0,4], visible: true
 	 		}]
 	 	});
+		
+		$("#listGenerateRate").css("display","");
 		
 		reDrawNumberGenerateRateTable();
 		   

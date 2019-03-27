@@ -3,6 +3,7 @@ package com.esynergy.erm.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -15,9 +16,9 @@ public class AuthorizeGroupDAOImpl extends AbstractHiberbateDAO<Integer, Authori
 
 	@SuppressWarnings("unchecked")
 	public List<AuthorizeGroup> listAll() {
-		Criteria criteria = super.createEntityCriteria();
+		DetachedCriteria criteria = super.createDetachedCriteria();
 		criteria.add(Restrictions.eq("status", IPageContains.RECORD_STS_ACTIVE));
-		return criteria.list();
+		return super.executeDetachedCriteria(criteria);
 	}
 
 	@Override

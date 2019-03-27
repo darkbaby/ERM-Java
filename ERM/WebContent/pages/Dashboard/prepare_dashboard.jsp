@@ -24,11 +24,11 @@
 		    <!--BREADCRUM START-->
 		    <div class="row">
             <ul class="breadcrumb bread-warning">
-              <li><a href="#"><s:property value="getText('header.dashboard')"/></a></li>
+              <li><s:property value="getText('header.dashboard')"/></li>
             </ul>
             </div>
             <!--BREADCRUM END-->  
-			<h3 class="subject"><i class="fa fa-dashboard"></i><span class="subject-text"><s:text name="actionMsg['actionTitle']"/></span></h3>
+			<h3 class="subject"><i class="fa fa-dashboard"></i><span class="subject-text"><s:property value="menuName"/></span></h3>
  			<div >
                 <s:include value="chart.jsp"/> 
                 <s:include value="form_search_exchangeRate.jsp"/>

@@ -16,9 +16,36 @@
 	<!-- <constant name="struts.custom.i18n.resources" value="global" /> -->
 	 <package name="default" namespace="/" extends="struts-default">
 	 	
+	 	<interceptors>
+       		<interceptor name="ERMInterceptor" class="com.esynergy.erm.web.action.ERMInterceptor"/>
+		    <interceptor-stack name="firstStack">  
+		    	<interceptor-ref name="ERMInterceptor"/>
+		    	<interceptor-ref name="defaultStack"/>
+		    </interceptor-stack> 
+       	</interceptors>
+       	
+       	<default-interceptor-ref name="firstStack"></default-interceptor-ref>
 		
-		<action name="" class="userLogonAction"  method="prepareLogon">
-            <result name="success">pages/UserLogon/logon_form.jsp</result>
+		<global-results>
+			<result name="exception">pages/PageHalper/exception.jsp</result>
+			<result name="runtime_exception">pages/PageHalper/error.jsp</result>
+			<result name="jdbcException">pages/PageHalper/jdbc_exception.jsp</result>
+			<result name="session_timeout">pages/PageHalper/session_timeout.jsp</result>
+	    	<result name="permission_missing">pages/PageHalper/permission_missing.jsp</result>
+			<result name="file_not_found">pages/PageHalper/file_not_found.jsp</result>
+		</global-results>
+		
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception" result="exception"></exception-mapping>
+			<exception-mapping exception="java.lang.NullPointerException" result="exception"></exception-mapping>
+			<exception-mapping exception="java.lang.RuntimeException" result="runtime_exception"></exception-mapping>
+			<exception-mapping exception="org.hibernate.exception.GenericJDBCException" result="jdbcException" ></exception-mapping>
+		</global-exception-mappings>
+	
+		<action name="" class="com.esynergy.erm.web.action.UserLogonAction" method="prepareLogon">
+			<result type="redirectAction" name="success">
+			  <param name="actionName">prepareLogon</param>
+			 </result>
 		</action>
 		
 	</package>
@@ -31,6 +58,5 @@
 	<include file="com/esynergy/erm/struts2/erm-by-generate-rate-struts.xml"></include>
 	<include file="com/esynergy/erm/struts2/erm-user-logon-struts.xml"></include>
 	<include file="com/esynergy/erm/struts2/erm-user-manage-struts.xml"></include>
-	<include file="com/esynergy/erm/struts2/erm-page-helper-struts.xml"></include>
-
+	
 </struts>

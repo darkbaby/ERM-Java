@@ -2,8 +2,10 @@ package com.esynergy.erm.web.action;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.Normalizer.Form;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -14,35 +16,35 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.interceptor.ServletRequestAware;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import com.esynergy.erm.model.IUser;
+import com.esynergy.erm.model.form.ManualTargetCheckForm;
 import com.esynergy.erm.model.form.UserLogonForm;
 import com.esynergy.erm.model.form.UserLogonResetPwdForm;
 import com.esynergy.erm.model.form.UserLogonSearchForm;
 import com.esynergy.erm.model.ob.AuthorizeGroup;
 import com.esynergy.erm.model.ob.CodeValue;
 import com.esynergy.erm.model.ob.Country;
-import com.esynergy.erm.model.ob.ExchangeRateAutoHISTLog;
+import com.esynergy.erm.model.ob.ManualTarget;
 import com.esynergy.erm.model.ob.User;
 import com.esynergy.erm.service.AuthorizeGroupService;
 import com.esynergy.erm.service.CodeValueService;
 import com.esynergy.erm.service.CountryService;
-import com.esynergy.erm.service.ExchangeRateAutoHISTLogService;
+import com.esynergy.erm.service.ManualTargetService;
 import com.esynergy.erm.service.UserService;
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ModelDriven;
 import com.esynergy.common.web.action.ActionCommon;
 import com.esynergy.erm.common.util.EmailUtility;
 import com.esynergy.erm.common.util.UIUtil;
 import com.esynergy.erm.common.util.ValidatorUtil;
 
-@SuppressWarnings({ "serial", "rawtypes" })
-@Controller("userManageAction")
-public class UserManagementAction extends ActionCommon implements
-		  ServletRequestAware, ModelDriven {
+@SuppressWarnings({ "serial" })
+//@Controller("userManageAction")
+//@Scope("prototype")
+public class UserManagementAction extends ActionCommon {
 
 	private static final Logger logger = Logger.getLogger(UserManagementAction.class);
 	private UserLogonForm userLogonForm;
@@ -55,41 +57,33 @@ public class UserManagementAction extends ActionCommon implements
 	private IUser  user;
 	private String parm;
 	
+	private String menuName;
+	
+	@Autowired
+	private MandatoryAsset mandatoryAsset;
+	
 	@Autowired private CodeValueService codeValueService;
 	@Autowired private CountryService countryService;
 	@Autowired private AuthorizeGroupService authorizeGroupService;
 	@Autowired private UserService userService;
+	@Autowired private ManualTargetService manualTargetService;
 	
 	@SuppressWarnings("unchecked")
 	public void setServletRequest(HttpServletRequest request) {
 		super.setServletRequest(request);
 		HttpSession session = request.getSession(false) == null ? request
 				.getSession(true) : request.getSession(false);
-		    IUser userLogOnNow = (IUser) session.getAttribute(SESSION_USER);
-	    	if(!userLogOnNow.getAuthorizeGroup().getGroupName().equals(AUTHO_GROUP_ADMIN)){
-	    		forward(request,"permissionMissing.action");   
-	    	} 
+	    IUser userLogOnNow = (IUser) session.getAttribute(SESSION_USER);
+    	if(!userLogOnNow.getAuthorizeGroup().getGroupName().equals(AUTHO_GROUP_ADMIN)){
+    		forward(request,"permissionMissing.action");   
+    	} 
 	     
 		request.setAttribute(MAIN_MENU_ATTR, MENU_USER_MANAGEMENT);
 		
-		if(session.getAttribute(SESSION_COUNTRY_LIST) == null) {
-			countryList = countryService.listAll();
-			session.setAttribute(SESSION_COUNTRY_LIST, countryList);
-		} else {
-			countryList = (List<Country>) session.getAttribute(SESSION_COUNTRY_LIST);
-		}
-		if(session.getAttribute(SESSION_AUTHOGROUP_LIST)==null){
-			authorizeGroupList = authorizeGroupService.listAll();
-			session.setAttribute(SESSION_AUTHOGROUP_LIST, authorizeGroupList);
-		}else{
-			authorizeGroupList =  (List<AuthorizeGroup>)session.getAttribute(SESSION_AUTHOGROUP_LIST);
-		}
-		if(session.getAttribute(SESSION_STATUS_LIST) == null) {
-			statusList = codeValueService.listAllStatus();
-			session.setAttribute(SESSION_STATUS_LIST, statusList);
-		} else {
-			statusList = (List<CodeValue>) session.getAttribute(SESSION_STATUS_LIST);
-		}
+//		mandatoryAsset.initialAsset();
+		countryList = mandatoryAsset.getCountryList();
+		authorizeGroupList = mandatoryAsset.getAuthorizeGroupList();
+		statusList = mandatoryAsset.getExtractionStatusList();
 	}
 
  	public HttpServletRequest getReq() {
@@ -97,36 +91,55 @@ public class UserManagementAction extends ActionCommon implements
 				ServletActionContext.HTTP_REQUEST);
 	} 
 
-	public String prepareMangement() {
-		 
-		if(UIUtil.isEmptyOrNull((String)getReq().getAttribute("updated"))){
-			super.errors.clear();
+	public String prepareManagement() {
+		
+		if(getReq().getParameter("updated") != null && getReq().getParameter("updated").equalsIgnoreCase("true")){
+		 	super.addActionMsg("resultMessage",getText("msg.action.save.success"));
+		 	super.addErrors("haveResult", true);
 		}
-			userLogonSearchForm = new UserLogonSearchForm();
-			userList = userService.list();
-		 
-		super.addActionMsg("actionTitle", "header.mangement.user");
-		return SUCCESS;
+		if(getReq().getParameter("removed") != null && getReq().getParameter("removed").equalsIgnoreCase("true")){
+		 	super.addActionMsg("resultMessage",getText("msg.action.remove.success"));
+		 	super.addErrors("haveResult", true);
+		}
+		if(getReq().getParameter("reset") != null && getReq().getParameter("reset").equalsIgnoreCase("true")){
+			List<String> targetUser = new ArrayList<String>();
+			if(getReq().getParameter("targetUser") != null) {
+				targetUser.add(getReq().getParameter("targetUser").toString());
+			}
+			super.addActionMsg("resultMessage",getText("msg.action.reset.pwd.success", targetUser));
+		 	super.addErrors("haveResult", true);
+		}
+		if(getReq().getParameter("resetOnlyData") != null && getReq().getParameter("resetOnlyData").equalsIgnoreCase("true")){
+			List<String> targetUser = new ArrayList<String>();
+			if(getReq().getParameter("targetUser") != null) {
+				targetUser.add(getReq().getParameter("targetUser").toString());
+			}
+			super.addActionMsg("resultMessage",getText("msg.action.reset.pwd.success.only.data", targetUser));
+		 	super.addErrors("haveResult", true);
+		}
+		
+		
+		menuName = getText("header.mangement.user");
+		
+		userLogonSearchForm = new UserLogonSearchForm();
+		userList = userService.list();
+				
+		return SUCCESS; 
 	}
 
 	public String prepareEdit() {
-		super.errors = new HashMap<String, Object>();
-		super.actionMsg = new HashMap<String, Object>();
+		menuName = getText("header.edit.user");
 
-		super.addActionMsg("actionTitle", "header.edit.user");
-		long idLong = Long
-				.parseLong(UIUtil.prepareConvertStringToNumber(parm));
+		long idLong = Long.parseLong(UIUtil.prepareConvertStringToNumber(parm));
 		user = userService.getById(idLong);
 		userLogonForm = new UserLogonForm();
 		populateObToForm(user,userLogonForm);
-		super.errors = new HashMap<String, Object>();
+		
 		return SUCCESS;
 	}
 	
 	public String prepareView(){
-		super.errors = new HashMap<String, Object>();
-		super.actionMsg = new HashMap<String, Object>();
-		super.addActionMsg("actionTitle", "header.view.user");
+		menuName = getText("header.view.user");
 		long idLong = Long
 				.parseLong(UIUtil.prepareConvertStringToNumber(parm));
 		user = userService.getById(idLong);
@@ -134,50 +147,98 @@ public class UserManagementAction extends ActionCommon implements
 	}
 
 	public String prepareCreate() {
-		super.errors = new HashMap<String, Object>();
-		super.actionMsg = new HashMap<String, Object>();
-		super.addActionMsg("actionTitle", "header.create.user");
+		menuName = getText("header.create.user");
+
 		userLogonForm = new UserLogonForm(); 
-		super.errors = new HashMap<String, Object>();
+		populateManualTargetToForm(userLogonForm);
+		
 		return SUCCESS;
 	}
+	
+	private void populateManualTargetToForm(UserLogonForm form) {
+		form.setManualTargetCheckFormList(new ArrayList<ManualTargetCheckForm>());
+		List<ManualTarget> manualTargetList = manualTargetService.listAllActiveNotExpire();
+		for(ManualTarget item : manualTargetList) {
+			ManualTargetCheckForm mtcForm = new ManualTargetCheckForm();
+			mtcForm.setId(item.getId());
+			mtcForm.setBaseCurrencyStr(item.getBaseCurrency().getCode());
+			mtcForm.setPairCurrencyStr(item.getPairCurrency().getCode());
+			if(item.getOwner() != null) {
+				mtcForm.setOwner(item.getOwner().getLogOnId());
+				if(item.getOwner().getId() == form.getId()) {
+					mtcForm.setChk("true");
+					mtcForm.setHaveAnotherOwner(false);
+				}
+				else {
+					mtcForm.setHaveAnotherOwner(true);
+				}
+			}
+			else {
+				mtcForm.setChk("false");
+				mtcForm.setHaveAnotherOwner(false);
+			}
+			form.getManualTargetCheckFormList().add(mtcForm);
+		}
+	}
 
-	public String save() throws IOException {
-		super.errors = new HashMap<String, Object>();
-		 
-		if (!validateForm()) { 
+	public String save() throws IOException { 
+		if (!validateForm()) {
+			List<Long> userCheckManualTarget = new ArrayList<Long>();
+			for (ManualTargetCheckForm item : userLogonForm.getManualTargetCheckFormList()) {
+				if(item != null) {
+					if(item.getChk() == null
+							|| item.getChk().equalsIgnoreCase("True")
+							|| item.getChk().equalsIgnoreCase("False")) {
+						
+					}
+					else {
+						userCheckManualTarget.add(item.getId());
+						item.setChk("True");
+					}
+				}
+			}
+			
+			populateManualTargetToForm(userLogonForm);
+			
+			for(Long item : userCheckManualTarget) {
+				for(ManualTargetCheckForm item2 : userLogonForm.getManualTargetCheckFormList()) {
+					if(item == item2.getId()) {
+						item2.setChk("True");
+						break;
+					}
+				}
+			}
+			
 			return INPUT;
 		} else {
 			User u = new User();
+			IUser tempIUser = null;
+			if(userLogonForm.getId() > 0) {
+				tempIUser = userService.getById(userLogonForm.getId());
+				u = (User)tempIUser;
+			}
 			populateFormToOb(userLogonForm, u);
-			HttpSession session = getReq().getSession(false);
-			IUser userAdmin = (IUser)session.getAttribute(SESSION_USER);
-			u.setLastUpdateUser(userAdmin.getLogOnId());
+			u.setLastUpdateUser(iUser.getLogOnId());
 			userService.save(u);
-			getReq().setAttribute("updated","updated");
-		 	super.addActionMsg("saveSuccess",getText("msg.action.save.success"));
-		 	errors.put("isSuccess", true);
 			return SUCCESS; 
 		}
 	}
 	public String remove() throws IOException {
-		super.errors = new HashMap<String, Object>();
-		  
-			User u = (User)userService.getById(userLogonForm.getId());
-			u.setRecordStatus(RECORD_STS_DELETE);
-			HttpSession session = getReq().getSession(false);
-			IUser userAdmin = (IUser)session.getAttribute(SESSION_USER);
-			u.setLastUpdateUser(userAdmin.getLogOnId());
-			userService.save(u);
-			getReq().setAttribute("updated","updated");
-		 	super.addActionMsg("saveSuccess",getText("msg.action.remove.success"));
-		 	errors.put("isSuccess", true);
-			return SUCCESS; 
+		User u = (User)userService.getById(userLogonForm.getId());
+		u.setRecordStatus(RECORD_STS_DELETE);
+//		HttpSession session = getReq().getSession(false);
+//		IUser userAdmin = (IUser)session.getAttribute(SESSION_USER);
+		u.setLastUpdateUser(iUser.getLogOnId());
+		for(ManualTarget item : u.getManualTargetList()) {
+			item.setOwner(null);
+		}
+		userService.save(u);
+		
+		return SUCCESS; 
 	}
 	public String search() throws ParseException {
-		super.errors = new HashMap<String, Object>();
-		super.actionMsg = new HashMap<String, Object>();
-		super.addActionMsg("actionTitle", "header.mangement.user");
+
+		menuName = getText("header.mangement.user");
 		
 		Map<String,Object> searchParm = new HashMap<String,Object>();
 		searchParm.put(ATTR_USER_LOGON_ID, userLogonSearchForm.getUserLogonId());
@@ -191,65 +252,79 @@ public class UserManagementAction extends ActionCommon implements
 
 	}
 	public String prepareResetPwd() {
-		super.errors = new HashMap<String, Object>();
-		super.actionMsg = new HashMap<String, Object>();
+		menuName = getText("header.reset.pwd.user");
 
-		super.addActionMsg("actionTitle", "header.reset.pwd.user");
-		long idLong = Long
-				.parseLong(UIUtil.prepareConvertStringToNumber(parm));
+		long idLong = Long.parseLong(UIUtil.prepareConvertStringToNumber(parm));
 		user = userService.getById(idLong);
 		userLogonResetPwdForm = new UserLogonResetPwdForm();
 		populateObToForm(user,userLogonResetPwdForm.getUser());
-		HttpSession session = getReq().getSession(false);
-		IUser userAdmin = (IUser)session.getAttribute(SESSION_USER);
-		userLogonResetPwdForm.setAdminLogOnId(userAdmin.getLogOnId());
-		super.errors = new HashMap<String, Object>();
+//		HttpSession session = getReq().getSession(false);
+//		IUser userAdmin = (IUser)session.getAttribute(SESSION_USER);
+		userLogonResetPwdForm.setAdminLogOnId(iUser.getLogOnId());
 		return SUCCESS;
 	}
 	public String createNewPwd() {
-		super.errors = new HashMap<String, Object>();
-		super.actionMsg = new HashMap<String, Object>();
-
-		super.addActionMsg("actionTitle", "header.reset.pwd.user");
 		
-		HttpSession session = getReq().getSession(false);
-		IUser userAdmin = (IUser)session.getAttribute(SESSION_USER);
-	    if(userService.checkPwd(userLogonResetPwdForm.getAdminPwd(), userAdmin)){
+		menuName = getText("header.reset.pwd.user");
+		
+//		HttpSession session = getReq().getSession(false);
+//		IUser userAdmin = (IUser)session.getAttribute(SESSION_USER);
+		long idLong = userLogonResetPwdForm.getUser().getId();
+		user = userService.getById(idLong);
+		populateObToForm(user,userLogonResetPwdForm.getUser());
+	    if(userService.checkPwd(userLogonResetPwdForm.getAdminPwd(), iUser)){
 	    	userLogonResetPwdForm.setNewPasswordOfUser(UIUtil.getStrRandom(8)); 
 	    }else{
+			userLogonResetPwdForm.setAdminLogOnId(iUser.getLogOnId());
 	    	userLogonResetPwdForm.setNewPasswordOfUser(null);
 	    	addErrors("pwdError", "error.invalid");
 	    }
 		return SUCCESS;
 	}
 	public String updatePwd() throws AddressException, MessagingException{
-		super.errors = new HashMap<String, Object>();
-		super.actionMsg = new HashMap<String, Object>();
  
+		menuName = getText("header.mangement.user");
+		
 		user = userService.getById(userLogonResetPwdForm.getUser().getId());
-		user.setPwd(userLogonResetPwdForm.getNewPasswordOfUser());
-		User u = new User();
-		u = (User) user;
-		u.setLastUpdateUser(userLogonResetPwdForm.getAdminLogOnId());
+//		user.setPwd(userLogonResetPwdForm.getNewPasswordOfUser());
+		User u = new User((User)user);
+		u.setPwd(userLogonResetPwdForm.getNewPasswordOfUser());
+		u.setLastUpdateUser(iUser.getLogOnId());
 		userService.savePwd(u);
-		sendEmailInformUserResetPwd();
-		getReq().setAttribute("updated","updated");
-		String[] msgParm = {u.getLogOnId()};
-	 	super.addActionMsg("saveSuccess",getText("msg.action.reset.pwd.success"),msgParm);
-	 	errors.put("isSuccess", true);
-		Map<String,Object> searchParm = new HashMap<String,Object>();
-		searchParm.put(ATTR_USER_LOGON_ID, userLogonSearchForm.getUserLogonId());
-		searchParm.put(ATTR_USER_FIRST_NAME, userLogonSearchForm.getFirstName());
-		searchParm.put(ATTR_USER_LAST_NAME, userLogonSearchForm.getLastName());
-		searchParm.put(ATTR_USER_EMAIL_ADDR, userLogonSearchForm.getEmailAddr());
-		searchParm.put(ATTR_USER_COUNTRY_ID,UIUtil.isEmptyOrNull(userLogonSearchForm.getCountryId())?0:Long.parseLong(userLogonSearchForm.getCountryId()));
-		searchParm.put(ATTR_USER_GROUP_ID, UIUtil.isEmptyOrNull(userLogonSearchForm.getGroupId())?0:Long.parseLong(userLogonSearchForm.getGroupId()));
-		userList = userService.search(searchParm);
-		super.addActionMsg("actionTitle", "header.mangement.user"); 
-		return SUCCESS;
+		
+		parm = user.getLogOnId();
+		
+		try {
+			sendEmailInformUserResetPwd();
+			return SUCCESS;
+		}
+		catch (Exception e) {
+			return INPUT;
+		}
+		
+//		String[] msgParm = {u.getLogOnId()};
+	 	
+//		Map<String,Object> searchParm = new HashMap<String,Object>();
+//		searchParm.put(ATTR_USER_LOGON_ID, userLogonSearchForm.getUserLogonId());
+//		searchParm.put(ATTR_USER_FIRST_NAME, userLogonSearchForm.getFirstName());
+//		searchParm.put(ATTR_USER_LAST_NAME, userLogonSearchForm.getLastName());
+//		searchParm.put(ATTR_USER_EMAIL_ADDR, userLogonSearchForm.getEmailAddr());
+//		searchParm.put(ATTR_USER_COUNTRY_ID,UIUtil.isEmptyOrNull(userLogonSearchForm.getCountryId())?0:Long.parseLong(userLogonSearchForm.getCountryId()));
+//		searchParm.put(ATTR_USER_GROUP_ID, UIUtil.isEmptyOrNull(userLogonSearchForm.getGroupId())?0:Long.parseLong(userLogonSearchForm.getGroupId()));
+//		userList = userService.search(searchParm);
+		
+//		super.addActionMsg("resultMessage",getText("msg.action.reset.pwd.success"),msgParm);
+//	 	super.addErrors("haveResult", true);
+		
+		
 	}
     
 	private void sendEmailInformUserResetPwd() throws AddressException, MessagingException{
+		String url = getReq().getHeader("referer");
+		String[] urlSplit = url.split("/", -1);
+		String prefixUrl = url.substring(0, url.length() - urlSplit[urlSplit.length-1].length());
+		String newUrl = prefixUrl + "prepareLogon";
+		
 		final String HOST = "smtp.gmail.com";
 		final String PORT = "587";
 		final String USER_NAME = "rcl.erm.system@gmail.com"; 
@@ -261,14 +336,13 @@ public class UserManagementAction extends ActionCommon implements
 		message.append("<br/> <br/> Your password has been reset successfully.");
 		message.append("<br/> User Logon ID : "+user.getLogOnId());
 		message.append("<br/> New Password : "+userLogonResetPwdForm.getNewPasswordOfUser());
-		message.append("<br/> <br/> Please visit the site : 192.168.10.63:8080/ERM/logon for sign-in and change your password.");
+//		message.append("<br/> <br/> Please visit the site : 192.168.10.63:8080/ERM/logon for sign-in and change your password.");
+		message.append("<br/> <br/> Please visit the site : " + newUrl + " for sign-in and change your password.");
 		EmailUtility.sendEmail(HOST, PORT, USER_NAME, PASSWORD, user.getEmailAddress(),
 				SUBJECT, message.toString(), null);
 	}
  
 	public boolean validateForm() {
-		errors.put("isError", false);
-		errors = new HashMap<String, Object>();
 		if(userLogonForm.getId()==0){
 			if (ValidatorUtil.checkString(userLogonForm.getUserLogonId(),
 					true,MIN_USER_ID,MAX_USER_ID)) {
@@ -287,7 +361,7 @@ public class UserManagementAction extends ActionCommon implements
 						addErrors("logOnIdError", "error.dupplicate");
 					}
 				}
-			}
+			}			
 			if(ValidatorUtil.checkString(userLogonForm.getPwd(), true,MIN_PWD,MAX_PWD)){
 				String[] errMsgParm = {String.valueOf(MIN_PWD),String.valueOf(MAX_PWD)};
 				addErrors("pwdError", "error.require.character", errMsgParm);
@@ -318,6 +392,22 @@ public class UserManagementAction extends ActionCommon implements
 			if(ValidatorUtil.checkEmail(userLogonForm.getEmailAddr())){
 				addErrors("emailPatternError", "error.email.pattern");
 			}
+			else {
+				Map<String, Object> tempMap = new HashMap<String, Object>();
+				tempMap.put(IPageContains.ATTR_USER_EMAIL_ADDR, userLogonForm.getEmailAddr());
+				IUser tempUserGet = userService.getByEmail(tempMap);
+				if(userLogonForm.getId()==0) {
+					if(tempUserGet != null) {
+						addErrors("emailExistError", "error.email.exist");
+					}
+				}
+				else {
+					if(tempUserGet != null && tempUserGet.getId() != userLogonForm.getId()) {
+						addErrors("emailExistError", "error.email.exist");
+					}
+				}
+				
+			}
 		}
 		if(UIUtil.isEmptyOrNull(userLogonForm.getCountryId())){
 			addErrors("countryRequireError", "error.require");
@@ -332,6 +422,7 @@ public class UserManagementAction extends ActionCommon implements
 		errors.put("isError", true);
 		return false;
 	}
+	
 	public void populateObToForm(IUser ob,UserLogonForm form){
 		form.setId(ob.getId());
 		form.setUserLogonId(ob.getLogOnId());
@@ -346,6 +437,32 @@ public class UserManagementAction extends ActionCommon implements
 		form.setLastUpdateDate(ob.getLastUpdateDate());
 		form.setLastUpdateUser(ob.getLastUpdateUser());
 		form.setStatus(ob.getRecordStatus());
+		
+		populateManualTargetToForm(form);
+		
+//		List<ManualTarget> manualTargetList = manualTargetService.listAllActiveNotExpire();
+//		for(ManualTarget item : manualTargetList) {
+//			ManualTargetCheckForm mtcForm = new ManualTargetCheckForm();
+//			mtcForm.setId(item.getId());
+//			mtcForm.setBaseCurrencyStr(item.getBaseCurrency().getCode());
+//			mtcForm.setPairCurrencyStr(item.getPairCurrency().getCode());
+//			if(item.getOwner() != null) {
+//				mtcForm.setOwner(item.getOwner().getLogOnId());
+//				if(item.getOwner().getId() == form.getId()) {
+//					mtcForm.setChk("true");
+//					mtcForm.setHaveAnotherOwner(false);
+//				}
+//				else {
+//					mtcForm.setHaveAnotherOwner(true);
+//				}
+//			}
+//			else {
+//				mtcForm.setChk("false");
+//				mtcForm.setHaveAnotherOwner(false);
+//			}
+//			form.getManualTargetCheckFormList().add(mtcForm);
+//		}	
+		
 	}
 
 	 
@@ -358,18 +475,63 @@ public class UserManagementAction extends ActionCommon implements
 		ob.setEmailAddress(form.getEmailAddr());
 		ob.setCountry(countryService.getById(Long.parseLong(UIUtil.prepareConvertStringToNumber(form.getCountryId()))));
 		ob.setAuthorizeGroup(authorizeGroupService.getById(Long.parseLong(UIUtil.prepareConvertStringToNumber(form.getGroupId()))));
-		ob.setCreatedDate(form.getCreatedDate());
-		ob.setCreatedUser(form.getCreatedUser());
-		ob.setLastUpdateDate(form.getLastUpdateDate());
-		ob.setLastUpdateUser(form.getLastUpdateUser());
-		ob.setRecordStatus(form.getStatus()); 
+//		ob.setCreatedDate(form.getCreatedDate());
+//		ob.setCreatedUser(form.getCreatedUser());
+//		ob.setLastUpdateDate(form.getLastUpdateDate());
+//		ob.setLastUpdateUser(form.getLastUpdateUser());
+		ob.setRecordStatus(form.getStatus());		
+		ob.setManualTargetList(new HashSet<ManualTarget>(manualTargetService.getByOwnerID(form.getId())));
+		
+		if(ob.getAuthorizeGroup().getId() != 3) {
+			for (ManualTarget item : ob.getManualTargetList()) {
+				item.setOwner(null);
+			}
+		}
+		else {
+			
+			for (ManualTarget item : ob.getManualTargetList()) {
+				for (ManualTargetCheckForm manualTarget : form.getManualTargetCheckFormList()) {
+					if(item.getId() == manualTarget.getId()) {
+						if(manualTarget.getChk().equalsIgnoreCase("True")
+								|| manualTarget.getChk().equalsIgnoreCase("False")) {
+							item.setOwner(null);
+						}
+						else {
+							break;
+						}
+					}
+				}
+			}
+			
+			for (ManualTargetCheckForm manualTarget : form.getManualTargetCheckFormList()) {
+				if(manualTarget != null) {
+					if(manualTarget.getChk() == null 
+							|| manualTarget.getChk().equalsIgnoreCase("True")
+							|| manualTarget.getChk().equalsIgnoreCase("False")) {
+						continue;
+					}
+					else {
+						boolean isExist = false;
+						for (ManualTarget item : ob.getManualTargetList()) {
+							if(item.getId() == manualTarget.getId()) {
+								isExist = true;
+								break;
+							}
+						}
+						if(isExist) {
+							continue;
+						}
+						else {
+							ManualTarget mt = manualTargetService.getByID(manualTarget.getId());
+							mt.setOwner((User)ob);
+							ob.getManualTargetList().add(mt);
+						}
+					}
+				}
+			}
+			
+		}
 	}
-
-	public Object getModel() {
-		// TODO Auto-generated method stub
-		return userLogonForm;
-	}
-	 
 
 	public String getParm() {
 		return parm;
@@ -385,8 +547,6 @@ public class UserManagementAction extends ActionCommon implements
 	public List<AuthorizeGroup> getAuthorizeGroupList() {
 		return authorizeGroupList;
 	}
-
- 
 
 	public void setCountryList(List<Country> countryList) {
 		this.countryList = countryList;
@@ -445,5 +605,13 @@ public class UserManagementAction extends ActionCommon implements
 
 	public void setUserLogonResetPwdForm(UserLogonResetPwdForm userLogonResetPwdForm) {
 		this.userLogonResetPwdForm = userLogonResetPwdForm;
+	}
+
+	public String getMenuName() {
+		return menuName;
+	}
+
+	public void setMenuName(String menuName) {
+		this.menuName = menuName;
 	}
 }

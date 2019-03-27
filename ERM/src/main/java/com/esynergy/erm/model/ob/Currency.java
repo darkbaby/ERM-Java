@@ -2,7 +2,7 @@ package com.esynergy.erm.model.ob;
 
 public class Currency {
 	private long id;
-	private String  code;
+	private String code;
 	private String description;
 	public long getId() {
 		return id;

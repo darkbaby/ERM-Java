@@ -1,8 +1,10 @@
  
-
+//console.log($("#apiUrl").val());
+let apiURL = $("#apiUrl").val() + "/chartByERAutoAPIAction";
+let apiURL2 = $("#apiUrl").val() + "/chartByERManualAPIAction";
 jQuery.ajax({
     type: "GET",
-    url: "erm/chartByERAutoAPIAction",
+    url: "erm2/chartByERAutoAPIAction",
     contentType: "application/json; charset=utf-8",
     dataType: "json",
     success: function (dataApi, status, jqXHR) {
@@ -37,7 +39,7 @@ jQuery.ajax({
 });
 jQuery.ajax({
     type: "GET",
-    url: "erm/chartByERManualAPIAction",
+    url: "chartByERManualAPIAction",
     contentType: "application/json; charset=utf-8",
     dataType: "json",
     success: function (dataApi, status, jqXHR) {

@@ -6,12 +6,79 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>  
 <%@ taglib prefix="m" uri="../../WEB-INF/ModongTag.tld" %>
   
-  
-
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
    <link rel="stylesheet" href="<s:url value='/resources/assets/css/dataTables.bootstrap.css' />"/>
+   <link href="<s:url value='/resources/assets/css/select2.min.css' />" rel="stylesheet" />
 </head>  
+
+<s:form name="generateRateForm"  id="generateRateForm" theme="simple" class="" role="form">
+<s:hidden name="menuName"/>
+<div class="row mt">
+          		<div class="col-md-12">
+          			<div class="form-panel02">
+                  	  <h4 class="mb"><i class="fa fa-search"></i><span class="subject-text"><s:text name="label.search"/></span></h4>
+						  <table style="width:100%">
+						  	 
+							<tr>
+								<td>
+									<strong><s:text name="label.bank.name"/></strong><br/>
+									<s:textfield 
+										name="generateRateForm.generateRateSearchForm.bankName" 
+										id="col_1_filter" 
+										class="form-control"
+										style="width:95%"
+										onkeypress="onKeyPressed(event);" />
+								</td>
+								<td>
+									<strong><s:text name="label.rate.type"/></strong><br/>
+									<select class="form-control" style="width:95%"
+											name="rateTypeSearch" 
+											id="col_3_filter">
+										<option value="">---All---</option>
+										<option value="<%=IPageContains.ER_ORIGIN_AUTO%>"><%=IPageContains.ER_ORIGIN_AUTO%></option>
+										<option value="<%=IPageContains.ER_ORIGIN_MANUAL%>"><%=IPageContains.ER_ORIGIN_MANUAL%></option>
+									</select>
+								</td>
+								<td> 
+									<strong><s:text name="label.base.currency"/></strong><br/>
+									<s:select   class="form-control" 
+												cssStyle="width:95%"
+											    headerKey=""
+												headerValue="---All---"
+												list="currencyList"
+												listKey="code"
+												listValue="code"
+												name="generateRateForm.generateRateSearchForm.baseCurrency"
+												id="col_4_filter" />	 
+								</td>
+								<td> 
+									  <strong><s:text name="label.pair.currency"/></strong><br/>
+									  <s:select   class="form-control" 
+  												  cssStyle="width:95%"
+											      headerKey=""
+												  headerValue="---All---"
+												  name="generateRateForm.generateRateSearchForm.pairCurrency"
+											      list="currencyList"
+												  listKey="code"
+												  listValue="code"													  
+												  id="col_5_filter" />
+								</td>
+								
+								<td>
+								</td>
+								<td align="rigth"> <br/>
+									<button style="width:30%" type="button" class="btn btn-theme" id="searchBtn">Search</button>
+									&nbsp;
+									<button style="width:30%" type="button" class="btn btn-warning" onclick="onClickClear();">Clear</button>
+								</td>
+							</tr>
+						  </table>
+<%-- 					    </s:form> --%>
+          			</div><!-- /form-panel -->
+          		</div><!-- /col-lg-12 -->
+          	</div><!-- /row -->  
+  
   
 <div class="row mt">
 	<div class="col-lg-12">
@@ -31,7 +98,7 @@
 				</tr>
 			</table>
 			
-			<table style="width:100%" class="table table-striped  table-hover" id="recordTable" >
+			<table style="width:100%;display:none;" class="table table-striped  table-hover" id="recordTable">
 				<thead>
 					<tr align="center">
 						<th rowspan="2" style="width:4%"><s:text name="label.select"/></th>
@@ -115,7 +182,7 @@
 				</tr>
 			</table>
 			
-			<s:form name="generateRateForm" enctype="multipart/form-data" id="generateRateForm" theme="simple" class="form-inline" role="form">  
+<%-- 			<s:form name="generateRateForm" enctype="multipart/form-data" id="generateRateForm" theme="simple" class="form-inline" role="form">   --%>
 		
 			
 			<table style="width:100%;">
@@ -127,6 +194,7 @@
 				</tr>
 				<tr>
 					<td style="width:50%;">
+						<s:hidden name="generateRateForm.id" />
 						<s:textfield
 							name="generateRateForm.profileName"
 							cssClass="form-control"
@@ -291,7 +359,8 @@
 							<s:select
 							    class="form-control"
 								list="#{'1': 'Buying Rate', '2':'Selling Rate', '3':'Average Rate'}"
-								value="%{rateType}"
+								
+								name="generateRateForm.detailFormList[%{#sts.index}].rateType"
 							/>
 						</td>
 						<td style="display:none;">
@@ -336,7 +405,13 @@
 				</tr>
 			</table>	
 			
-	  		</s:form> 
+			
+			<s:iterator value="generateRateForm.detailFormRemoveList" status="sts" >
+				<s:hidden
+					name="generateRateForm.detailFormRemoveList[%{#sts.index}]"
+				/>
+			</s:iterator>
+			
 	  		
 	  
 	  		
@@ -344,7 +419,9 @@
 	</div><!-- /col-lg-12 -->
 </div><!-- /row -->      
 
+</s:form> 
 
+<script src="<s:url value='/resources/assets/js/select2.min.js' />"></script>
 <script type="text/javascript" src="<s:url value='/resources/assets/js/jquery.dataTables.js'/>"></script>                          
 <script type="text/javascript" src="<s:url value='/resources/assets/js/dataTables.bootstrap.js'/>"></script>
                           
@@ -352,17 +429,19 @@
 
 	$(document).ready(function(){
 		$('#recordTable').dataTable({
- 	    	searching: true,
+//  	    	searching: true,
+			sDom:"lrtip",
  	    	order:[[1,"asc"]],
  	    	columnDefs:[{
  	    		orderable: false, targets: [0], visible: true
  	    	}],
  	    	bAutoWidth:false
  	    });
+		
+		$("#searchBtn").click();
+		
+		$('#recordTable').css("display","");
 	});
-		
-		
-		
 		
 	function onClickAdd(){
 		
@@ -458,5 +537,45 @@
 			$(tdElementStoreID).parent().remove();
 		}
 	}
+	
+	$('#col_3_filter').select2();
+	$('#col_4_filter').select2();
+ 	$('#col_5_filter').select2();
+	
+	function onClickClear(){ 		
+ 		$("#col_3_filter").select2('destroy');
+ 		$("#col_4_filter").select2('destroy');
+ 		$("#col_5_filter").select2('destroy');
+
+ 		$("#col_3_filter").val("");
+ 		$("#col_4_filter").val("");
+ 		$("#col_5_filter").val("");
+ 		$("#col_1_filter").val("");
+ 		
+ 		$('#col_3_filter').select2();
+ 		$('#col_4_filter').select2();
+ 		$('#col_5_filter').select2();
+  	}
+	
+	function filterColumn ( i ) {
+		console.log('filterColumn value == '+$('#col_'+i+'_filter').val());
+	    $('#recordTable').DataTable().column(i).search(
+	        $('#col_'+i+'_filter').val()
+	    ).draw();
+	}
+	
+	function onKeyPressed(event){
+ 		if(event.keyCode == 13){
+ 	 		$('#searchBtn').click();
+ 		}
+ 	}
+	
+	$('#searchBtn').click(function(){
+		$('#recordTable').DataTable();
+	   	filterColumn(1);
+	   	filterColumn(3);
+	   	filterColumn(4);
+	   	filterColumn(5);  
+	});
 
 </script>

@@ -35,7 +35,7 @@
                       <div>
                        
                       </div>
-   			          <table class="table table-bordered table-striped  table-hover" id="listUserTbl">
+   			          <table class="table table-bordered table-striped  table-hover" id="listUserTbl" style="display:none;">
 				                      <thead>
 				                  
 										  <tr>
@@ -109,15 +109,10 @@
  	    	 "order": [[ 4, "desc" ]]
  	    	});
  	    
- 	    $('#listRateTbl2').dataTable({
- 	    	searching: false,
- 	    	 "order": [[ 4, "desc" ]]
- 	    	});
+ 	    $('#listUserTbl').css("display", "");
+ 	    
  	});
   	
-  	function edit(val){
-  		
-  	}
   
  </script>
     

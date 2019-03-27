@@ -24,12 +24,12 @@
 		    <!--BREADCRUM START-->
             <div class="row">
             <ul class="breadcrumb">
-              <li><s:a href="%{prepareMangeExchangeRateManualUrl}"><s:text name="menu.sub.manual.process"/></s:a> </li>
+              <li><s:a href="%{prepareManageExchangeRateManualUrl}"><s:text name="menu.sub.manual.process"/></s:a> </li>
               <li><s:text name="header.edit.exchange.rate"/></li>
             </ul>
             </div>
             <!--BREADCRUM END-->  
-			<h3 class="subject"><span class="subject-text"><s:text name="actionMsg['actionTitle']"/></span></h3>
+			<h3 class="subject"><span class="subject-text"><s:property value="menuName"/></span></h3>
 			    
 			<div >
 		      	<s:include value="form_edit_exchangeRate.jsp"/>

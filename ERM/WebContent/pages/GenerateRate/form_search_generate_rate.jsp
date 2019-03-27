@@ -18,14 +18,14 @@
           		<div class="col-md-12">
           			<div class="form-panel02">
                   	  <h4 class="mb"><i class="fa fa-search"></i><span class="subject-text"><s:text name="label.search"/></span></h4>
-					  <s:form name="generateRateSearchForm"  id="generateRateSearchForm" theme="simple" class="" role="form">
+					  <s:form name="generateRateForm"  id="generateRateForm" theme="simple" class="" role="form">
 						  <table style="width:100%">
 						  	 
 							<tr>
 								<td>
 									<strong><s:text name="label.bank.name"/></strong><br/>
 									<s:textfield 
-										name="generateRateSearchForm.bankName" 
+										name="generateRateForm.generateRateSearchForm.bankName" 
 										id="col_1_filter" 
 										class="form-control" />
 								</td>
@@ -34,7 +34,7 @@
 									<select class="form-control" style="width:95%"
 											name="rateTypeSearch" 
 											id="col_3_filter">
-										<option value="">---- All ----</option>
+										<option value="">---All---</option>
 										<option value="<%=IPageContains.ER_ORIGIN_AUTO%>"><%=IPageContains.ER_ORIGIN_AUTO%></option>
 										<option value="<%=IPageContains.ER_ORIGIN_MANUAL%>"><%=IPageContains.ER_ORIGIN_MANUAL%></option>
 									</select>
@@ -44,11 +44,11 @@
 									<s:select   class="form-control" 
 												cssStyle="width:95%"
 											    headerKey=""
-												headerValue="---- All ----"
+												headerValue="---All---"
 												list="currencyList"
 												listKey="code"
 												listValue="code"
-												name="generateRateSearchForm.baseCurrencyID"
+												name="generateRateForm.generateRateSearchForm.baseCurrencyID"
 												id="col_4_filter" />	 
 								</td>
 								<td> 
@@ -56,8 +56,8 @@
 									  <s:select   class="form-control" 
   												  cssStyle="width:95%"
 											      headerKey=""
-												  headerValue="---- All ----"
-												  name="generateRateSearchForm.pairCurrencyID"
+												  headerValue="---All---"
+												  name="generateRateForm.generateRateSearchForm.pairCurrencyID"
 											      list="currencyList"
 												  listKey="code"
 												  listValue="code"													  
@@ -89,7 +89,7 @@
  	$('#col_5_filter').select2();
     
  	function onClicksearch(){
-    	$('#generateRateSearchForm').attr('action','searchGenerateRate.action').submit();
+    	$('#generateRateForm').attr('action','searchGenerateRate.action').submit();
     	
     	$.LoadingOverlay("show");
 	}

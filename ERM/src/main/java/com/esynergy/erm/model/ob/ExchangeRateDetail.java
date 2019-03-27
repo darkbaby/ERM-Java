@@ -1,5 +1,7 @@
 package com.esynergy.erm.model.ob;
 
+import java.util.Date;
+
 public class ExchangeRateDetail {
 	private long id;
 	private Currency firstCurrency;
@@ -10,6 +12,8 @@ public class ExchangeRateDetail {
 	private double avgRate;
 	private long ownerId;
 	private String recordStatus;
+	private String lastUpdateUser;
+	private Date lastUpdateDate;
 	private ExchangeRate exchangeRate;
 	
 	public long getId() {
@@ -17,6 +21,18 @@ public class ExchangeRateDetail {
 	}
 	public void setId(long id) {
 		this.id = id;
+	}
+	public String getLastUpdateUser() {
+		return lastUpdateUser;
+	}
+	public void setLastUpdateUser(String lastUpdateUser) {
+		this.lastUpdateUser = lastUpdateUser;
+	}
+	public Date getLastUpdateDate() {
+		return lastUpdateDate;
+	}
+	public void setLastUpdateDate(Date lastUpdateDate) {
+		this.lastUpdateDate = lastUpdateDate;
 	}
 	public double getValue() {
 		return value;

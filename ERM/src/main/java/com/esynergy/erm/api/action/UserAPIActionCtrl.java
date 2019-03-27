@@ -22,7 +22,6 @@ import com.esynergy.erm.model.ob.User;
 import com.esynergy.erm.model.ob.json.JSONData;
 import com.esynergy.erm.service.UserService;
 import com.esynergy.erm.web.action.IPageContains;
-import com.google.gson.JsonParser;
 import com.opensymphony.xwork2.ActionSupport;
 
 @SuppressWarnings("serial")

@@ -17,7 +17,7 @@
                       </tr>
                       </table></div>    
     
-<table id="settingTable" class="table table-striped table-advance table-hover" style="width:100%">
+<table id="settingTable2" class="table table-striped table-advance table-hover" style="width:100%">
 	  <tr>
 	  	<th style="text-align: center; width:7%; " rowspan="2"><s:text name="label.base.currency"/></th>
 	  	<th style="text-align: center;" rowspan="2"><s:text name="label.pair.currency"/></th>
@@ -30,7 +30,7 @@
 		<th style="text-align: center; width:35%;"><s:text name="label.buying.rate"/></th>
 		<th style="text-align: center; width:35%;"><s:text name="label.selling.rate"/></th>			
 	  </tr>
-	  <s:iterator value="extractionForm.extractionDetailFormList" status="sts">	
+	  <s:iterator value="extractionForm.extractionDetailFormList2" status="sts">	
 	  <tr>
 	  	<td style="text-align: center;">
 			<span data-id="baseCurrencyCode"></span>
@@ -38,24 +38,26 @@
 		<td style="text-align: center;">
 			<s:select 
 			    class="form-control"
-			    name="extractionForm.extractionDetailFormList[%{#sts.index}].currency"
-			    id="extractionForm.extractionDetailFormList[%{#sts.index}].currency"
+			    name="extractionForm.extractionDetailFormList2[%{#sts.index}].currency"
+			    id="extractionForm.extractionDetailFormList2[%{#sts.index}].currency"
 				list="currencyList"
 				listKey="id"
 				listValue="code"
 				headerKey="-1"
-				headerValue="- Please Select -"
+				headerValue="---Please Select---"
 			/>
 			<div class="has-error"><s:property value="errors['s2errorCurrency'+#sts.index]" /></div>
 		</td>
 		<td style="text-align: center;">
 			<s:select
 			    class="form-control"
-				name="extractionForm.extractionDetailFormList[%{#sts.index}].value"
-			    id="extractionForm.extractionDetailFormList[%{#sts.index}].value"
-				list="#{'1': '1.0', '100':'100.0'}"
+				name="extractionForm.extractionDetailFormList2[%{#sts.index}].value"
+			    id="extractionForm.extractionDetailFormList2[%{#sts.index}].value"
+				list="valueList"
+				listKey="value"
+				listValue="descriptionShort"
 				headerKey="-1"
-				headerValue="- Please Select -"
+				headerValue="---Please Select---"
 			/>
 			<div class="has-error"><s:property value="errors['s2errorValue'+#sts.index]" /></div>
 		</td>
@@ -63,8 +65,8 @@
 			<s:textfield
 				class="form-control"
 				cssStyle="width:100%;"
-				name="extractionForm.extractionDetailFormList[%{#sts.index}].extractionBuyingRate"
-			    id="extractionForm.extractionDetailFormList[%{#sts.index}].extractionBuyingRate"
+				name="extractionForm.extractionDetailFormList2[%{#sts.index}].extractionBuyingRate"
+			    id="extractionForm.extractionDetailFormList2[%{#sts.index}].extractionBuyingRate"
 			/>
 			<div class="has-error"><s:property value="errors['s2errorExtractionBuyingRate'+#sts.index]" /></div>
 			<div><s:property value="errors['s2ExtractionBuyingRate'+#sts.index]" /></div>
@@ -73,8 +75,8 @@
 			<s:textfield
 				class="form-control"
 				cssStyle="width:100%;"
-				name="extractionForm.extractionDetailFormList[%{#sts.index}].extractionSellingRate"
-			    id="extractionForm.extractionDetailFormList[%{#sts.index}].extractionSellingRate"
+				name="extractionForm.extractionDetailFormList2[%{#sts.index}].extractionSellingRate"
+			    id="extractionForm.extractionDetailFormList2[%{#sts.index}].extractionSellingRate"
 			/>
 			<div class="has-error"><s:property value="errors['s2errorExtractionSellingRate'+#sts.index]" /></div>
 			<div><s:property value="errors['s2ExtractionSellingRate'+#sts.index]" /></div>
@@ -83,8 +85,8 @@
 		<td style="text-align: center;">
 			<s:checkbox
 				class="custom-control-input"
-				name="extractionForm.extractionDetailFormList[%{#sts.index}].chk"
-			    id="extractionForm.extractionDetailFormList[%{#sts.index}].chk"
+				name="extractionForm.extractionDetailFormList2[%{#sts.index}].chk"
+			    id="extractionForm.extractionDetailFormList2[%{#sts.index}].chk"
 			    disabled="true"
 			/>
 		</td>
@@ -93,13 +95,13 @@
 		<td style="text-align: center;">
 			<s:checkbox
 				class="custom-control-input"
-				name="extractionForm.extractionDetailFormList[%{#sts.index}].chk"
-			    id="extractionForm.extractionDetailFormList[%{#sts.index}].chk"
+				name="extractionForm.extractionDetailFormList2[%{#sts.index}].chk"
+			    id="extractionForm.extractionDetailFormList2[%{#sts.index}].chk"
 			/>
 		</td>
 		</s:else>
 		<td style="display:none;">
-			<s:hidden name="extractionForm.extractionDetailFormList[%{#sts.index}].id"/>
+			<s:hidden name="extractionForm.extractionDetailFormList2[%{#sts.index}].id"/>
 		</td>
 	  </tr>
 	  </s:iterator>

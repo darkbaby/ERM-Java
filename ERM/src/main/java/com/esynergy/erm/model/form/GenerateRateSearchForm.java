@@ -2,21 +2,21 @@ package com.esynergy.erm.model.form;
 
 public class GenerateRateSearchForm {
 	
-	private long pairCurrencyID;
-	private long baseCurrencyID;
+	private String pairCurrency;
+	private String baseCurrency;
 	private String bankName;
-	
-	public long getPairCurrencyID() {
-		return pairCurrencyID;
+
+	public String getPairCurrency() {
+		return pairCurrency;
 	}
-	public void setPairCurrencyID(long pairCurrencyID) {
-		this.pairCurrencyID = pairCurrencyID;
+	public void setPairCurrency(String pairCurrency) {
+		this.pairCurrency = pairCurrency;
 	}
-	public long getBaseCurrencyID() {
-		return baseCurrencyID;
+	public String getBaseCurrency() {
+		return baseCurrency;
 	}
-	public void setBaseCurrencyID(long baseCurrencyID) {
-		this.baseCurrencyID = baseCurrencyID;
+	public void setBaseCurrency(String baseCurrency) {
+		this.baseCurrency = baseCurrency;
 	}
 	public String getBankName() {
 		return bankName;

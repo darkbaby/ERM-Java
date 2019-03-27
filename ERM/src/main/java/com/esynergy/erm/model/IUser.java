@@ -1,9 +1,11 @@
 package com.esynergy.erm.model;
 
 import java.util.Date;
+import java.util.Set;
 
 import com.esynergy.erm.model.ob.AuthorizeGroup;
 import com.esynergy.erm.model.ob.Country;
+import com.esynergy.erm.model.ob.ManualTarget;
 
 public interface IUser {
 	public long getId();
@@ -32,4 +34,8 @@ public interface IUser {
 	public void setLastUpdateDate(Date lastUpdateDate);
 	public String getRecordStatus();
 	public void setRecordStatus(String recordStatus);
+
+	public Set<ManualTarget> getManualTargetList();
+
+	public void setManualTargetList(Set<ManualTarget> manualTargetList);
 }

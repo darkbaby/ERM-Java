@@ -1,6 +1,8 @@
 package com.esynergy.erm.model.form;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class UserLogonForm {
 	private long id;
@@ -17,6 +19,9 @@ public class UserLogonForm {
 	private Date   createdDate;
 	private Date   lastUpdateDate;
 	private String status;
+	
+	private List<ManualTargetCheckForm> manualTargetCheckFormList = new ArrayList<ManualTargetCheckForm>();;
+	
 	public String getUserLogonId() {
 		return userLogonId;
 	}
@@ -102,4 +107,12 @@ public class UserLogonForm {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	public List<ManualTargetCheckForm> getManualTargetCheckFormList() {
+		return manualTargetCheckFormList;
+	}
+	public void setManualTargetCheckFormList(List<ManualTargetCheckForm> manualTargetCheckFormList) {
+		this.manualTargetCheckFormList = manualTargetCheckFormList;
+	}
+
+	
 }

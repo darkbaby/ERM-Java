@@ -6,13 +6,20 @@
 <hibernate-mapping package="com.esynergy.erm.model.ob" default-lazy="false" >
 	<class name="ManualTarget" table="ERM_MANUAL_TARGET" >
 		<id name="id" column="PK_MANUAL_TARGET_SEQ" type="long">
+			<generator class="sequence-identity">
+                <param name="sequence" >ERM_MANUAL_TARGET_SEQ</param>           
+            </generator>    
 		</id>
 		
 		<many-to-one name="pairCurrency" class="com.esynergy.erm.model.ob.Currency" column="FK_PAIR_CURRENCY"/>
 		<many-to-one name="baseCurrency" class="com.esynergy.erm.model.ob.Currency" column="FK_BASE_CURRENCY"/>
 		<property name="status"         column="RECORD_STATUS"         type="string"/>
-		
-	</class>
-	
-	
+		<many-to-one name="owner" class="com.esynergy.erm.model.ob.User" column="OWNER_ID"/>
+		<property name="addDate" 			column="RECORD_ADD_DATE"				type="timestamp"/>
+		<property name="addUser" 		column="RECORD_ADD_USER"				type="string"/>
+		<property name="changeDate" 			column="RECORD_CHANGE_DATE"				type="timestamp"/>
+		<property name="changeUser" 		column="RECORD_CHANGE_USER"				type="string"/>
+		<property name="effectiveDate" 			column="EFFECTIVE_DATE"				type="timestamp"/>
+		<property name="expiredDate" 		column="EXPIRED_DATE"				type="timestamp"/>
+	</class>	
 </hibernate-mapping>

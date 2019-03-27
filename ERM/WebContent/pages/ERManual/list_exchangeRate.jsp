@@ -39,7 +39,7 @@
                       <div>
                        
                       </div>
-   			          <table class="table table-bordered table-striped  table-hover" id="listRateTbl">
+   			          <table class="table table-bordered table-striped  table-hover" id="listRateTbl" style="display:none;">
 				                      <thead>
 				                  
 										  <tr>
@@ -62,8 +62,8 @@
 				                      	    			<td style="text-align: left;"><s:date name="[1].lastUpdateDate" format="yyyy/MM/dd HH:mm:ss"/></td>
 				                      	    			<td style="text-align: left;"><s:property value="[1].lastUpdateUser"/></td>
 				                      	    			<td style="text-align: center;"> 
-				                      	    			  <s:url var="editURL"   action="prepareEditExchangeRateByManualAction"><s:param name="parm" value="%{[1].id}" />  </s:url>
-				                      	    			  <s:url var="viewURL"   action="prepareViewExchangeRateByManualAction"><s:param name="parm" value="%{[1].id}" />  </s:url>
+				                      	    			  <s:url var="editURL"   action="prepareEditExchangeRateByManualAction"><s:param name="parmID" value="%{[1].id}" />  </s:url>
+				                      	    			  <s:url var="viewURL"   action="prepareViewExchangeRateByManualAction"><s:param name="parmID" value="%{[1].id}" />  </s:url>
 				                      	    			    <s:a href="%{viewURL}">
 				                      	    			    	<button class="btn btn-success btn-sm" 
 				                      	    			    			title="<s:text name="label.view.detail"/>">
@@ -71,7 +71,7 @@
 				                      	    			    	</button>
 				                      	    			    </s:a>
 				                      	    			  
-				                      	    			    <modong:sys-permission function="EditExchangeRateManual" user="${createdUser}" >
+				                      	    			    <modong:sys-permission function="PrepareEditExchangeRateByManualAction" user="${createdUser}" >
 					                      	    			    <s:a href="%{editURL}">
 					                      	    			    	<button class="btn btn-primary btn-sm" 
 					                      	    			    			title="<s:text  name="msg.edit"/>">
@@ -82,7 +82,7 @@
 				                      	    			    
 				                      	    			</td>
 				                      	    		</tr>
-				                      	    	
+				                      	    		
 				                      	    	</s:iterator>
 				                      	    </s:iterator>
 				                      </tbody>
@@ -100,6 +100,8 @@
  	    	searching: false,
  	    	 "order": [[ 3, "desc" ]]
  	    	});
+ 	    
+ 	    $("#listRateTbl").css("display","");
  	});
   	
   	function edit(val){

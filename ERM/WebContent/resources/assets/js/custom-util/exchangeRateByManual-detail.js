@@ -98,9 +98,9 @@
 				            }
 				        },
 				        callback: function (result) {
-				        	$('#receiptsForm').append('<input type="hidden" name="myparam " value="abc" />');
+//				        	$('#receiptsForm').append('<input type="hidden" name="myparam " value="abc" />');
 				            if(result){
-				            	var pararm = "<input type='hidden' name='parm' value='"+id+"' />";
+				            	var pararm = "<input type='hidden' name='parmID' value='"+id+"' />";
 				            	$('#exchangeRateManualForm').append(pararm);
 				            	$('#exchangeRateManualForm')
 				            		.attr('action','removeFileUploadERByManual.action')
@@ -124,7 +124,8 @@
 		        },
 		        callback: function (result) {
 		            if(result){
-		            	$(location).attr('href', 'removeExchangeRateByManual.action');
+//		            	$(location).attr('href', 'removeExchangeRateByManual.action');
+		    	    	$('#exchangeRateManualForm').attr('action','removeExchangeRateByManual.action').submit();
 		            }
 		        }
 		    });
@@ -133,7 +134,7 @@
 		// Fake file upload
 	function browseFile(filesinputupload,fakefileinputname,fakefileinputnametext,removeBtn){
 		  	document.getElementById(filesinputupload).click();
-		    document.getElementById(filesinputupload).addEventListener('change', function() {
+		  	document.getElementById(filesinputupload).addEventListener('change', function() {
 		    	var maxSize = 1048576; //Byte
 		    	if(this.files[0].size > maxSize){
 		    		document.getElementById(filesinputupload).value = null;
@@ -144,12 +145,27 @@
 		    		    closeButton:true
 		    		});
 		    	}else{
-		    		document.getElementById(fakefileinputname).value = this.value;
+//		    		document.getElementById(fakefileinputname).value = this.value;
+		    		document.getElementById(fakefileinputname).value = this.files[0].name;
 		    		document.getElementById(removeBtn).style.display = 'inline';
 		    	}
 		  	
 		  	 
 		  });
+//		  	var maxSize = 1048576;
+//		  	var files = document.getElementById(filesinputupload).files;
+//		  	if(files[0].size > maxSize){
+//	    		document.getElementById(filesinputupload).value = null;
+//	    		document.getElementById(fakefileinputname).value = "";
+//	    		document.getElementById(removeBtn).style.display = 'none';
+//	    		var dialog = bootbox.dialog({
+//	    		    message: '<h4 class="has-error"><span class="glyphicon glyphicon-warning-sign"></span> limit of 1 MB/file.</h4>',
+//	    		    closeButton:true
+//	    		});
+//	    	}else{
+//	    		document.getElementById(fakefileinputname).value = files[0].name;
+//	    		document.getElementById(removeBtn).style.display = 'inline';
+//	    	}
 	}
 		
 

@@ -9,82 +9,60 @@
 	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
 	"http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
- 	<package name="AutoExtractionWeb" extends="struts-default" >
- 		<global-results>
-			<result name="exception">pages/PageHalper/exception.jsp</result>
-			<result name="runtime_exception">pages/PageHalper/error.jsp</result>
-			<result name="jdbcException">pages/PageHalper/jdbc_exception.jsp</result>
-		</global-results>
-		
-		<global-exception-mappings>
-			<exception-mapping exception="java.lang.Exception" result="exception"></exception-mapping>
-			<exception-mapping exception="java.lang.NullPointerException" result="exception"></exception-mapping>
-			<exception-mapping exception="java.lang.RuntimeException" result="runtime_exception"></exception-mapping>
-			<exception-mapping exception="org.hibernate.exception.GenericJDBCException" result="jdbcException" ></exception-mapping>
-		</global-exception-mappings>
-		<action name="prepareCreateExtraction" class="extractionAction" method="prepareCreate">
-	    	<result name="success">pages/Extraction/prepare_add_extraction.jsp</result>
-	    	<result type="redirectAction" name="error">
-				<param name="actionName">permissionMissing</param>
-			</result>
-	    </action>
-	    <action name="redirectExtraction" class="extractionAction" method="prepareRedirect">
+ 	<package name="AutoExtractionWeb" extends="struts-default,default" >
+		<action name="prepareCreateExtraction" class="com.esynergy.erm.web.action.ExtractionAction" method="prepareCreate">
 	    	<result name="success">pages/Extraction/prepare_add_extraction.jsp</result>
 	    </action>
-	    <action name="composeExtraction" class="extractionAction" method="compose">
+	    <action name="composeExtraction" class="com.esynergy.erm.web.action.ExtractionAction" method="compose">
 			<result type="redirectAction" name="success">
-			  <param name="actionName">prepareMangeExtraction</param>
+			  <param name="actionName">prepareManageExtraction</param>
 			  <param name="updated">true</param>
 			</result>
-			<result type="redirectAction" name="input">
-				<param name="actionName">redirectExtraction</param>
-			</result>
+			<result name="input">pages/Extraction/prepare_add_extraction.jsp</result>
 		</action>
-		<action name="removeExtraction" class="extractionAction" method="remove">
+		<action name="removeExtraction" class="com.esynergy.erm.web.action.ExtractionAction" method="remove">
 			<result type="redirectAction" name="success">
-			  <param name="actionName">prepareMangeExtraction</param>
-			  <param name="updated">true</param>
+			  <param name="actionName">prepareManageExtraction</param>
+			  <param name="removed">true</param>
 			</result>
 			<result type="redirectAction" name="input">
-				<param name="actionName">prepareMangeExtraction</param>
-			</result>
-			<result type="redirectAction" name="error">
-				<param name="actionName">permissionMissing</param>
+				<param name="actionName">prepareManageExtraction</param>
 			</result>
 		</action>
-		<action name="previewExtraction" class="extractionAction" method="preview">
-			<result type="redirectAction" name="success">
-				<param name="actionName">redirectExtraction</param>
-			</result>
-			<result type="redirectAction" name="input">
-				<param name="actionName">redirectExtraction</param>
-			</result>
+		<action name="previewExtraction" class="com.esynergy.erm.web.action.ExtractionAction" method="preview">
+			<result name="success">pages/Extraction/prepare_add_extraction.jsp</result>
 		</action>
-		<action name="removeComposeExtractionDetailForm" class="extractionAction" method="removeDetailForm">
+		<action name="removeComposeExtractionDetailForm" class="com.esynergy.erm.web.action.ExtractionAction" method="removeDetailForm">
 	    	<result name="success">pages/Extraction/prepare_add_extraction.jsp</result>
 	    </action>
-	    <action name="changeExtractionType" class="extractionAction" method="changeExtractionType">
-	    	<result name="success">pages/Extraction/prepare_add_extraction.jsp</result>
-	    </action>
-		<action name="searchExtraction" class="extractionAction" method="search">
-			<result name="success">pages/Extraction/prepare_mange_extraction.jsp</result>
+		<action name="searchExtraction" class="com.esynergy.erm.web.action.ExtractionAction" method="search">
+			<result name="success">pages/Extraction/prepare_manage_extraction.jsp</result>
 		</action>
-		<action name="prepareMangeExtraction" class="extractionAction" method="prepareMange">
-	    	<result name="success">pages/Extraction/prepare_mange_extraction.jsp</result>
+		<action name="prepareManageExtraction" class="com.esynergy.erm.web.action.ExtractionAction" method="prepareManage">
+	    	<result name="success">pages/Extraction/prepare_manage_extraction.jsp</result>
 	    </action>
-	    <action name="prepareViewExtraction" class="extractionAction" method="prepareView">
+	    <action name="prepareViewExtraction" class="com.esynergy.erm.web.action.ExtractionAction" method="prepareView">
 	    	<result name="success">pages/Extraction/prepare_view_extraction.jsp</result>
-	    	<result type="redirectAction" name="error">
-				<param name="actionName">permissionMissing</param>
-			</result>
 	    </action>
-	    <action name="prepareEditExtraction" class="extractionAction" method="prepareEdit">
+	    <action name="prepareEditExtraction" class="com.esynergy.erm.web.action.ExtractionAction" method="prepareEdit">
 			<result name="success">pages/Extraction/prepare_add_extraction.jsp</result>
 			<result type="redirectAction" name="input">
-				<param name="actionName">prepareMangeExtraction</param>
+				<param name="actionName">prepareManageExtraction</param>
+			</result>
+		</action>
+		
+		<action name="scrapExtraction" class="com.esynergy.erm.web.action.ExtractionAction" method="scrap">
+			<result type="redirectAction" name="success">
+				<param name="actionName">prepareManageExtraction</param>
+				<param name="begin">true</param>
+			</result>
+			<result type="redirectAction" name="input">
+				<param name="actionName">prepareManageExtraction</param>
+				<param name="running">true</param>
 			</result>
 			<result type="redirectAction" name="error">
-				<param name="actionName">permissionMissing</param>
+				<param name="actionName">prepareManageExtraction</param>
+				<param name="error">true</param>
 			</result>
 		</action>
  	</package>
